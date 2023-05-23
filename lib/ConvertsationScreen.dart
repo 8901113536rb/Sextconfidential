@@ -94,7 +94,7 @@ class ConvertsationScreenState extends State<ConvertsationScreen>{
                           textAlign: TextAlign.start,
                         ),
                         Text(
-                          StringConstants.onlinestatus,
+                          StringConstants.onlinenow,
                           style: TextStyle(
                               fontSize: 8.sp,
                               // fontFamily: "PulpDisplay",

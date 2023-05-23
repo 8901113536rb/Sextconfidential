@@ -86,6 +86,7 @@ class EditprofilescreenState extends State<Editprofilescreen>{
                       // errorWidget: (context, url, error) => errorWidget,
                     ),
                     Container(
+                      margin: EdgeInsets.only(bottom: 1.h,right: 1.w),
                       padding: EdgeInsets.all(0.8.h),
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,

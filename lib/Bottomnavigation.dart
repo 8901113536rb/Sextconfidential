@@ -33,7 +33,7 @@ class BottomnavigationState extends State<Bottomnavigation>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: Sidedrawer.sidedrawer(context),
+      drawer: Sidedrawer(),
       body: pages[selectedindex],
       bottomNavigationBar: Container(
         height: 7.h,

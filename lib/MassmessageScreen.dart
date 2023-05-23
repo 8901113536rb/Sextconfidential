@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:sextconfidential/main.dart';
 import 'package:sextconfidential/utils/Appcolors.dart';
 import 'package:sextconfidential/utils/CustomDropdownButton2.dart';
 import 'package:sextconfidential/utils/Sidedrawer.dart';
@@ -28,15 +29,14 @@ class MassmessageScreenState extends State<MassmessageScreen>{
   Widget build(BuildContext context) {
     return Scaffold(
         key: _key,
-      drawer: Sidedrawer.sidedrawer(context),
+      drawer: Sidedrawer(),
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Appcolors().bottomnavbgcolor,
         leading: GestureDetector(
           onTap: (){
-            _key.currentState!.openDrawer(); //<-- SEE HERE
+            _key.currentState!.openDrawer();
           },
-
             child: Center(child: SvgPicture.asset("assets/images/menubtn.svg",))),
         title: Text(StringConstants.massmessages,style: TextStyle(
             fontSize: 14.sp,

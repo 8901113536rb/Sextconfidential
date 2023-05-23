@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:sextconfidential/ConvertsationScreen.dart';
 import 'package:sextconfidential/utils/Appcolors.dart';
 import 'package:sextconfidential/utils/CustomDropdownButton2.dart';
+import 'package:sextconfidential/utils/Sidedrawer.dart';
 import 'package:sextconfidential/utils/StringConstants.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 import 'package:sizer/sizer.dart';
@@ -20,13 +21,21 @@ class ChatusersscreenState extends State<Chatusersscreen>{
   TextEditingController searchcontroller=TextEditingController();
   List<String>chattype=["Most Recent","Unread","Recently Active","New Clients","Favourite","Credits","Top Spenders","Hidden","Unanswered"];
   String chatselectedtype="Most Recent";
+  final GlobalKey<ScaffoldState> _key = GlobalKey(); // Create a key
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _key,
+      drawer: Sidedrawer(),
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Appcolors().bottomnavbgcolor,
-        leading: Center(child: SvgPicture.asset("assets/images/menubtn.svg",)),
+        leading: GestureDetector(
+            onTap: (){
+              _key.currentState!.openDrawer();
+            },
+            child: Center(child: SvgPicture.asset("assets/images/menubtn.svg",))),
         title: Text(StringConstants.messages,style: TextStyle(
             fontSize: 14.sp,
             fontFamily: "PulpDisplay",
