@@ -36,6 +36,7 @@ class MassmessageScreenState extends State<MassmessageScreen>{
           onTap: (){
             _key.currentState!.openDrawer(); //<-- SEE HERE
           },
+
             child: Center(child: SvgPicture.asset("assets/images/menubtn.svg",))),
         title: Text(StringConstants.massmessages,style: TextStyle(
             fontSize: 14.sp,
