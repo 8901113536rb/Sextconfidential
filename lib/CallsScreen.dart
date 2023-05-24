@@ -1,3 +1,4 @@
+import 'package:appinio_video_player/appinio_video_player.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -34,27 +35,27 @@ class CallsScreenState extends State<CallsScreen> {
     return Scaffold(
       key: _key,
       drawer: Sidedrawer(),
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Appcolors().bottomnavbgcolor,
-        leading: GestureDetector(
-          onTap: (){
-            _key.currentState!.openDrawer();
-          },
-          child: Center(
-              child: SvgPicture.asset(
-            "assets/images/menubtn.svg",
-          )),
-        ),
-        title: Text(
-          StringConstants.calls,
-          style: TextStyle(
-              fontSize: 14.sp,
-              fontFamily: "PulpDisplay",
-              fontWeight: FontWeight.w500,
-              color: Appcolors().whitecolor),
-        ),
-      ),
+      // appBar: AppBar(
+      //   elevation: 0,
+      //   backgroundColor: Appcolors().bottomnavbgcolor,
+      //   leading: GestureDetector(
+      //     onTap: (){
+      //       _key.currentState!.openDrawer();
+      //     },
+      //     child: Center(
+      //         child: SvgPicture.asset(
+      //       "assets/images/menubtn.svg",
+      //     )),
+      //   ),
+      //   title: Text(
+      //     StringConstants.calls,
+      //     style: TextStyle(
+      //         fontSize: 14.sp,
+      //         fontFamily: "PulpDisplay",
+      //         fontWeight: FontWeight.w500,
+      //         color: Appcolors().whitecolor),
+      //   ),
+      // ),
       body: Container(
         padding: EdgeInsets.only(left: 3.w,right: 3.w),
         color: Appcolors().backgroundcolor,

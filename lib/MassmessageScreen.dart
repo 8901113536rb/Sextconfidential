@@ -1,3 +1,4 @@
+import 'package:appinio_video_player/appinio_video_player.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -26,25 +27,36 @@ class MassmessageScreenState extends State<MassmessageScreen>{
   List<String>messagehistorytype=[StringConstants.mostrecent,StringConstants.mostsends,StringConstants.mostread,StringConstants.readrate,StringConstants.mostunlocks,StringConstants.mostearnings,];
   String messagehistoryvalue="Most Recent";
   TextEditingController messagecontroller=TextEditingController();
+
+  late VideoPlayerController _controller;
+  late CustomVideoPlayerController _customVideoPlayerController;
+  late final VideoPlayerController videoPlayerController;
+  int imagecredit=1;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    startvideo();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         key: _key,
       drawer: Sidedrawer(),
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Appcolors().bottomnavbgcolor,
-        leading: GestureDetector(
-          onTap: (){
-            _key.currentState!.openDrawer();
-          },
-            child: Center(child: SvgPicture.asset("assets/images/menubtn.svg",))),
-        title: Text(StringConstants.massmessages,style: TextStyle(
-            fontSize: 14.sp,
-            fontFamily: "PulpDisplay",
-            fontWeight: FontWeight.w500,
-            color: Appcolors().whitecolor),),
-      ),
+      // appBar: AppBar(
+      //   elevation: 0,
+      //   backgroundColor: Appcolors().bottomnavbgcolor,
+      //   leading: GestureDetector(
+      //     onTap: (){
+      //       _key.currentState!.openDrawer();
+      //     },
+      //       child: Center(child: SvgPicture.asset("assets/images/menubtn.svg",))),
+      //   title: Text(StringConstants.massmessages,style: TextStyle(
+      //       fontSize: 14.sp,
+      //       fontFamily: "PulpDisplay",
+      //       fontWeight: FontWeight.w500,
+      //       color: Appcolors().whitecolor),),
+      // ),
       body: Container(
         padding: EdgeInsets.only(left: 3.w,right: 3.w),
         color: Appcolors().backgroundcolor,
@@ -145,42 +157,148 @@ class MassmessageScreenState extends State<MassmessageScreen>{
                     SizedBox(
                       height: 1.5.h,
                     ),
-                    Container(
-                      child: DottedBorder(
-                        strokeCap: StrokeCap.round,
-                        strokeWidth: 1,
-                        dashPattern: [8, 4],
-                        color: Appcolors().gradientcolorfirst,
-                        borderType: BorderType.RRect,
-                        radius: Radius.circular(15),
-                        padding: EdgeInsets.all(6),
+                    GestureDetector(
+                      onTap: (){
+                        
+                      },
+                      child: Container(
+                        width: double.infinity,
+                        child: DottedBorder(
+                          strokeCap: StrokeCap.round,
+                          strokeWidth: 1,
+                          dashPattern: [8, 4],
+                          color: Appcolors().gradientcolorfirst,
+                          borderType: BorderType.RRect,
+                          radius: Radius.circular(15),
+                          padding: EdgeInsets.all(6),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.all(Radius.circular(12)),
+                            child:
+                              Column(
+                                children: [
+                                  Container(
+                                    alignment: Alignment.center,
+                                    child: Stack(
+                                      alignment: Alignment.topRight,
+                                      children: [
+                                        Container(
+                                            padding:EdgeInsets.all(10),
+                                            child: Image.asset("assets/images/modelimage.png",height: 10.h,)),
+                                        CircleAvatar(
+                                          radius: 1.h,
+                                          backgroundColor: Colors.white,
+                                          child: Image.asset("assets/images/crossicon.png",height: 1.h,),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      Container(
+                                        height: 4.h,
+                                        alignment: Alignment.center,
+                                        width:20.w,
+                                        decoration: BoxDecoration(
+                                            border: Border.all(color: Appcolors().loginhintcolor),
+                                            borderRadius: BorderRadius.circular(8)
+                                        ),
+                                        child: Text(
+                                          imagecredit.toString(),
+                                          style: TextStyle(
+                                              fontSize: 8.sp,
+                                              fontFamily: "PulpDisplay",
+                                              fontWeight: FontWeight.w400,
+                                              color: Appcolors().whitecolor),
+                                        ),
+                                      ),
+                                      GestureDetector(
+                                        onTap: (){
+                                          setState(() {
+                                            if(imagecredit>1){
+                                              imagecredit=imagecredit-1;
+                                            }
+                                          });
+                                        },
+                                        child: Container(
+                                          margin: EdgeInsets.only(right: 20.w),
+                                          alignment: Alignment.center,
+                                          width: 4.w,
+                                          height: 2.h,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(5),
+                                            color: Colors.white,
+                                          ),
+                                          child: Text(
+                                            "-",
+                                            style: TextStyle(
+                                                fontSize: 8.sp,
+                                                fontFamily: "PulpDisplay",
+                                                fontWeight: FontWeight.w400,
+                                                color: Appcolors().blackcolor),
+                                          ),
+                                        ),
+                                      ),
+                                      GestureDetector(
+                                        onTap: (){
+                                          setState(() {
+                                              imagecredit=imagecredit+1;
+                                          });
+                                        },
+                                        child: Container(
+                                          margin: EdgeInsets.only(left: 20.w),
+                                          alignment: Alignment.center,
+                                          width: 4.w,
+                                          height: 2.h,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.rectangle,
+                                              image: DecorationImage(
+                                                image: AssetImage("assets/images/btnbackgroundgradient.png"),fit: BoxFit.fill
+                                              ),
+                                              borderRadius: BorderRadius.circular(5)
+                                          ),
+                                          child: Text(
+                                            "+",
+                                            style: TextStyle(
+                                                fontSize: 8.sp,
+                                                fontFamily: "PulpDisplay",
+                                                fontWeight: FontWeight.w400,
+                                                color: Appcolors().blackcolor),
+                                          ),
+                                        ),
+                                      ),
 
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.all(Radius.circular(12)),
-                          child: Container(
-                            height: 5.h,
-                            width: double.infinity,
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Center(
-                                    child: SvgPicture.asset("assets/images/uploadimageicon.svg",height: 3.h,width: 3.w,)),
-                                SizedBox(
-                                  width: 2.w,
-                                ),
-                                Text(
-                                  StringConstants.addphotosorvideo,
-                                  style: TextStyle(
-                                      fontSize: 10.sp,
-                                      // fontFamily: "PulpDisplay",
-                                      fontWeight: FontWeight.w500,
-                                      color: Appcolors().loginhintcolor),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ],
-                            )
-                            // color: Colors.amber,
+                                    ],
+                                  )
+                                ],
+                              ),
+
+                            
+                            // Container(
+                            //   height: 5.h,
+                            //   width: double.infinity,
+                            //   child: Row(
+                            //     crossAxisAlignment: CrossAxisAlignment.center,
+                            //     mainAxisAlignment: MainAxisAlignment.center,
+                            //     children: [
+                            //       Center(
+                            //           child: SvgPicture.asset("assets/images/uploadimageicon.svg",height: 3.h,width: 3.w,)),
+                            //       SizedBox(
+                            //         width: 2.w,
+                            //       ),
+                            //       Text(
+                            //         StringConstants.addphotosorvideo,
+                            //         style: TextStyle(
+                            //             fontSize: 10.sp,
+                            //             // fontFamily: "PulpDisplay",
+                            //             fontWeight: FontWeight.w500,
+                            //             color: Appcolors().loginhintcolor),
+                            //         textAlign: TextAlign.center,
+                            //       ),
+                            //     ],
+                            //   )
+                            //   // color: Colors.amber,
+                            // ),
                           ),
                         ),
                       ),
@@ -193,7 +311,7 @@ class MassmessageScreenState extends State<MassmessageScreen>{
                       width: double.infinity,
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: AssetImage("assets/images/btnbackgroundgradient.png"),
+                          image: AssetImage("assets/images/btnbackgroundgradient.png"),fit: BoxFit.fill
                         ),
                         borderRadius: BorderRadius.circular(10)
                       ),
@@ -257,16 +375,23 @@ class MassmessageScreenState extends State<MassmessageScreen>{
                                           index%2==0?
                                           Column(
                                             children: [
-                                              Container(
-                                                width:35.w,
-                                                height: 16.h,
-                                                decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.circular(15),
-                                                  image: DecorationImage(
-                                                    image: AssetImage("assets/images/modelimage.png",),fit: BoxFit.fill
+                                              GestureDetector(
+                                                onTap: (){
+                                                  // Future.delayed(Duration(seconds: 1), () {
+                                                    videoplayer(context);
+                                                  // });
+                                                },
+                                                child: Container(
+                                                  width:35.w,
+                                                  height: 16.h,
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(15),
+                                                    image: DecorationImage(
+                                                        image: AssetImage("assets/images/modelimage.png",),fit: BoxFit.fill
+                                                    ),
                                                   ),
+                                                  child: Icon(Icons.play_circle_outline_rounded,color: Colors.white,),
                                                 ),
-                                                child: Icon(Icons.play_circle_outline_rounded,color: Colors.white,),
                                               ),
                                               SizedBox(
                                                 height: 2.h,
@@ -447,5 +572,86 @@ class MassmessageScreenState extends State<MassmessageScreen>{
         ),
       ),
     );
+  }
+  Future<void> videoplayer(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            contentPadding: EdgeInsets.zero,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10.0))),
+              backgroundColor: Appcolors().blackcolor,
+              //title: Text("Image Picker"),
+              content: Container(
+                  alignment: Alignment.center,
+                  height: 50.h,
+                  width: 80.h,
+                  child: Stack(
+                    alignment: Alignment.topRight,
+                    children: [
+                      Container(
+                          width: 80.h,
+                          color: Colors.black,
+                          height:
+                          (MediaQuery.of(context)
+                              .size
+                              .height /
+                              100) *
+                              50,
+                          child: AspectRatio(
+                            aspectRatio: _controller
+                                .value.aspectRatio,
+                            child:
+                            CustomVideoPlayer(
+                              customVideoPlayerController: _customVideoPlayerController,
+
+                            ),
+                            // VideoPlayer(
+                            //     _controller),
+                          )),
+                      InkWell(
+                        onTap: (){
+                          Navigator.pop(context);
+                        },
+                        child:
+                         Container(
+                           margin: EdgeInsets.only(right: 5.w,top: 1.h),
+                          height: 4.h,
+                          width: 4.w,
+                          alignment: Alignment.topRight,
+                          child: Image.asset("assets/images/crossicon.png",color: Colors.white,height: 4.h,
+                            width: 4.w,),
+                        ),
+                      ),
+                    ],
+                  )
+              )
+          );
+        });
+  }
+  void startvideo(){
+    videoPlayerController = VideoPlayerController.network("https://cdn.videvo.net/videvo_files/video/premium/video0043/large_watermarked/305_305-0011_preview.mp4")
+      ..initialize().then((value) => setState(() {
+        print("Video working");
+        var durationOfVideo = videoPlayerController.value.position.inSeconds.round();
+        print("Duration of video:-"+durationOfVideo.toString());
+        debugPrint("========"+_controller.value.duration.toString());
+      }));
+    _customVideoPlayerController = CustomVideoPlayerController(
+      context: context,
+      videoPlayerController: videoPlayerController,
+    );
+    _controller = VideoPlayerController.network(
+        "https://cdn.videvo.net/videvo_files/video/premium/video0043/large_watermarked/305_305-0011_preview.mp4")
+      ..initialize().then((_) {
+        setState(() {
+          debugPrint("========"+_controller.value.duration.toString());
+          print("Video Started");
+          var durationOfVideo = videoPlayerController.value.position.inSeconds.round();
+          print("Duration of videos:-"+durationOfVideo.toString());
+        });
+      },
+      );
   }
 }

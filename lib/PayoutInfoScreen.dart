@@ -42,216 +42,221 @@ class PayoutInfoScreenState extends State<PayoutInfoScreen> {
       ),
       body: Container(
         padding: EdgeInsets.only(left: 3.w, right: 3.w),
-        child: Column(
+        child: Stack(
+          alignment: Alignment.bottomCenter,
           children: [
-            SizedBox(
-              height: 4.h,
-            ),
-            Row(
+            Column(
               children: [
-                Container(
-                  alignment: Alignment.center,
-                  decoration: twelvehouralert
-                      ? BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          gradient: LinearGradient(
-                              colors: [
-                                Appcolors().gradientcolorfirst,
-                                Appcolors().gradientcolorsecond,
-                              ],
-                              begin: const FractionalOffset(0.0, 0.0),
-                              end: const FractionalOffset(1.0, 0.0),
-                              stops: [0.0, 1.0],
-                              tileMode: TileMode.clamp),
-                        )
-                      : BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          color: Appcolors().checkboxcolor,
-                        ),
-                  height: 3.h,
-                  width: 3.h,
-                  child: Checkbox(
-                    fillColor: MaterialStateProperty.all(Colors.transparent),
-                    overlayColor: MaterialStateProperty.all(Colors.transparent),
-                    checkColor: Appcolors().backgroundcolor,
-                    activeColor: Colors.transparent,
-                    focusColor: Colors.transparent,
-                    hoverColor: Colors.transparent,
-                    value: twelvehouralert,
-                    onChanged: (value) {
-                      setState(() {
-                        twelvehouralert = value!;
-                      });
-                    },
-                  ),
-                ),
                 SizedBox(
-                  width: 2.w,
+                  height: 4.h,
                 ),
-                twelvehouralert
-                    ? GradientText(
-                  StringConstants.hoursalert,
-                  style: TextStyle(
-                      fontSize: 12.sp,
-                      // fontFamily: "PulpDisplay",
-                      fontWeight: FontWeight.w500,
-                      color: Appcolors().loginhintcolor),
-                  gradientType: GradientType.linear,
-                  gradientDirection: GradientDirection.ttb,
-                  radius: 8,
-                  colors: [
-                    Appcolors().gradientcolorfirst,
-                    Appcolors().gradientcolorsecond,
+                Row(
+                  children: [
+                    Container(
+                      alignment: Alignment.center,
+                      decoration: twelvehouralert
+                          ? BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              gradient: LinearGradient(
+                                  colors: [
+                                    Appcolors().gradientcolorfirst,
+                                    Appcolors().gradientcolorsecond,
+                                  ],
+                                  begin: const FractionalOffset(0.0, 0.0),
+                                  end: const FractionalOffset(1.0, 0.0),
+                                  stops: [0.0, 1.0],
+                                  tileMode: TileMode.clamp),
+                            )
+                          : BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: Appcolors().checkboxcolor,
+                            ),
+                      height: 3.h,
+                      width: 3.h,
+                      child: Checkbox(
+                        fillColor: MaterialStateProperty.all(Colors.transparent),
+                        overlayColor: MaterialStateProperty.all(Colors.transparent),
+                        checkColor: Appcolors().backgroundcolor,
+                        activeColor: Colors.transparent,
+                        focusColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        value: twelvehouralert,
+                        onChanged: (value) {
+                          setState(() {
+                            twelvehouralert = value!;
+                          });
+                        },
+                      ),
+                    ),
+                    SizedBox(
+                      width: 2.w,
+                    ),
+                    twelvehouralert
+                        ? GradientText(
+                      StringConstants.hoursalert,
+                      style: TextStyle(
+                          fontSize: 12.sp,
+                          // fontFamily: "PulpDisplay",
+                          fontWeight: FontWeight.w500,
+                          color: Appcolors().loginhintcolor),
+                      gradientType: GradientType.linear,
+                      gradientDirection: GradientDirection.ttb,
+                      radius: 8,
+                      colors: [
+                        Appcolors().gradientcolorfirst,
+                        Appcolors().gradientcolorsecond,
+                      ],
+                    )
+                        : Text(
+                      StringConstants.hoursalert,
+                      style: TextStyle(
+                          fontSize: 12.sp,
+                          // fontFamily: "PulpDisplay",
+                          fontWeight: FontWeight.w500,
+                          color: Appcolors().loginhintcolor),
+                    )
                   ],
-                )
-                    : Text(
-                  StringConstants.hoursalert,
-                  style: TextStyle(
-                      fontSize: 12.sp,
-                      // fontFamily: "PulpDisplay",
-                      fontWeight: FontWeight.w500,
-                      color: Appcolors().loginhintcolor),
-                )
-              ],
-            ),
-            SizedBox(
-              height: 3.h,
-            ),
-            Row(
-              children: [
-                Container(
-                  alignment: Alignment.center,
-                  decoration: payoutprocessedalert
-                      ? BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          gradient: LinearGradient(
-                              colors: [
-                                Appcolors().gradientcolorfirst,
-                                Appcolors().gradientcolorsecond,
-                              ],
-                              begin: const FractionalOffset(0.0, 0.0),
-                              end: const FractionalOffset(1.0, 0.0),
-                              stops: [0.0, 1.0],
-                              tileMode: TileMode.clamp),
-                        )
-                      : BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          color: Appcolors().checkboxcolor,
-                        ),
-                  height: 3.h,
-                  width: 3.h,
-                  child: Checkbox(
-                    fillColor: MaterialStateProperty.all(Colors.transparent),
-                    overlayColor: MaterialStateProperty.all(Colors.transparent),
-                    checkColor: Appcolors().backgroundcolor,
-                    activeColor: Colors.transparent,
-                    focusColor: Colors.transparent,
-                    hoverColor: Colors.transparent,
-                    value: payoutprocessedalert,
-                    onChanged: (value) {
-                      setState(() {
-                        payoutprocessedalert = value!;
-                      });
-                    },
-                  ),
                 ),
                 SizedBox(
-                  width: 2.w,
+                  height: 3.h,
                 ),
-                payoutprocessedalert
-                    ? GradientText(
-                  StringConstants.payoutprocessed,
-                  style: TextStyle(
-                      fontSize: 12.sp,
-                      // fontFamily: "PulpDisplay",
-                      fontWeight: FontWeight.w500,
-                      color: Appcolors().loginhintcolor),
-                  gradientType: GradientType.linear,
-                  gradientDirection: GradientDirection.ttb,
-                  radius: 8,
-                  colors: [
-                    Appcolors().gradientcolorfirst,
-                    Appcolors().gradientcolorsecond,
+                Row(
+                  children: [
+                    Container(
+                      alignment: Alignment.center,
+                      decoration: payoutprocessedalert
+                          ? BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              gradient: LinearGradient(
+                                  colors: [
+                                    Appcolors().gradientcolorfirst,
+                                    Appcolors().gradientcolorsecond,
+                                  ],
+                                  begin: const FractionalOffset(0.0, 0.0),
+                                  end: const FractionalOffset(1.0, 0.0),
+                                  stops: [0.0, 1.0],
+                                  tileMode: TileMode.clamp),
+                            )
+                          : BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: Appcolors().checkboxcolor,
+                            ),
+                      height: 3.h,
+                      width: 3.h,
+                      child: Checkbox(
+                        fillColor: MaterialStateProperty.all(Colors.transparent),
+                        overlayColor: MaterialStateProperty.all(Colors.transparent),
+                        checkColor: Appcolors().backgroundcolor,
+                        activeColor: Colors.transparent,
+                        focusColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        value: payoutprocessedalert,
+                        onChanged: (value) {
+                          setState(() {
+                            payoutprocessedalert = value!;
+                          });
+                        },
+                      ),
+                    ),
+                    SizedBox(
+                      width: 2.w,
+                    ),
+                    payoutprocessedalert
+                        ? GradientText(
+                      StringConstants.payoutprocessed,
+                      style: TextStyle(
+                          fontSize: 12.sp,
+                          // fontFamily: "PulpDisplay",
+                          fontWeight: FontWeight.w500,
+                          color: Appcolors().loginhintcolor),
+                      gradientType: GradientType.linear,
+                      gradientDirection: GradientDirection.ttb,
+                      radius: 8,
+                      colors: [
+                        Appcolors().gradientcolorfirst,
+                        Appcolors().gradientcolorsecond,
+                      ],
+                    )
+                        : Text(
+                      StringConstants.payoutprocessed,
+                      style: TextStyle(
+                          fontSize: 12.sp,
+                          // fontFamily: "PulpDisplay",
+                          fontWeight: FontWeight.w500,
+                          color: Appcolors().loginhintcolor),
+                    ),
                   ],
-                )
-                    : Text(
-                  StringConstants.payoutprocessed,
-                  style: TextStyle(
-                      fontSize: 12.sp,
-                      // fontFamily: "PulpDisplay",
-                      fontWeight: FontWeight.w500,
-                      color: Appcolors().loginhintcolor),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 3.h,
-            ),
-            Row(
-              children: [
-                Container(
-                  alignment: Alignment.center,
-                  decoration: endofpayalert
-                      ? BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          gradient: LinearGradient(
-                              colors: [
-                                Appcolors().gradientcolorfirst,
-                                Appcolors().gradientcolorsecond,
-                              ],
-                              begin: const FractionalOffset(0.0, 0.0),
-                              end: const FractionalOffset(1.0, 0.0),
-                              stops: [0.0, 1.0],
-                              tileMode: TileMode.clamp),
-                        )
-                      : BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          color: Appcolors().checkboxcolor,
-                        ),
-                  height: 3.h,
-                  width: 3.h,
-                  child: Checkbox(
-                    fillColor: MaterialStateProperty.all(Colors.transparent),
-                    overlayColor: MaterialStateProperty.all(Colors.transparent),
-                    checkColor: Appcolors().backgroundcolor,
-                    activeColor: Colors.transparent,
-                    focusColor: Colors.transparent,
-                    hoverColor: Colors.transparent,
-                    value: endofpayalert,
-                    onChanged: (value) {
-                      setState(() {
-                        endofpayalert = value!;
-                      });
-                    },
-                  ),
                 ),
                 SizedBox(
-                  width: 2.w,
+                  height: 3.h,
                 ),
-                endofpayalert
-                    ? GradientText(
-                        StringConstants.endofpayperiod,
-                        style: TextStyle(
-                            fontSize: 12.sp,
-                            // fontFamily: "PulpDisplay",
-                            fontWeight: FontWeight.w500,
-                            color: Appcolors().loginhintcolor),
-                        gradientType: GradientType.linear,
-                        gradientDirection: GradientDirection.ttb,
-                        radius: 8,
-                        colors: [
-                          Appcolors().gradientcolorfirst,
-                          Appcolors().gradientcolorsecond,
-                        ],
-                      )
-                    : Text(
-                        StringConstants.endofpayperiod,
-                        style: TextStyle(
-                            fontSize: 12.sp,
-                            // fontFamily: "PulpDisplay",
-                            fontWeight: FontWeight.w500,
-                            color: Appcolors().loginhintcolor),
-                      )
+                Row(
+                  children: [
+                    Container(
+                      alignment: Alignment.center,
+                      decoration: endofpayalert
+                          ? BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              gradient: LinearGradient(
+                                  colors: [
+                                    Appcolors().gradientcolorfirst,
+                                    Appcolors().gradientcolorsecond,
+                                  ],
+                                  begin: const FractionalOffset(0.0, 0.0),
+                                  end: const FractionalOffset(1.0, 0.0),
+                                  stops: [0.0, 1.0],
+                                  tileMode: TileMode.clamp),
+                            )
+                          : BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: Appcolors().checkboxcolor,
+                            ),
+                      height: 3.h,
+                      width: 3.h,
+                      child: Checkbox(
+                        fillColor: MaterialStateProperty.all(Colors.transparent),
+                        overlayColor: MaterialStateProperty.all(Colors.transparent),
+                        checkColor: Appcolors().backgroundcolor,
+                        activeColor: Colors.transparent,
+                        focusColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        value: endofpayalert,
+                        onChanged: (value) {
+                          setState(() {
+                            endofpayalert = value!;
+                          });
+                        },
+                      ),
+                    ),
+                    SizedBox(
+                      width: 2.w,
+                    ),
+                    endofpayalert
+                        ? GradientText(
+                            StringConstants.endofpayperiod,
+                            style: TextStyle(
+                                fontSize: 12.sp,
+                                // fontFamily: "PulpDisplay",
+                                fontWeight: FontWeight.w500,
+                                color: Appcolors().loginhintcolor),
+                            gradientType: GradientType.linear,
+                            gradientDirection: GradientDirection.ttb,
+                            radius: 8,
+                            colors: [
+                              Appcolors().gradientcolorfirst,
+                              Appcolors().gradientcolorsecond,
+                            ],
+                          )
+                        : Text(
+                            StringConstants.endofpayperiod,
+                            style: TextStyle(
+                                fontSize: 12.sp,
+                                // fontFamily: "PulpDisplay",
+                                fontWeight: FontWeight.w500,
+                                color: Appcolors().loginhintcolor),
+                          )
+                  ],
+                ),
               ],
             ),
           ],

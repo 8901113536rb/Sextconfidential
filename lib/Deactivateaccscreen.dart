@@ -1,3 +1,4 @@
+import 'package:appinio_video_player/appinio_video_player.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -19,6 +20,14 @@ class DeactivateaccscreenState extends State<Deactivateaccscreen>{
   TextEditingController notecontroller=TextEditingController();
   List<String>items=["Not Sure Why","Don't like","Missing features"];
   String dropdownvalue="Not Sure Why";
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -219,6 +228,8 @@ class DeactivateaccscreenState extends State<Deactivateaccscreen>{
 
     );
   }
+
+
   Future<void> showalertdialog(BuildContext context) {
     return showDialog(
         context: context,

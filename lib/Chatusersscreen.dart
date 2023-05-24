@@ -28,20 +28,20 @@ class ChatusersscreenState extends State<Chatusersscreen>{
     return Scaffold(
       key: _key,
       drawer: Sidedrawer(),
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Appcolors().bottomnavbgcolor,
-        leading: GestureDetector(
-            onTap: (){
-              _key.currentState!.openDrawer();
-            },
-            child: Center(child: SvgPicture.asset("assets/images/menubtn.svg",))),
-        title: Text(StringConstants.messages,style: TextStyle(
-            fontSize: 14.sp,
-            fontFamily: "PulpDisplay",
-            fontWeight: FontWeight.w500,
-            color: Appcolors().whitecolor),),
-      ),
+      // appBar: AppBar(
+      //   elevation: 0,
+      //   backgroundColor: Appcolors().bottomnavbgcolor,
+      //   leading: GestureDetector(
+      //       onTap: (){
+      //         _key.currentState!.openDrawer();
+      //       },
+      //       child: Center(child: SvgPicture.asset("assets/images/menubtn.svg",))),
+      //   title: Text(StringConstants.messages,style: TextStyle(
+      //       fontSize: 14.sp,
+      //       fontFamily: "PulpDisplay",
+      //       fontWeight: FontWeight.w500,
+      //       color: Appcolors().whitecolor),),
+      // ),
       body: Container(
         padding: EdgeInsets.only(left: 2.w,right: 2.w),
         color: Appcolors().backgroundcolor,

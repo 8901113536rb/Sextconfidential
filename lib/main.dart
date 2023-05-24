@@ -45,6 +45,7 @@ class MyApp extends StatelessWidget {
             // home: Feeddetailedpage(),
             // home: PayoutInfoScreen(),
             // home: Editprofilescreen(),
+            // home: Emojipicker(),
             home: MyHomePage(),
             // Chatusersscreen(),
           );

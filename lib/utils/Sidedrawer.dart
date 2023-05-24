@@ -67,10 +67,13 @@ class SidedrawerState extends State<Sidedrawer> {
                         onTap: () {
                           Navigator.pop(context);
                         },
-                        child: Image.asset(
-                          "assets/images/crossicon.png",
-                          width: 5.w,
-                          color: Appcolors().whitecolor,
+                        child: Container(
+                          margin: EdgeInsets.only(right: 0.5.w,top: 0.5.h),
+                          child: Image.asset(
+                            "assets/images/crossicon.png",
+                            width: 5.w,
+                            color: Appcolors().whitecolor,
+                          ),
                         ))
                   ],
                 ),
@@ -255,6 +258,7 @@ class SidedrawerState extends State<Sidedrawer> {
 
                           },
                           child: Container(
+                            margin: EdgeInsets.only(left: 4.w),
                             height: 6.h,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -263,7 +267,7 @@ class SidedrawerState extends State<Sidedrawer> {
                                   children: [
                                     Image.asset(
                                       drawerimages.elementAt(index),
-                                      height: 3.5.h,
+                                      height: 2.5.h,
                                       width: 3.h,
                                       color: Appcolors().whitecolor,
                                     ),
