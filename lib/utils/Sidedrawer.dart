@@ -205,9 +205,9 @@ class SidedrawerState extends State<Sidedrawer> {
                   itemBuilder: (BuildContext context, int index) {
                     return Column(
                       children: [
-                        index == 4
+                        index == 5
                             ? SizedBox(
-                                height: 10.h,
+                                height: 12.h,
                               )
                             : SizedBox(),
                         GestureDetector(
@@ -289,12 +289,12 @@ class SidedrawerState extends State<Sidedrawer> {
                                             StringConstants.videocalls
                                     ? Container(
                                         child: FlutterSwitch(
-                                          width: 60.0,
-                                          height: 30.0,
-                                          toggleSize: 28.0,
+                                          width: 50.0,
+                                          height: 25.0,
+                                          toggleSize: 25.0,
                                           value: switchlist.elementAt(index),
                                           borderRadius: 40.0,
-                                          padding: 4.0,
+                                          padding: 2.0,
                                           toggleColor: Colors.black,
                                           toggleBorder: Border.all(
                                             color: Colors.black,

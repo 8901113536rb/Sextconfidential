@@ -158,6 +158,8 @@ class ChatusersscreenState extends State<Chatusersscreen>{
                                       crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
                                         Container(
+                                          width: 14.w,
+                                          height: 7.h,
                                           child: CachedNetworkImage(
                                             imageUrl: index%2==0?"https://c4.wallpaperflare.com/wallpaper/702/785/274/eiza-gonzalez-music-celebrities-girls-wallpaper-thumb.jpg":"https://www.flickonclick.com/wp-content/uploads/2022/09/Esha-Gupta-Hot-and-Sexy.jpg",
                                             imageBuilder: (context,

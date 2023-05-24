@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:sextconfidential/Bottomnavigation.dart';
 import 'package:sextconfidential/main.dart';
 import 'package:sextconfidential/utils/Appcolors.dart';
 import 'package:sextconfidential/utils/CustomDropdownButton2.dart';
@@ -99,7 +100,7 @@ class MassmessageScreenState extends State<MassmessageScreen>{
                         minLines: 3,
                         maxLines: 3,
                         cursorColor: Appcolors().loginhintcolor,
-                        style: TextStyle(color:Appcolors().loginhintcolor,fontSize: 12.sp,),
+                        style: TextStyle(color:Appcolors().whitecolor,fontSize: 12.sp,),
                         controller: messagecontroller,
                         decoration: InputDecoration(
                           // prefix: Container(

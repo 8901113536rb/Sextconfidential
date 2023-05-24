@@ -5,6 +5,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:sextconfidential/utils/Appcolors.dart';
 import 'package:sextconfidential/utils/CustomDropdownButton2.dart';
+import 'package:sextconfidential/utils/Sidedrawer.dart';
 import 'package:sextconfidential/utils/StringConstants.dart';
 import 'package:sizer/sizer.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
@@ -20,6 +21,8 @@ class CallsScreenState extends State<CallsScreen> {
   List<String>datesvalue=["2023","2022","2020","2019","2018","2017","2016","2015"];
   String dropdownvalue="All Calls";
   String secondfdropdownvalue="2023";
+  final GlobalKey<ScaffoldState> _key = GlobalKey(); // Create a key
+
   @override
   void initState() {
     // TODO: implement initState
@@ -29,13 +32,20 @@ class CallsScreenState extends State<CallsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _key,
+      drawer: Sidedrawer(),
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Appcolors().bottomnavbgcolor,
-        leading: Center(
-            child: SvgPicture.asset(
-          "assets/images/menubtn.svg",
-        )),
+        leading: GestureDetector(
+          onTap: (){
+            _key.currentState!.openDrawer();
+          },
+          child: Center(
+              child: SvgPicture.asset(
+            "assets/images/menubtn.svg",
+          )),
+        ),
         title: Text(
           StringConstants.calls,
           style: TextStyle(

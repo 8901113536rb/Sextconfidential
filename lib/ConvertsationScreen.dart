@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -8,15 +9,14 @@ import 'package:sextconfidential/utils/Appcolors.dart';
 import 'package:sextconfidential/utils/StringConstants.dart';
 import 'package:sizer/sizer.dart';
 
-class ConvertsationScreen extends StatefulWidget{
+class ConvertsationScreen extends StatefulWidget {
   @override
   ConvertsationScreenState createState() => ConvertsationScreenState();
-
 }
 
-class ConvertsationScreenState extends State<ConvertsationScreen>{
-  TextEditingController messagecontroller =TextEditingController();
-  bool showuploaddialog=false;
+class ConvertsationScreenState extends State<ConvertsationScreen> {
+  TextEditingController messagecontroller = TextEditingController();
+  bool showuploaddialog = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,19 +25,20 @@ class ConvertsationScreenState extends State<ConvertsationScreen>{
         elevation: 0,
         backgroundColor: Appcolors().bottomnavbgcolor,
         leading: GestureDetector(
-          onTap: (){
+          onTap: () {
             Navigator.pop(context);
             print("Click back");
           },
           child: Container(
-            // color: Colors.white,
-            margin: EdgeInsets.only(left: 2.w),
+              // color: Colors.white,
+              margin: EdgeInsets.only(left: 2.w),
               child: const Icon(Icons.arrow_back_ios_rounded)),
         ),
         leadingWidth: 7.w,
         title: GestureDetector(
-          onTap: (){
-            Navigator.push(context, MaterialPageRoute(builder: (context) => UserprofileScreen()));
+          onTap: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => UserprofileScreen()));
           },
           child: Container(
             child: Column(
@@ -50,33 +51,28 @@ class ConvertsationScreenState extends State<ConvertsationScreen>{
                   children: [
                     Container(
                       child: CachedNetworkImage(
-                        imageUrl:"https://c4.wallpaperflare.com/wallpaper/702/785/274/eiza-gonzalez-music-celebrities-girls-wallpaper-thumb.jpg",
-                        imageBuilder: (context,
-                            imageProvider) =>
-                            Container(
-                              width: 16.w,
-                              alignment: Alignment
-                                  .centerLeft,
-                              height: 5.h,
-                              decoration:
-                              BoxDecoration(
-                                shape: BoxShape.circle,
-                                image:
-                                DecorationImage(
-                                  image:
-                                  imageProvider,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
+                        imageUrl:
+                            "https://c4.wallpaperflare.com/wallpaper/702/785/274/eiza-gonzalez-music-celebrities-girls-wallpaper-thumb.jpg",
+                        imageBuilder: (context, imageProvider) => Container(
+                          width: 16.w,
+                          alignment: Alignment.centerLeft,
+                          height: 5.h,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                              image: imageProvider,
+                              fit: BoxFit.cover,
                             ),
-                        placeholder:
-                            (context, url) =>
-                            Container(
-                              child: Center(
-                                child:
-                                CircularProgressIndicator(strokeWidth: 2,color: Appcolors().backgroundcolor,),
-                              ),
+                          ),
+                        ),
+                        placeholder: (context, url) => Container(
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Appcolors().backgroundcolor,
                             ),
+                          ),
+                        ),
                         // errorWidget: (context, url, error) => errorWidget,
                       ),
                     ),
@@ -102,7 +98,6 @@ class ConvertsationScreenState extends State<ConvertsationScreen>{
                               color: Appcolors().onlinecolor),
                           textAlign: TextAlign.center,
                         ),
-
                       ],
                     ),
                   ],
@@ -113,7 +108,7 @@ class ConvertsationScreenState extends State<ConvertsationScreen>{
         ),
       ),
       body: Container(
-        padding: EdgeInsets.only(left: 2.w,right: 2.w),
+        padding: EdgeInsets.only(left: 2.w, right: 2.w),
         color: Appcolors().backgroundcolor,
         child: Stack(
           alignment: Alignment.bottomCenter,
@@ -134,54 +129,68 @@ class ConvertsationScreenState extends State<ConvertsationScreen>{
                             verticalOffset: 50.0,
                             child: FadeInAnimation(
                               child: InkWell(
-                                onTap: (){
-                                  setState((){
-                                    showuploaddialog=false;
+                                onTap: () {
+                                  setState(() {
+                                    showuploaddialog = false;
                                   });
                                 },
                                 child: Column(
                                   children: [
                                     Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
                                       children: [
                                         SizedBox(
                                           height: 2.h,
                                         ),
                                         Container(
+                                          width: double.infinity,
                                           alignment: Alignment.centerRight,
                                           child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
                                             children: [
-                                              CachedNetworkImage(
-                                                imageUrl:"https://images.squarespace-cdn.com/content/v1/53cc306ee4b04fd213249899/1657760960280-QKY0G0PHGZBAW4T3K5T9/Boudoir+Photo+Shoot+Salem+Oregon+Boudoir+Photographer.jpg",
-                                                imageBuilder: (context,
-                                                    imageProvider) =>
-                                                    Container(
-                                                      height: 15.h,
-                                                      width: 40.w,
-                                                      alignment: Alignment
-                                                          .centerLeft,
-                                                      decoration:
-                                                      BoxDecoration(
-                                                        borderRadius: BorderRadius.circular(10),
-                                                        shape: BoxShape.rectangle,
-                                                        image:
-                                                        DecorationImage(
-                                                          image:
-                                                          imageProvider,
-                                                          fit: BoxFit.cover,
-                                                        ),
+                                              Container(
+                                                height: 15.h,
+                                                width: 40.w,
+                                                child: CachedNetworkImage(
+                                                  imageUrl:
+                                                      "https://images.squarespace-cdn.com/content/v1/53cc306ee4b04fd213249899/1657760960280-QKY0G0PHGZBAW4T3K5T9/Boudoir+Photo+Shoot+Salem+Oregon+Boudoir+Photographer.jpg",
+                                                  imageBuilder: (context,
+                                                          imageProvider) =>
+                                                      Container(
+                                                    height: 15.h,
+                                                    width: 40.w,
+                                                    alignment:
+                                                        Alignment.centerLeft,
+                                                    decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10),
+                                                      shape: BoxShape.rectangle,
+                                                      image: DecorationImage(
+                                                        image: imageProvider,
+                                                        fit: BoxFit.cover,
                                                       ),
                                                     ),
-                                                placeholder:
-                                                    (context, url) =>
-                                                    Container(
-                                                      child: Center(
-                                                        child:
-                                                        CircularProgressIndicator(strokeWidth: 2,color: Appcolors().backgroundcolor,),
+                                                  ),
+                                                  placeholder: (context, url) =>
+                                                      Container(
+                                                    child: Center(
+                                                      child:
+                                                          CircularProgressIndicator(
+                                                        strokeWidth: 2,
+                                                        color: Appcolors()
+                                                            .backgroundcolor,
                                                       ),
                                                     ),
-                                                // errorWidget: (context, url, error) => errorWidget,
+                                                  ),
+                                                  // errorWidget: (context, url, error) => errorWidget,
+                                                ),
                                               ),
                                               SizedBox(
                                                 height: 0.5.h,
@@ -193,7 +202,8 @@ class ConvertsationScreenState extends State<ConvertsationScreen>{
                                                     fontFamily: "PulpDisplay",
                                                     fontWeight: FontWeight.w400,
                                                     fontStyle: FontStyle.italic,
-                                                    color: Appcolors().loginhintcolor),
+                                                    color: Appcolors()
+                                                        .loginhintcolor),
                                                 textAlign: TextAlign.center,
                                               ),
                                               SizedBox(
@@ -201,10 +211,10 @@ class ConvertsationScreenState extends State<ConvertsationScreen>{
                                               ),
                                             ],
                                           ),
-
                                         ),
                                         Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
                                             Container(
                                               color: Appcolors().loginhintcolor,
@@ -219,7 +229,8 @@ class ConvertsationScreenState extends State<ConvertsationScreen>{
                                                   fontFamily: "PulpDisplay",
                                                   fontWeight: FontWeight.w400,
                                                   // fontStyle: FontStyle.italic,
-                                                  color: Appcolors().loginhintcolor),
+                                                  color: Appcolors()
+                                                      .loginhintcolor),
                                               textAlign: TextAlign.center,
                                             ),
                                             Container(
@@ -240,62 +251,70 @@ class ConvertsationScreenState extends State<ConvertsationScreen>{
                                             children: [
                                               Container(
                                                 alignment: Alignment.centerLeft,
-                                                margin: EdgeInsets.only(left: 6.w),
-                                                padding: EdgeInsets.only(left: 10.w,top: 2.h,bottom: 2.h),
-                                                decoration:
-                                                BoxDecoration(
-                                                  color: Appcolors().profileboxcolor,
-                                                  borderRadius: BorderRadius.circular(20),
+                                                margin:
+                                                    EdgeInsets.only(left: 6.w),
+                                                padding: EdgeInsets.only(
+                                                    left: 10.w,
+                                                    top: 2.h,
+                                                    bottom: 2.h),
+                                                decoration: BoxDecoration(
+                                                  color: Appcolors()
+                                                      .profileboxcolor,
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
                                                   shape: BoxShape.rectangle,
                                                 ),
                                                 // height: 7.h,
                                                 // width: 80.w,
-                                                child:  Text(
-                                                  index%2==0?
-                                                  "Let me know when you are available baby":"We should video chat now baby",
+                                                child: Text(
+                                                  index % 2 == 0
+                                                      ? "Let me know when you are available baby"
+                                                      : "We should video chat now baby",
                                                   style: TextStyle(
                                                       fontSize: 11.sp,
                                                       // fontFamily: "PulpDisplay",
-                                                      fontWeight: FontWeight.w500,
+                                                      fontWeight:
+                                                          FontWeight.w500,
                                                       // fontStyle: FontStyle.italic,
-                                                      color: Appcolors().whitecolor),
+                                                      color: Appcolors()
+                                                          .whitecolor),
                                                 ),
                                               ),
                                               Container(
                                                 padding: EdgeInsets.all(0.6.h),
-                                                decoration:
-                                                BoxDecoration(
+                                                decoration: BoxDecoration(
                                                     shape: BoxShape.circle,
-                                                    color: Appcolors().backgroundcolor
-                                                ),
+                                                    color: Appcolors()
+                                                        .backgroundcolor),
                                                 child: CachedNetworkImage(
-                                                  imageUrl:"https://c4.wallpaperflare.com/wallpaper/702/785/274/eiza-gonzalez-music-celebrities-girls-wallpaper-thumb.jpg",
+                                                  imageUrl:
+                                                      "https://c4.wallpaperflare.com/wallpaper/702/785/274/eiza-gonzalez-music-celebrities-girls-wallpaper-thumb.jpg",
                                                   imageBuilder: (context,
-                                                      imageProvider) =>
+                                                          imageProvider) =>
                                                       Container(
-                                                        width: 10.w,
-                                                        alignment: Alignment
-                                                            .centerLeft,
-                                                        height: 6.h,
-                                                        decoration:
-                                                        BoxDecoration(
-                                                          shape: BoxShape.circle,
-                                                          image:
-                                                          DecorationImage(
-                                                            image:
-                                                            imageProvider,
-                                                            fit: BoxFit.cover,
-                                                          ),
-                                                        ),
+                                                    width: 10.w,
+                                                    alignment:
+                                                        Alignment.centerLeft,
+                                                    height: 6.h,
+                                                    decoration: BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      image: DecorationImage(
+                                                        image: imageProvider,
+                                                        fit: BoxFit.cover,
                                                       ),
-                                                  placeholder:
-                                                      (context, url) =>
+                                                    ),
+                                                  ),
+                                                  placeholder: (context, url) =>
                                                       Container(
-                                                        child: Center(
-                                                          child:
-                                                          CircularProgressIndicator(strokeWidth: 2,color: Appcolors().backgroundcolor,),
-                                                        ),
+                                                    child: Center(
+                                                      child:
+                                                          CircularProgressIndicator(
+                                                        strokeWidth: 2,
+                                                        color: Appcolors()
+                                                            .backgroundcolor,
                                                       ),
+                                                    ),
+                                                  ),
                                                   // errorWidget: (context, url, error) => errorWidget,
                                                 ),
                                               ),
@@ -306,14 +325,15 @@ class ConvertsationScreenState extends State<ConvertsationScreen>{
                                           margin: EdgeInsets.only(left: 10.w),
                                           width: double.infinity,
                                           // alignment: Alignment.centerLeft,
-                                          child:  Text(
+                                          child: Text(
                                             "Sent 01:30 am",
                                             style: TextStyle(
                                                 fontSize: 11.sp,
                                                 // fontFamily: "PulpDisplay",
                                                 fontWeight: FontWeight.w400,
                                                 fontStyle: FontStyle.italic,
-                                                color: Appcolors().loginhintcolor),
+                                                color:
+                                                    Appcolors().loginhintcolor),
                                           ),
                                         ),
                                         SizedBox(
@@ -322,24 +342,31 @@ class ConvertsationScreenState extends State<ConvertsationScreen>{
                                         Container(
                                           alignment: Alignment.centerRight,
                                           child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.end,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
                                             children: [
                                               Container(
                                                 padding: EdgeInsets.all(1.5.h),
                                                 decoration: BoxDecoration(
                                                     image: DecorationImage(
-                                                        image: AssetImage("assets/images/btnbackgroundgradient.png",),fit: BoxFit.fill
-                                                    ),
-                                                    borderRadius: BorderRadius.circular(15)
-                                                ),
-                                                child:  Text(
-                                                  index%2==0?
-                                                  "I’m on the highway":"OK",
+                                                        image: AssetImage(
+                                                          "assets/images/btnbackgroundgradient.png",
+                                                        ),
+                                                        fit: BoxFit.fill),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            15)),
+                                                child: Text(
+                                                  index % 2 == 0
+                                                      ? "I’m on the highway"
+                                                      : "OK",
                                                   style: TextStyle(
                                                       fontSize: 11.sp,
                                                       // fontFamily: "PulpDisplay",
-                                                      fontWeight: FontWeight.w500,
-                                                      color: Appcolors().blackcolor),
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      color: Appcolors()
+                                                          .blackcolor),
                                                 ),
                                               ),
                                               SizedBox(
@@ -352,9 +379,9 @@ class ConvertsationScreenState extends State<ConvertsationScreen>{
                                                     // fontFamily: "PulpDisplay",
                                                     fontWeight: FontWeight.w400,
                                                     fontStyle: FontStyle.italic,
-                                                    color: Appcolors().loginhintcolor),
+                                                    color: Appcolors()
+                                                        .loginhintcolor),
                                               ),
-
                                             ],
                                           ),
                                         )
@@ -381,9 +408,7 @@ class ConvertsationScreenState extends State<ConvertsationScreen>{
             Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                showuploaddialog?
-                uploadcontainer()
-                :SizedBox(),
+                showuploaddialog ? uploadcontainer() : SizedBox(),
                 Container(
                   color: Appcolors().backgroundcolor,
                   width: double.infinity,
@@ -391,23 +416,33 @@ class ConvertsationScreenState extends State<ConvertsationScreen>{
                     width: double.infinity,
                     alignment: Alignment.bottomCenter,
                     margin: EdgeInsets.only(bottom: 1.h),
-                    padding: EdgeInsets.only(left: 2.w,right: 2.w,top: 1.h,bottom: 1.h,),
+                    padding: EdgeInsets.only(
+                      left: 2.w,
+                      right: 2.w,
+                      top: 1.h,
+                      bottom: 1.h,
+                    ),
                     decoration: BoxDecoration(
                         color: Appcolors().bottomnavbgcolor,
-                        borderRadius: BorderRadius.circular(15)
-                    ),
+                        borderRadius: BorderRadius.circular(15)),
                     height: 7.h,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        SvgPicture.asset("assets/images/emojiimg.svg",height: 3.5.h,),
+                        SvgPicture.asset(
+                          "assets/images/emojiimg.svg",
+                          height: 3.5.h,
+                        ),
                         Container(
-                          width: 62.w,
+                          width: 50.w,
                           child: TextFormField(
                             minLines: 3,
                             maxLines: 3,
                             cursorColor: Appcolors().loginhintcolor,
-                            style: TextStyle(color:Appcolors().loginhintcolor,fontSize: 12.sp,),
+                            style: TextStyle(
+                              color: Appcolors().loginhintcolor,
+                              fontSize: 12.sp,
+                            ),
                             controller: messagecontroller,
                             decoration: InputDecoration(
                               // prefix: Container(
@@ -417,15 +452,15 @@ class ConvertsationScreenState extends State<ConvertsationScreen>{
                               // focusedBorder: InputBorder.none,
                               filled: true,
                               fillColor: Appcolors().bottomnavbgcolor,
-                              hintText:
-                              StringConstants.type,
+                              hintText: StringConstants.type,
                               hintStyle: TextStyle(
                                 decoration: TextDecoration.none,
                                 fontWeight: FontWeight.w400,
                                 fontSize: 12.sp,
                                 // fontFamily: 'PulpDisplay',
                                 color: Appcolors().loginhintcolor,
-                              ),),
+                              ),
+                            ),
                             onChanged: (value) {
                               setState(() {});
                             },
@@ -438,21 +473,32 @@ class ConvertsationScreenState extends State<ConvertsationScreen>{
                             },
                           ),
                         ),
-                        SvgPicture.asset("assets/images/micicon.svg",height: 3.h,),
+                        SvgPicture.asset(
+                          "assets/images/micicon.svg",
+                          height: 3.h,
+                        ),
                         SizedBox(
                           width: 5.w,
                         ),
                         GestureDetector(
-                          onTap: (){
-                            setState((){
-                              showuploaddialog?
-                              showuploaddialog=false
-                              :
-                              showuploaddialog=true;
-
-                            });
-                          },
-                            child: SvgPicture.asset("assets/images/cameraicon.svg",height: 3.h,)),
+                            onTap: () {
+                              setState(() {
+                                showuploaddialog
+                                    ? showuploaddialog = false
+                                    : showuploaddialog = true;
+                              });
+                            },
+                            child: SvgPicture.asset(
+                              "assets/images/cameraicon.svg",
+                              height: 3.h,
+                            )),
+                        SizedBox(
+                          width: 5.w,
+                        ),
+                        SvgPicture.asset(
+                          "assets/images/sendicon.svg",
+                          height: 3.h,
+                        ),
                         SizedBox(
                           width: 2.w,
                         ),
@@ -467,17 +513,33 @@ class ConvertsationScreenState extends State<ConvertsationScreen>{
       ),
     );
   }
-  Widget uploadcontainer(){
+
+  Widget buildSticker() {
+    return EmojiPicker(
+      // rows: 3,
+      // columns: 7,
+      // buttonMode: ButtonMode.MATERIAL,
+      // recommendKeywords: ["racing", "horse"],
+      // numRecommended: 10,
+      onEmojiSelected: (emoji, category) {
+        print(emoji);
+      },
+    );
+  }
+
+  Widget uploadcontainer() {
     return Container(
       margin: EdgeInsets.only(bottom: 1.h),
       alignment: Alignment.center,
       height: 10.h,
       decoration: BoxDecoration(
-        image: DecorationImage(
-            image: AssetImage("assets/images/btnbackgroundgradient.png",),fit: BoxFit.fill,
-        ),
-        borderRadius: BorderRadius.circular(15)
-      ),
+          image: DecorationImage(
+            image: AssetImage(
+              "assets/images/btnbackgroundgradient.png",
+            ),
+            fit: BoxFit.fill,
+          ),
+          borderRadius: BorderRadius.circular(15)),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -485,7 +547,12 @@ class ConvertsationScreenState extends State<ConvertsationScreen>{
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SvgPicture.asset("assets/images/documentupload.svg",height: 3.h,width: 3.w,color: Appcolors().bottomnavbgcolor,),
+              SvgPicture.asset(
+                "assets/images/documentupload.svg",
+                height: 3.h,
+                width: 3.w,
+                color: Appcolors().bottomnavbgcolor,
+              ),
               SizedBox(
                 height: 1.h,
               ),
@@ -503,7 +570,12 @@ class ConvertsationScreenState extends State<ConvertsationScreen>{
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SvgPicture.asset("assets/images/cameraicon.svg",height: 3.h,width: 3.w,color: Appcolors().bottomnavbgcolor,),
+              SvgPicture.asset(
+                "assets/images/cameraicon.svg",
+                height: 3.h,
+                width: 3.w,
+                color: Appcolors().bottomnavbgcolor,
+              ),
               SizedBox(
                 height: 1.h,
               ),
@@ -521,7 +593,12 @@ class ConvertsationScreenState extends State<ConvertsationScreen>{
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SvgPicture.asset("assets/images/videoicon.svg",height: 3.h,width: 3.w,color: Appcolors().bottomnavbgcolor,),
+              SvgPicture.asset(
+                "assets/images/videoicon.svg",
+                height: 3.h,
+                width: 3.w,
+                color: Appcolors().bottomnavbgcolor,
+              ),
               SizedBox(
                 height: 1.h,
               ),

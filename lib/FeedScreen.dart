@@ -7,6 +7,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:sextconfidential/Feeddetailedpage.dart';
 import 'package:sextconfidential/utils/Appcolors.dart';
 import 'package:sextconfidential/utils/CustomDropdownButton2.dart';
+import 'package:sextconfidential/utils/Sidedrawer.dart';
 import 'package:sextconfidential/utils/StringConstants.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 import 'package:sizer/sizer.dart';
@@ -24,6 +25,8 @@ class FeedScreenState extends State<FeedScreen>{
   String postselectedvalue="Scheduled Post";
   String postfiltervalue=StringConstants.mostrecent;
   bool posttoexplore=false;
+  final GlobalKey<ScaffoldState> _key = GlobalKey(); // Create a key
+
   @override
   void initState() {
     // TODO: implement initState
@@ -33,10 +36,16 @@ class FeedScreenState extends State<FeedScreen>{
   @override
   Widget build(BuildContext context) {
    return Scaffold(
+     key: _key,
+     drawer: Sidedrawer(),
      appBar: AppBar(
        elevation: 0,
        backgroundColor: Appcolors().bottomnavbgcolor,
-       leading: Center(child: SvgPicture.asset("assets/images/menubtn.svg",)),
+       leading: GestureDetector(
+         onTap: (){
+           _key.currentState!.openDrawer();
+         },
+           child: Center(child: SvgPicture.asset("assets/images/menubtn.svg",))),
        title: Text(StringConstants.feed,style: TextStyle(
            fontSize: 14.sp,
            fontFamily: "PulpDisplay",
@@ -93,7 +102,7 @@ class FeedScreenState extends State<FeedScreen>{
                  minLines: 3,
                  maxLines: 3,
                  cursorColor: Appcolors().loginhintcolor,
-                 style: TextStyle(color:Appcolors().loginhintcolor,fontSize: 12.sp,),
+                 style: TextStyle(color:Appcolors().whitecolor,fontSize: 12.sp,),
                  controller: messagecontroller,
                  decoration: InputDecoration(
                    // prefix: Container(
@@ -434,7 +443,12 @@ class FeedScreenState extends State<FeedScreen>{
                                            ),
                                          ],
                                        ),
-                                       SvgPicture.asset("assets/images/feedmenubtn.svg",width: 10.w,height: 5.h,)
+                                       GestureDetector(
+                                         onTap: (){
+                                           print("Click click");
+                                           showMemberMenu();
+                                         },
+                                           child: SvgPicture.asset("assets/images/feedmenubtn.svg",width: 10.w,height: 5.h,))
                                      ],
                                    ),
                                    SizedBox(
@@ -587,5 +601,23 @@ class FeedScreenState extends State<FeedScreen>{
        ),
      ),
    );
+  }
+  Future<Container> showMemberMenu() async {
+    return Container(
+      width: 45.w,
+      child: CustomDropdownButton2(
+        hint: "Select Item",
+        dropdownItems: posttypes,
+        value: postselectedvalue,
+        dropdownWidth: 45.w,
+        dropdownHeight: 60.h,
+        buttonWidth: 27.w,
+        onChanged: (value) {
+          setState(() {
+            postselectedvalue = value!;
+          });
+        },
+      ),
+    );
   }
 }

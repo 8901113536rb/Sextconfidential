@@ -72,5 +72,7 @@ class StringConstants{
   static String emailaddress ="Email address";
   static String phonenumber ="Phone Number";
   static String savechanges ="Save changes";
+  static String alertdialogmessage ="Are you sure you want to deactivate your account?";
+  static String cancel ="Cancel";
 
 }

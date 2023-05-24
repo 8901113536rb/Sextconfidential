@@ -18,6 +18,7 @@ class Appcolors{
   Color profileboxcolor = const Color(0xff252628);
   Color deactivatecolor = const Color(0xffE70037);
   Color verifiedicon = const Color(0xff32DF60);
+  Color dialogbgcolor = const Color(0xff141415);
 
 
 }

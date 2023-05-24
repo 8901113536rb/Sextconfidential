@@ -11,9 +11,9 @@ import 'FeedScreen.dart';
 import 'MassmessageScreen.dart';
 
 class Bottomnavigation extends StatefulWidget{
+
   @override
   BottomnavigationState createState() => BottomnavigationState();
-
 }
 
 class BottomnavigationState extends State<Bottomnavigation>{
@@ -25,6 +25,9 @@ class BottomnavigationState extends State<Bottomnavigation>{
     FeedScreen(),
     CallsScreen(),
   ];
+
+  final GlobalKey<ScaffoldState> _key = GlobalKey(); // Create a key
+
   @override
   void initState() {
     // TODO: implement initState
@@ -33,7 +36,8 @@ class BottomnavigationState extends State<Bottomnavigation>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: Sidedrawer(),
+      // key: _key,
+      // drawer: Sidedrawer(),
       body: pages[selectedindex],
       bottomNavigationBar: Container(
         height: 7.h,
@@ -50,8 +54,8 @@ class BottomnavigationState extends State<Bottomnavigation>{
               },
               child:
               selectedindex==0?
-              Image.asset("assets/images/chatselectedicon.png",height:3.h):
-              Image.asset("assets/images/messagesunselec.png",height:3.h,),
+              Image.asset("assets/images/chatselectedicon.png",height:2.5.h):
+              Image.asset("assets/images/messagesunselec.png",height:2.5.h,),
             ),
             GestureDetector(
               onTap: (){
@@ -61,8 +65,8 @@ class BottomnavigationState extends State<Bottomnavigation>{
               },
               child:
               selectedindex==1?
-              Image.asset("assets/images/massmessageselect.png",height:3.h):
-              Image.asset("assets/images/massmessageunselect.png",height:3.h),
+              Image.asset("assets/images/massmessageselect.png",height:2.5.h):
+              Image.asset("assets/images/massmessageunselect.png",height:2.5.h),
             ),
             GestureDetector(
               onTap: (){
@@ -72,8 +76,8 @@ class BottomnavigationState extends State<Bottomnavigation>{
               },
               child:
               selectedindex==2?
-              Image.asset("assets/images/feedselecticon.png",height:3.h):
-              Image.asset("assets/images/feedunselecticon.png",height:3.h),
+              Image.asset("assets/images/feedselecticon.png",height:2.5.h):
+              Image.asset("assets/images/feedunselecticon.png",height:2.5.h),
             ),
             GestureDetector(
               onTap: (){
@@ -83,8 +87,8 @@ class BottomnavigationState extends State<Bottomnavigation>{
               },
               child:
               selectedindex==3?
-              Image.asset("assets/images/callselecticon.png",height:3.h):
-              Image.asset("assets/images/callunselecticon.png",height:3.h),
+              Image.asset("assets/images/callselecticon.png",height:2.5.h):
+              Image.asset("assets/images/callunselecticon.png",height:2.5.h),
             ),
           ],
         ),

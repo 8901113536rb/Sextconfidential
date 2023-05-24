@@ -110,7 +110,7 @@ class EditprofilescreenState extends State<Editprofilescreen>{
                     width: 5.w,
                   ),
                   Text(StringConstants.name,style: TextStyle(
-                      fontSize: 12.sp,
+                      fontSize: 11.sp,
                       // fontFamily: "PulpDisplay",
                       fontWeight: FontWeight.w400,
                       color: Appcolors().loginhintcolor),),
@@ -173,7 +173,7 @@ class EditprofilescreenState extends State<Editprofilescreen>{
                     width: 5.w,
                   ),
                   Text(StringConstants.bio,style: TextStyle(
-                      fontSize: 12.sp,
+                      fontSize: 11.sp,
                       // fontFamily: "PulpDisplay",
                       fontWeight: FontWeight.w400,
                       color: Appcolors().loginhintcolor),),
@@ -238,7 +238,7 @@ class EditprofilescreenState extends State<Editprofilescreen>{
                     width: 5.w,
                   ),
                   Text(StringConstants.emailaddress,style: TextStyle(
-                      fontSize: 12.sp,
+                      fontSize: 11.sp,
                       // fontFamily: "PulpDisplay",
                       fontWeight: FontWeight.w400,
                       color: Appcolors().loginhintcolor),),
@@ -301,7 +301,7 @@ class EditprofilescreenState extends State<Editprofilescreen>{
                     width: 5.w,
                   ),
                   Text(StringConstants.phonenumber  ,style: TextStyle(
-                      fontSize: 12.sp,
+                      fontSize: 11.sp,
                       // fontFamily: "PulpDisplay",
                       fontWeight: FontWeight.w400,
                       color: Appcolors().loginhintcolor),),
