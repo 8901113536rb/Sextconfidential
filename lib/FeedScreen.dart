@@ -384,6 +384,8 @@ class FeedScreenState extends State<FeedScreen>{
                                        Row(
                                          children: [
                                            Container(
+                                             height: 4.5.h,
+                                             width: 15.w,
                                              child: CachedNetworkImage(
                                                imageUrl:index%2==0?"https://img.freepik.com/free-photo/isolated-shot-pleasant-looking-cheerful-beautiful-brunette-posing-against-pink-wall_273609-20417.jpg"
                                                :"https://preview.keenthemes.com/metronic-v4/theme/assets/pages/media/profile/profile_user.jpg",

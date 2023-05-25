@@ -6,6 +6,7 @@ import 'package:flutter_switch/flutter_switch.dart';
 import 'package:sextconfidential/Changepassword.dart';
 import 'package:sextconfidential/Deactivateaccscreen.dart';
 import 'package:sextconfidential/Editprofilescreen.dart';
+import 'package:sextconfidential/LocationdenialScreen.dart';
 import 'package:sextconfidential/LoginScreen.dart';
 import 'package:sextconfidential/PayoutInfoScreen.dart';
 import 'package:sextconfidential/TimezoneScreen.dart';
@@ -231,7 +232,11 @@ class SidedrawerState extends State<Sidedrawer> {
                                               TimezoneScreen()));
                                   break;
                                   case 4:
-
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                LocationdenialScreen()));
                                   break;
                                 case 5:
                                   Navigator.push(

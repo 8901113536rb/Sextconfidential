@@ -11,16 +11,25 @@ import 'package:sextconfidential/utils/StringConstants.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 import 'package:sizer/sizer.dart';
 
-class Chatusersscreen extends StatefulWidget{
+class Chatusersscreen extends StatefulWidget {
   @override
   ChatusersscreenState createState() => ChatusersscreenState();
-
 }
 
-class ChatusersscreenState extends State<Chatusersscreen>{
-  TextEditingController searchcontroller=TextEditingController();
-  List<String>chattype=["Most Recent","Unread","Recently Active","New Clients","Favourite","Credits","Top Spenders","Hidden","Unanswered"];
-  String chatselectedtype="Most Recent";
+class ChatusersscreenState extends State<Chatusersscreen> {
+  TextEditingController searchcontroller = TextEditingController();
+  List<String> chattype = [
+    "Most Recent",
+    "Unread",
+    "Recently Active",
+    "New Clients",
+    "Favourite",
+    "Credits",
+    "Top Spenders",
+    "Hidden",
+    "Unanswered"
+  ];
+  String chatselectedtype = "Most Recent";
   final GlobalKey<ScaffoldState> _key = GlobalKey(); // Create a key
 
   @override
@@ -43,7 +52,7 @@ class ChatusersscreenState extends State<Chatusersscreen>{
       //       color: Appcolors().whitecolor),),
       // ),
       body: Container(
-        padding: EdgeInsets.only(left: 2.w,right: 2.w),
+        padding: EdgeInsets.only(left: 2.w, right: 2.w),
         color: Appcolors().backgroundcolor,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
@@ -102,9 +111,7 @@ class ChatusersscreenState extends State<Chatusersscreen>{
                     color: Appcolors().loginhintcolor,
                   ),
                 ),
-                onChanged: (value) {
-
-                },
+                onChanged: (value) {},
               ),
             ),
             SizedBox(
@@ -132,160 +139,202 @@ class ChatusersscreenState extends State<Chatusersscreen>{
             ),
             Expanded(
                 child: AnimationLimiter(
-                  child: ListView.builder(
-                    itemCount: 10,
-                    itemBuilder: (BuildContext context, int index) {
-                      return AnimationConfiguration.staggeredList(
-                        position: index,
-                        duration: const Duration(milliseconds: 300),
-                        child: SlideAnimation(
-                          verticalOffset: 50.0,
-                          child: FadeInAnimation(
-                            child: Column(
-                              children: [
-                                GestureDetector(
-                                  onTap:(){
-                                    Navigator.push(context, MaterialPageRoute(builder: (context) => ConvertsationScreen()));
-                          },
-                                  child: Container(
-                                    padding: EdgeInsets.all(1.h),
-                                    decoration: BoxDecoration(
-                                      border: Border.all(color: Appcolors().chatuserborder),
-                                      borderRadius: BorderRadius.circular(2.h)
-                                    ),
-                                    width: double.infinity,
-                                    child: Row(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: [
-                                        Container(
-                                          width: 14.w,
-                                          height: 7.h,
-                                          child: CachedNetworkImage(
-                                            imageUrl: index%2==0?"https://c4.wallpaperflare.com/wallpaper/702/785/274/eiza-gonzalez-music-celebrities-girls-wallpaper-thumb.jpg":"https://www.flickonclick.com/wp-content/uploads/2022/09/Esha-Gupta-Hot-and-Sexy.jpg",
-                                            imageBuilder: (context,
-                                                imageProvider) =>
-                                                Container(
-                                                  width: 14.w,
-                                                  alignment: Alignment
-                                                      .centerLeft,
-                                                  height: 7.h,
-                                                  decoration:
-                                                  BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    image:
-                                                    DecorationImage(
-                                                      image:
-                                                      imageProvider,
-                                                      fit: BoxFit.cover,
-                                                    ),
+              child: ListView.builder(
+                itemCount: 10,
+                itemBuilder: (BuildContext context, int index) {
+                  return AnimationConfiguration.staggeredList(
+                    position: index,
+                    duration: const Duration(milliseconds: 300),
+                    child: SlideAnimation(
+                      verticalOffset: 50.0,
+                      child: FadeInAnimation(
+                        child: Column(
+                          children: [
+                            Material(
+                              borderRadius: BorderRadius.circular(2.h),
+                              clipBehavior: Clip.hardEdge,
+                              color:Appcolors().backgroundcolor,
+                              child: InkWell(
+                                hoverColor: Appcolors().bottomnavbgcolor,
+                                splashColor: Appcolors().bottomnavbgcolor,
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              ConvertsationScreen()));
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.all(1.h),
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: Appcolors().chatuserborder),
+                                      borderRadius: BorderRadius.circular(2.h)),
+                                  width: double.infinity,
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        width: 14.w,
+                                        height: 7.h,
+                                        child: CachedNetworkImage(
+                                          imageUrl: index % 2 == 0
+                                              ? "https://c4.wallpaperflare.com/wallpaper/702/785/274/eiza-gonzalez-music-celebrities-girls-wallpaper-thumb.jpg"
+                                              : "https://www.flickonclick.com/wp-content/uploads/2022/09/Esha-Gupta-Hot-and-Sexy.jpg",
+                                          imageBuilder:
+                                              (context, imageProvider) =>
+                                              Container(
+                                                width: 14.w,
+                                                alignment: Alignment.centerLeft,
+                                                height: 7.h,
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  image: DecorationImage(
+                                                    image: imageProvider,
+                                                    fit: BoxFit.cover,
                                                   ),
                                                 ),
-                                            placeholder:
-                                                (context, url) =>
-                                             Container(
-                                               child: Center(
-                                                child:
-                                                CircularProgressIndicator(strokeWidth: 2,color: Appcolors().backgroundcolor,),
-                                            ),
-                                             ),
-                                            // errorWidget: (context, url, error) => errorWidget,
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: 5.w,
-                                        ),
-                                        Container(
-                                          width: 72.w,
-                                          child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              SizedBox(
-                                                height: 1.h,
                                               ),
-                                              Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                children: [
-                                                  Container(
-                                                    width:30.w,
-                                                    child: Text(index%2==0?"Michael":"Gabriel Greene",style: TextStyle(
+                                          placeholder: (context, url) =>
+                                              Container(
+                                                child: Center(
+                                                  child: CircularProgressIndicator(
+                                                    strokeWidth: 2,
+                                                    color:
+                                                    Appcolors().backgroundcolor,
+                                                  ),
+                                                ),
+                                              ),
+                                          // errorWidget: (context, url, error) => errorWidget,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 5.w,
+                                      ),
+                                      Container(
+                                        width: 72.w,
+                                        child: Column(
+                                          mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                          children: [
+                                            SizedBox(
+                                              height: 1.h,
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Container(
+                                                  width: 30.w,
+                                                  child: Text(
+                                                    index % 2 == 0
+                                                        ? "Michael"
+                                                        : "Gabriel Greene",
+                                                    style: TextStyle(
                                                         fontSize: 12.sp,
                                                         fontFamily: "PulpDisplay",
-                                                        fontWeight: FontWeight.w400,
-                                                        overflow: TextOverflow.ellipsis,
-                                                        color: Appcolors().whitecolor),),
+                                                        fontWeight:
+                                                        FontWeight.w400,
+                                                        overflow:
+                                                        TextOverflow.ellipsis,
+                                                        color: Appcolors()
+                                                            .whitecolor),
                                                   ),
-                                                  GradientText(
-                                                    "01:01 PM",
+                                                ),
+                                                GradientText(
+                                                  "01:01 PM",
+                                                  style: TextStyle(
+                                                      fontSize: 10.sp,
+                                                      fontFamily: "PulpDisplay",
+                                                      fontWeight:
+                                                      FontWeight.w400),
+                                                  gradientType:
+                                                  GradientType.linear,
+                                                  gradientDirection:
+                                                  GradientDirection.ttb,
+                                                  radius: 6,
+                                                  colors: [
+                                                    Appcolors()
+                                                        .gradientcolorfirst,
+                                                    Appcolors()
+                                                        .gradientcolorsecond,
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Container(
+                                                  width: 60.w,
+                                                  child: Text(
+                                                    index % 2 == 0
+                                                        ? "Hello..."
+                                                        : "What have you been up to",
+                                                    style: TextStyle(
+                                                        fontSize: 12.sp,
+                                                        // fontFamily: "PulpDisplay",
+                                                        fontWeight:
+                                                        FontWeight.w400,
+                                                        overflow:
+                                                        TextOverflow.ellipsis,
+                                                        color: Appcolors()
+                                                            .loginhintcolor),
+                                                  ),
+                                                ),
+                                                Container(
+                                                  padding: EdgeInsets.all(1.h),
+                                                  decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    gradient: LinearGradient(
+                                                        colors: [
+                                                          Appcolors()
+                                                              .gradientcolorfirst,
+                                                          Appcolors()
+                                                              .gradientcolorsecond,
+                                                        ],
+                                                        begin:
+                                                        Alignment.topCenter,
+                                                        end: Alignment
+                                                            .bottomCenter,
+                                                        stops: [0.0, 1.0],
+                                                        tileMode: TileMode.clamp),
+                                                  ),
+                                                  child: Text(
+                                                    "2",
                                                     style: TextStyle(
                                                         fontSize: 10.sp,
                                                         fontFamily: "PulpDisplay",
-                                                        fontWeight: FontWeight.w400),
-                                                    gradientType: GradientType.linear,
-                                                    gradientDirection: GradientDirection.ttb,
-                                                    radius: 6,
-                                                    colors: [
-                                                      Appcolors().gradientcolorfirst,
-                                                      Appcolors().gradientcolorsecond,
-                                                    ],
+                                                        fontWeight:
+                                                        FontWeight.w400,
+                                                        color: Appcolors()
+                                                            .blackcolor),
                                                   ),
-                                                ],
-                                              ),
-                                              Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                children: [
-                                                  Container(
-                                                    width:60.w,
-                                                    child: Text(index%2==0?"Hello...":"What have you been up to",style: TextStyle(
-                                                        fontSize: 12.sp,
-                                                        // fontFamily: "PulpDisplay",
-                                                        fontWeight: FontWeight.w400,
-                                                        overflow: TextOverflow.ellipsis,
-                                                        color: Appcolors().loginhintcolor),),
-                                                  ),
-                                                  Container(
-                                                    padding: EdgeInsets.all(1.h),
-                                                    decoration: BoxDecoration(
-                                                      shape: BoxShape.circle,
-                                                      gradient: LinearGradient(
-                                                          colors: [
-                                                            Appcolors().gradientcolorfirst,
-                                                            Appcolors().gradientcolorsecond,
-                                                          ],
-                                                          begin: Alignment.topCenter,
-                                                          end: Alignment.bottomCenter,
-                                                          stops: [0.0, 1.0],
-                                                          tileMode: TileMode.clamp),
-                                                  ),
-                                                    child: Text("2",style: TextStyle(
-                                                        fontSize: 10.sp,
-                                                        fontFamily: "PulpDisplay",
-                                                        fontWeight: FontWeight.w400,
-                                                        color: Appcolors().blackcolor),),
-
-                                                  )
-
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        )
-                                      ],
-                                    ),
+                                                )
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    ],
                                   ),
                                 ),
-                                SizedBox(
-                                  height: 1.5.h,
-                                ),
-                              ],
+                              ),
                             ),
-                          ),
+                            SizedBox(
+                              height: 1.5.h,
+                            ),
+                          ],
                         ),
-                      );
-                    },
-                  ),
-                ))
-
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ))
           ],
         ),
       ),

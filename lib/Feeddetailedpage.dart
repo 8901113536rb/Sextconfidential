@@ -1,8 +1,10 @@
+import 'package:appinio_video_player/appinio_video_player.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:sextconfidential/utils/Appcolors.dart';
+import 'package:sextconfidential/utils/Helpingwidgets.dart';
 import 'package:sextconfidential/utils/StringConstants.dart';
 import 'package:sizer/sizer.dart';
 
@@ -13,6 +15,16 @@ class Feeddetailedpage extends StatefulWidget{
 }
 
 class FeeddetailedpageState extends State<Feeddetailedpage>{
+  late VideoPlayerController _controller;
+  late CustomVideoPlayerController _customVideoPlayerController;
+  late final VideoPlayerController videoPlayerController;
+  bool videostatus=false;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    startvideo();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -116,41 +128,70 @@ class FeeddetailedpageState extends State<Feeddetailedpage>{
             SizedBox(
               height: 1.5.h,
             ),
+            !videostatus?
             Container(
-              width:double.infinity,
+              alignment: Alignment.center,
               height: 50.h,
-              child: CachedNetworkImage(
-                imageUrl:"https://images.squarespace-cdn.com/content/v1/53cc306ee4b04fd213249899/1657760960280-QKY0G0PHGZBAW4T3K5T9/Boudoir+Photo+Shoot+Salem+Oregon+Boudoir+Photographer.jpg",
-                imageBuilder: (context,
-                    imageProvider) =>
-                    Container(
-                      width: 15.w,
-                      alignment: Alignment
-                          .centerLeft,
-                      height: 4.5.h,
-                      decoration:
-                      BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        shape: BoxShape.rectangle,
-                        image:
-                        DecorationImage(
-                          image:
-                          imageProvider,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                placeholder:
-                    (context, url) =>
-                    Container(
-                      child: Center(
-                        child:
-                        CircularProgressIndicator(strokeWidth: 2,color: Appcolors().backgroundcolor,),
-                      ),
-                    ),
-                // errorWidget: (context, url, error) => errorWidget,
+              child: Helpingwidgets().customloader(),
+            ):
+            Container(
+              decoration: BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.circular(10)
               ),
-            ),
+                width: 80.h,
+                height:
+                (MediaQuery.of(context)
+                    .size
+                    .height /
+                    100) *
+                    50,
+                child: AspectRatio(
+                  aspectRatio: _controller
+                      .value.aspectRatio,
+                  child:
+                  CustomVideoPlayer(
+                    customVideoPlayerController: _customVideoPlayerController,
+
+                  ),
+                  // VideoPlayer(
+                  //     _controller),
+                )),
+            // Container(
+            //   width:double.infinity,
+            //   height: 50.h,
+            //   child: CachedNetworkImage(
+            //     imageUrl:"https://images.squarespace-cdn.com/content/v1/53cc306ee4b04fd213249899/1657760960280-QKY0G0PHGZBAW4T3K5T9/Boudoir+Photo+Shoot+Salem+Oregon+Boudoir+Photographer.jpg",
+            //     imageBuilder: (context,
+            //         imageProvider) =>
+            //         Container(
+            //           width: 15.w,
+            //           alignment: Alignment
+            //               .centerLeft,
+            //           height: 4.5.h,
+            //           decoration:
+            //           BoxDecoration(
+            //             borderRadius: BorderRadius.circular(20),
+            //             shape: BoxShape.rectangle,
+            //             image:
+            //             DecorationImage(
+            //               image:
+            //               imageProvider,
+            //               fit: BoxFit.cover,
+            //             ),
+            //           ),
+            //         ),
+            //     placeholder:
+            //         (context, url) =>
+            //         Container(
+            //           child: Center(
+            //             child:
+            //             CircularProgressIndicator(strokeWidth: 2,color: Appcolors().backgroundcolor,),
+            //           ),
+            //         ),
+            //     // errorWidget: (context, url, error) => errorWidget,
+            //   ),
+            // ),
             SizedBox(
               height: 2.h,
             ),
@@ -240,5 +281,32 @@ class FeeddetailedpageState extends State<Feeddetailedpage>{
         ),
       ),
     );
+  }
+  void startvideo(){
+
+      videoPlayerController = VideoPlayerController.network("https://coderzbar.info/dev/worldofquotes_dev/storage/app/public/author/498330079authorimage.mp4")
+        ..initialize().then((value) => setState(() {
+          print("Video working");
+          var durationOfVideo = videoPlayerController.value.position.inSeconds.round();
+          print("Duration of video:-"+durationOfVideo.toString());
+          debugPrint("========"+_controller.value.duration.toString());
+
+        }));
+      _customVideoPlayerController = CustomVideoPlayerController(
+        context: context,
+        videoPlayerController: videoPlayerController,
+      );
+      _controller = VideoPlayerController.network(
+          "https://coderzbar.info/dev/worldofquotes_dev/storage/app/public/author/498330079authorimage.mp4")
+        ..initialize().then((_) {
+          setState(() {
+            debugPrint("========"+_controller.value.duration.toString());
+            print("Video Started");
+            videostatus=true;
+            var durationOfVideo = videoPlayerController.value.position.inSeconds.round();
+            print("Duration of videos:-"+durationOfVideo.toString());
+          });
+        },
+        );
   }
 }

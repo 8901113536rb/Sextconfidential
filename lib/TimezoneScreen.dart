@@ -19,6 +19,36 @@ class TimezoneScreenState extends State<TimezoneScreen>{
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Appcolors().backgroundcolor,
+      bottomNavigationBar: Container(
+        height: 20.h,
+        child: Center(
+          child: GestureDetector(
+            onTap: (){
+              // Navigator.push(context, MaterialPageRoute(builder: (context) => Bottomnavigation()));
+            },
+            child: Container(
+              alignment: Alignment.center,
+              width: 60.w,
+              height: 5.h,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage(
+                        "assets/images/btnbackgroundgradient.png"),
+                    fit: BoxFit.fill),
+                borderRadius: BorderRadius.circular(1.5.h),
+              ),
+              child: Text(
+                StringConstants.savechanges,
+                style: TextStyle(
+                    fontSize: 12.sp,
+                    fontFamily: "PulpDisplay",
+                    fontWeight: FontWeight.w500,
+                    color: Appcolors().blackcolor),
+              ),
+            ),
+          ),
+        ),
+      ),
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Appcolors().bottomnavbgcolor,

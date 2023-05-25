@@ -254,8 +254,9 @@ class UserprofileScreenState extends State<UserprofileScreen>{
                                       ),
                                     ),
                                   ),
-                                  placeholder: (context, url) =>   const Center(
-                                    child: CircularProgressIndicator(),
+                                  placeholder: (context, url) =>   Center(
+                                    child:CircularProgressIndicator(strokeWidth: 2,color: Appcolors().backgroundcolor,),
+
                                   ),
                                   // errorWidget: (context, url, error) => errorWidget,
                                 ),
