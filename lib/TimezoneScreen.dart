@@ -14,7 +14,8 @@ class TimezoneScreen extends StatefulWidget{
 class TimezoneScreenState extends State<TimezoneScreen>{
   List<String>timezonelist=["Eastern UTC -05:00","Central UTC - 06:00","Mountain UTC - 07:00","Pacific UTC - 08:00"];
   String dropdownvalue="Eastern UTC -05:00";
-
+  String userselectedzone="Eastern UTC -05:00";
+  bool savebtnstatus=false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,31 +23,35 @@ class TimezoneScreenState extends State<TimezoneScreen>{
       bottomNavigationBar: Container(
         height: 20.h,
         child: Center(
-          child: GestureDetector(
-            onTap: (){
-              // Navigator.push(context, MaterialPageRoute(builder: (context) => Bottomnavigation()));
-            },
-            child: Container(
-              alignment: Alignment.center,
-              width: 60.w,
-              height: 5.h,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage(
-                        "assets/images/btnbackgroundgradient.png"),
-                    fit: BoxFit.fill),
-                borderRadius: BorderRadius.circular(1.5.h),
-              ),
-              child: Text(
-                StringConstants.savechanges,
-                style: TextStyle(
-                    fontSize: 12.sp,
-                    fontFamily: "PulpDisplay",
-                    fontWeight: FontWeight.w500,
-                    color: Appcolors().blackcolor),
+          child:
+          Offstage(
+            offstage: !savebtnstatus,
+            child: GestureDetector(
+              onTap: (){
+                // Navigator.push(context, MaterialPageRoute(builder: (context) => Bottomnavigation()));
+              },
+              child: Container(
+                alignment: Alignment.center,
+                width: 60.w,
+                height: 5.h,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage(
+                          "assets/images/btnbackgroundgradient.png"),
+                      fit: BoxFit.fill),
+                  borderRadius: BorderRadius.circular(1.5.h),
+                ),
+                child: Text(
+                  StringConstants.savechanges,
+                  style: TextStyle(
+                      fontSize: 12.sp,
+                      fontFamily: "PulpDisplay",
+                      fontWeight: FontWeight.w500,
+                      color: Appcolors().blackcolor),
+                ),
               ),
             ),
-          ),
+          )
         ),
       ),
       appBar: AppBar(
@@ -96,6 +101,12 @@ class TimezoneScreenState extends State<TimezoneScreen>{
                 onChanged: (value) {
                   setState(() {
                     dropdownvalue = value!;
+                    value!=userselectedzone?
+                    savebtnstatus=true:
+                        savebtnstatus=false;
+                    print("on change:-"+savebtnstatus.toString());
+
+
                   });
                 },
               ),

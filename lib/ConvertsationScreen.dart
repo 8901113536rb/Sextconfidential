@@ -1,14 +1,19 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:sextconfidential/UserprofileScreen.dart';
 import 'package:sextconfidential/utils/Appcolors.dart';
 import 'package:sextconfidential/utils/StringConstants.dart';
 import 'package:sizer/sizer.dart';
 import 'package:flutter/foundation.dart' as foundation;
+import 'package:social_media_recorder/audio_encoder_type.dart';
+import 'package:social_media_recorder/screen/social_media_recorder.dart';
 
 class ConvertsationScreen extends StatefulWidget {
   @override
@@ -19,6 +24,7 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
   TextEditingController messagecontroller = TextEditingController();
   bool showuploaddialog = false;
   bool emojiShowing = false;
+  File? imageFile;
   @override
   void initState() {
     // TODO: implement initState
@@ -277,10 +283,19 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
                               // },
                             ),
                           ),
-                          SvgPicture.asset(
-                            "assets/images/micicon.svg",
-                            height: 2.5.h,
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: SocialMediaRecorder(
+                              sendRequestFunction: (soundFile) {
+                                print("the current path is ${soundFile.path}");
+                              },
+                              encode: AudioEncoderType.AAC,
+                            ),
                           ),
+                          // SvgPicture.asset(
+                          //   "assets/images/micicon.svg",
+                          //   height: 2.5.h,
+                          // ),
                           SizedBox(
                             width: 5.w,
                           ),
@@ -382,74 +397,89 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SvgPicture.asset(
-                "assets/images/documentupload.svg",
-                height: 3.h,
-                width: 3.w,
-                color: Appcolors().bottomnavbgcolor,
-              ),
-              SizedBox(
-                height: 1.h,
-              ),
-              Text(
-                StringConstants.choosefile,
-                style: TextStyle(
-                    fontSize: 10.sp,
-                    // fontFamily: "PulpDisplay",
-                    fontWeight: FontWeight.w500,
-                    color: Appcolors().bottomnavbgcolor),
-                textAlign: TextAlign.center,
-              ),
-            ],
+          GestureDetector(
+            onTap: (){
+              _getFromGallery();
+            },
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SvgPicture.asset(
+                  "assets/images/documentupload.svg",
+                  height: 3.h,
+                  width: 3.w,
+                  color: Appcolors().bottomnavbgcolor,
+                ),
+                SizedBox(
+                  height: 1.h,
+                ),
+                Text(
+                  StringConstants.choosefile,
+                  style: TextStyle(
+                      fontSize: 10.sp,
+                      // fontFamily: "PulpDisplay",
+                      fontWeight: FontWeight.w500,
+                      color: Appcolors().bottomnavbgcolor),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
           ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SvgPicture.asset(
-                "assets/images/cameraicon.svg",
-                height: 3.h,
-                width: 3.w,
-                color: Appcolors().bottomnavbgcolor,
-              ),
-              SizedBox(
-                height: 1.h,
-              ),
-              Text(
-                StringConstants.takephoto,
-                style: TextStyle(
-                    fontSize: 10.sp,
-                    // fontFamily: "PulpDisplay",
-                    fontWeight: FontWeight.w500,
-                    color: Appcolors().bottomnavbgcolor),
-                textAlign: TextAlign.center,
-              ),
-            ],
+          GestureDetector(
+            onTap: (){
+              clickphotofromcamera();
+            },
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SvgPicture.asset(
+                  "assets/images/cameraicon.svg",
+                  height: 3.h,
+                  width: 3.w,
+                  color: Appcolors().bottomnavbgcolor,
+                ),
+                SizedBox(
+                  height: 1.h,
+                ),
+                Text(
+                  StringConstants.takephoto,
+                  style: TextStyle(
+                      fontSize: 10.sp,
+                      // fontFamily: "PulpDisplay",
+                      fontWeight: FontWeight.w500,
+                      color: Appcolors().bottomnavbgcolor),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
           ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SvgPicture.asset(
-                "assets/images/videoicon.svg",
-                height: 3.h,
-                width: 3.w,
-                color: Appcolors().bottomnavbgcolor,
-              ),
-              SizedBox(
-                height: 1.h,
-              ),
-              Text(
-                StringConstants.recordvideo,
-                style: TextStyle(
-                    fontSize: 10.sp,
-                    // fontFamily: "PulpDisplay",
-                    fontWeight: FontWeight.w500,
-                    color: Appcolors().bottomnavbgcolor),
-                textAlign: TextAlign.center,
-              ),
-            ],
+          GestureDetector(
+            onTap: (){
+              capturevideo();
+            },
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SvgPicture.asset(
+                  "assets/images/videoicon.svg",
+                  height: 3.h,
+                  width: 3.w,
+                  color: Appcolors().bottomnavbgcolor,
+                ),
+                SizedBox(
+                  height: 1.h,
+                ),
+                Text(
+                  StringConstants.recordvideo,
+                  style: TextStyle(
+                      fontSize: 10.sp,
+                      // fontFamily: "PulpDisplay",
+                      fontWeight: FontWeight.w500,
+                      color: Appcolors().bottomnavbgcolor),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -688,6 +718,41 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
         ),
       ],
     );
+  }
+  _getFromGallery() async {
+    PickedFile? pickedFile = await ImagePicker().getImage(
+      source: ImageSource.gallery,
+      maxWidth: 1800,
+      maxHeight: 1800,
+    );
+    if (pickedFile != null) {
+      setState(() {
+        imageFile = File(pickedFile.path);
+      });
+    }
+  }
+  clickphotofromcamera() async {
+    PickedFile? pickedFile = await ImagePicker().getImage(
+      source: ImageSource.camera,
+      maxWidth: 1800,
+      maxHeight: 1800,
+    );
+    if (pickedFile != null) {
+      setState(() {
+        imageFile = File(pickedFile.path);
+      });
+    }
+  }
+  capturevideo() async {
+    PickedFile? pickedFile = await ImagePicker().getVideo(
+      preferredCameraDevice: CameraDevice.rear,
+      source: ImageSource.camera,
+    );
+    if (pickedFile != null) {
+      setState(() {
+        imageFile = File(pickedFile.path);
+      });
+    }
   }
 
   @override

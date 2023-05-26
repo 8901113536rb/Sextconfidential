@@ -51,6 +51,7 @@ dependencies:
   image_picker: ^0.8.7+5
   path_provider: ^2.0.15
   loading_animation_widget: ^1.2.0+4
+  social_media_recorder: ^0.1.86
 
 dev_dependencies:
   flutter_test:

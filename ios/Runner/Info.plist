@@ -35,13 +35,7 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
-	<key>NSCameraUsageDescription</key>
-    	<string>Used to demonstrate image picker plugin</string>
-    	<key>NSMicrophoneUsageDescription</key>
-    	<string>Used to capture audio for image picker plugin</string>
-    	<key>NSPhotoLibraryUsageDescription</key>
-    	<string>Used to demonstrate image picker plugin</string>
-    	<key>UIBackgroundModes</key>
+
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
@@ -52,6 +46,12 @@
 	<false/>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+	<key>NSMicrophoneUsageDescription</key>
+    <string>We need to access to the microphone to record audio file</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+            <string>Needs PhotoLib access</string>
+            <key>NSCameraUsageDescription</key>
+            <string>Needs camera access</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 </dict>

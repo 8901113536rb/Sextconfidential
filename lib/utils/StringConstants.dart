@@ -50,11 +50,15 @@ class StringConstants{
   static String duration="Duration";
   static String sent="Sent";
   static String readrate="Read Rate";
+  static String deletepost="Delete Post";
   static String mostunlocks="Most Unlocks";
   static String reads="Reads";
   static String mostrecent="Most Recent";
+  static String editpost="Edit Post";
   static String mostsends="Most Sends";
   static String mostread="Most read";
+  static String pinpost="Pin Post";
+  static String copylink="Copy Link";
   static String mostearnings="Most Earnings";
   static String search="Search...";
   static String deactivatemesaage ="To deactivate your account please enter your password ";
@@ -73,6 +77,8 @@ class StringConstants{
   static String phonenumber ="Phone Number";
   static String savechanges ="Save Changes";
   static String alertdialogmessage ="Are you sure you want to deactivate your account?";
+  static String deletediologmessage ="Are you sure you want to delete this post?";
   static String cancel ="Cancel";
+  static String update ="Update";
 
 }

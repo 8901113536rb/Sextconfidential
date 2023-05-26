@@ -13,6 +13,7 @@ import 'package:sextconfidential/main.dart';
 import 'package:sextconfidential/utils/Appcolors.dart';
 import 'package:sextconfidential/utils/CustomDropdownButton2.dart';
 import 'package:sextconfidential/utils/Helpingwidgets.dart';
+import 'package:sextconfidential/utils/Progressdialog.dart';
 import 'package:sextconfidential/utils/Sidedrawer.dart';
 import 'package:sextconfidential/utils/StringConstants.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
@@ -47,7 +48,7 @@ class MassmessageScreenState extends State<MassmessageScreen>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        key: _key,
+        // key: _key,
       drawer: Sidedrawer(),
       // appBar: AppBar(
       //   elevation: 0,
@@ -397,6 +398,9 @@ class MassmessageScreenState extends State<MassmessageScreen>{
                                               GestureDetector(
                                                 onTap: (){
                                                   // Future.delayed(Duration(seconds: 1), () {
+                                                    !videostatus?
+                                                    Progressdialog.showLoadingDialog(context, _key)
+                                                        :
                                                     videoplayer(context);
                                                   // });
                                                 },
@@ -602,14 +606,14 @@ class MassmessageScreenState extends State<MassmessageScreen>{
                   borderRadius: BorderRadius.all(Radius.circular(10.0))),
               backgroundColor: Appcolors().blackcolor,
               //title: Text("Image Picker"),
-
               content: StatefulBuilder(  // You need this, notice the parameters below:
                 builder: (BuildContext context, StateSetter setState) {
                   return Container(
                       alignment: Alignment.center,
                       height: 50.h,
                       width: 80.h,
-                      child: Stack(
+                      child:
+                      Stack(
                         alignment: Alignment.topRight,
                         children: [
                           Container(
@@ -796,8 +800,6 @@ class MassmessageScreenState extends State<MassmessageScreen>{
         });
   }
   void startvideo(){
-
-    setState(() {
       videoPlayerController = VideoPlayerController.network("https://coderzbar.info/dev/worldofquotes_dev/storage/app/public/author/498330079authorimage.mp4")
         ..initialize().then((value) => setState(() {
           print("Video working");
@@ -810,22 +812,24 @@ class MassmessageScreenState extends State<MassmessageScreen>{
         context: context,
         videoPlayerController: videoPlayerController,
       );
-      _controller = VideoPlayerController.network(
-          "https://coderzbar.info/dev/worldofquotes_dev/storage/app/public/author/498330079authorimage.mp4")
-        ..initialize().then((_) {
-          setState(() {
+
+        _controller = VideoPlayerController.network(
+            "https://coderzbar.info/dev/worldofquotes_dev/storage/app/public/author/498330079authorimage.mp4")
+          ..initialize().then((_) {
             debugPrint("========"+_controller.value.duration.toString());
             print("Video Started");
+            setState((){
+            videostatus=true;
+            });
             var durationOfVideo = videoPlayerController.value.position.inSeconds.round();
             print("Duration of videos:-"+durationOfVideo.toString());
-          });
-        },
-        );
+          },
+          );
 
 
-    });
   }
   _getFromGallery() async {
+    Navigator.pop(context);
     PickedFile? pickedFile = await ImagePicker().getImage(
       source: ImageSource.gallery,
       maxWidth: 1800,
@@ -838,6 +842,7 @@ class MassmessageScreenState extends State<MassmessageScreen>{
     }
   }
   clickphotofromcamera() async {
+    Navigator.pop(context);
     PickedFile? pickedFile = await ImagePicker().getImage(
       source: ImageSource.camera,
       maxWidth: 1800,
