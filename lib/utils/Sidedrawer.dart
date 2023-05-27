@@ -252,7 +252,7 @@ class SidedrawerState extends State<Sidedrawer> {
                                           builder: (context) =>
                                               Deactivateaccscreen()));
                                   break;
-                                case 6:
+                                case 7:
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(

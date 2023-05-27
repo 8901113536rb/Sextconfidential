@@ -136,244 +136,246 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
             ),
           ),
         ),
-        body: Container(
-          // padding: EdgeInsets.only(left: 2.w, right: 2.w),
-          color: Appcolors().backgroundcolor,
-          child: Stack(
-            alignment: Alignment.bottomCenter,
-            children: [
-              SingleChildScrollView(
-                child: Column(
-                  children: [
-                    AnimationLimiter(
-                      child: ListView.builder(
-                        reverse: true,
-                        scrollDirection: Axis.vertical,
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        itemCount: 10,
-                        itemBuilder: (BuildContext context, int index) {
-                          return AnimationConfiguration.staggeredList(
-                            position: index,
-                            duration: const Duration(milliseconds: 300),
-                            child: SlideAnimation(
-                              verticalOffset: 50.0,
-                              child: FadeInAnimation(
-                                child: InkWell(
-                                  onTap: () {
-                                    setState(() {
-                                      showuploaddialog = false;
-                                      emojiShowing = false;
-                                      FocusManager.instance.primaryFocus
-                                          ?.unfocus();
-                                    });
-                                  },
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        margin: EdgeInsets.only(
-                                            left: 2.w, right: 2.w),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: [
-                                            daydivider(),
-                                            sendermessage(index),
-                                            receivermessage(index),
-                                          ],
+        body: SafeArea(
+          child: Container(
+            // padding: EdgeInsets.only(left: 2.w, right: 2.w),
+            color: Appcolors().backgroundcolor,
+            child: Stack(
+              alignment: Alignment.bottomCenter,
+              children: [
+                SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      AnimationLimiter(
+                        child: ListView.builder(
+                          reverse: true,
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: 10,
+                          itemBuilder: (BuildContext context, int index) {
+                            return AnimationConfiguration.staggeredList(
+                              position: index,
+                              duration: const Duration(milliseconds: 300),
+                              child: SlideAnimation(
+                                verticalOffset: 50.0,
+                                child: FadeInAnimation(
+                                  child: InkWell(
+                                    onTap: () {
+                                      setState(() {
+                                        showuploaddialog = false;
+                                        emojiShowing = false;
+                                        FocusManager.instance.primaryFocus
+                                            ?.unfocus();
+                                      });
+                                    },
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          margin: EdgeInsets.only(
+                                              left: 2.w, right: 2.w),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              daydivider(),
+                                              sendermessage(index),
+                                              receivermessage(index),
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                      SizedBox(
-                                        height: 1.5.h,
-                                      ),
-                                    ],
+                                        SizedBox(
+                                          height: 1.5.h,
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          );
-                        },
+                            );
+                          },
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 10.h,
-                    )
-                  ],
+                      SizedBox(
+                        height: 10.h,
+                      )
+                    ],
+                  ),
                 ),
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  showuploaddialog ? uploadcontainer() : SizedBox(),
-                  Container(
-                    margin: EdgeInsets.only(left: 2.w, right: 2.w),
-                    color: Appcolors().backgroundcolor,
-                    width: double.infinity,
-                    child: Container(
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    showuploaddialog ? uploadcontainer() : SizedBox(),
+                    Container(
+                      margin: EdgeInsets.only(left: 2.w, right: 2.w),
+                      color: Appcolors().backgroundcolor,
                       width: double.infinity,
-                      alignment: Alignment.bottomCenter,
-                      margin: EdgeInsets.only(bottom: 1.h),
-                      padding: EdgeInsets.only(
-                        left: 2.w,
-                        right: 2.w,
-                        top: 1.h,
-                        bottom: 1.h,
-                      ),
-                      decoration: BoxDecoration(
-                          color: Appcolors().bottomnavbgcolor,
-                          borderRadius: BorderRadius.circular(15)),
-                      // height: 7.h,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              setState(() {
-                                FocusManager.instance.primaryFocus?.unfocus();
-                                emojiShowing = !emojiShowing;
-                              });
-                            },
-                            child: SvgPicture.asset(
-                              "assets/images/emojiimg.svg",
-                              height: 3.h,
-                            ),
-                          ),
-                          Expanded(
-                            child: TextFormField(
-                              maxLines: null,
-                              keyboardType: TextInputType.multiline,
-                              cursorColor: Appcolors().loginhintcolor,
-                              style: TextStyle(
-                                color: Appcolors().loginhintcolor,
-                                fontSize: 12.sp,
-                              ),
-                              controller: messagecontroller,
-                              decoration: InputDecoration(
-                                isDense: true,
-                                border: InputBorder.none,
-                                // focusedBorder: InputBorder.none,
-                                filled: true,
-                                fillColor: Appcolors().bottomnavbgcolor,
-                                hintText: StringConstants.type,
-                                hintStyle: TextStyle(
-                                  decoration: TextDecoration.none,
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 12.sp,
-                                  // fontFamily: 'PulpDisplay',
-                                  color: Appcolors().loginhintcolor,
-                                ),
-                              ),
+                      child: Container(
+                        width: double.infinity,
+                        alignment: Alignment.bottomCenter,
+                        margin: EdgeInsets.only(bottom: 1.h),
+                        padding: EdgeInsets.only(
+                          left: 2.w,
+                          right: 2.w,
+                          top: 1.h,
+                          bottom: 1.h,
+                        ),
+                        decoration: BoxDecoration(
+                            color: Appcolors().bottomnavbgcolor,
+                            borderRadius: BorderRadius.circular(15)),
+                        // height: 7.h,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            InkWell(
                               onTap: () {
                                 setState(() {
-                                  emojiShowing = false;
-                                  showuploaddialog = false;
-                                });
-                              },
-                              onChanged: (value) {
-                                setState(() {});
-                              },
-                              // validator: (value) {
-                              //   if (value!.isEmpty) {
-                              //     return "Please enter Message";
-                              //   } else {
-                              //     return null;
-                              //   }
-                              // },
-                            ),
-                          ),
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: SocialMediaRecorder(
-                              sendRequestFunction: (soundFile) {
-                                print("the current path is ${soundFile.path}");
-                              },
-                              encode: AudioEncoderType.AAC,
-                            ),
-                          ),
-                          // SvgPicture.asset(
-                          //   "assets/images/micicon.svg",
-                          //   height: 2.5.h,
-                          // ),
-                          SizedBox(
-                            width: 5.w,
-                          ),
-                          GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  if (showuploaddialog) {
-                                    showuploaddialog = false;
-                                  } else {
-                                    showuploaddialog = true;
-                                    emojiShowing = false;
-                                  }
+                                  FocusManager.instance.primaryFocus?.unfocus();
+                                  emojiShowing = !emojiShowing;
                                 });
                               },
                               child: SvgPicture.asset(
-                                "assets/images/cameraicon.svg",
-                                height: 2.5.h,
-                              )),
-                          SizedBox(
-                            width: 5.w,
-                          ),
-                          SvgPicture.asset(
-                            "assets/images/sendicon.svg",
-                            height: 2.5.h,
-                          ),
-                          SizedBox(
-                            width: 3.w,
-                          ),
-                        ],
+                                "assets/images/emojiimg.svg",
+                                height: 3.h,
+                              ),
+                            ),
+                            Expanded(
+                              child: TextFormField(
+                                maxLines: null,
+                                keyboardType: TextInputType.multiline,
+                                cursorColor: Appcolors().loginhintcolor,
+                                style: TextStyle(
+                                  color: Appcolors().loginhintcolor,
+                                  fontSize: 12.sp,
+                                ),
+                                controller: messagecontroller,
+                                decoration: InputDecoration(
+                                  isDense: true,
+                                  border: InputBorder.none,
+                                  // focusedBorder: InputBorder.none,
+                                  filled: true,
+                                  fillColor: Appcolors().bottomnavbgcolor,
+                                  hintText: StringConstants.type,
+                                  hintStyle: TextStyle(
+                                    decoration: TextDecoration.none,
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 12.sp,
+                                    // fontFamily: 'PulpDisplay',
+                                    color: Appcolors().loginhintcolor,
+                                  ),
+                                ),
+                                onTap: () {
+                                  setState(() {
+                                    emojiShowing = false;
+                                    showuploaddialog = false;
+                                  });
+                                },
+                                onChanged: (value) {
+                                  setState(() {});
+                                },
+                                // validator: (value) {
+                                //   if (value!.isEmpty) {
+                                //     return "Please enter Message";
+                                //   } else {
+                                //     return null;
+                                //   }
+                                // },
+                              ),
+                            ),
+                            // Align(
+                            //   alignment: Alignment.centerRight,
+                            //   child: SocialMediaRecorder(
+                            //     sendRequestFunction: (soundFile) {
+                            //       print("the current path is ${soundFile.path}");
+                            //     },
+                            //     encode: AudioEncoderType.AAC,
+                            //   ),
+                            // ),
+                            SvgPicture.asset(
+                              "assets/images/micicon.svg",
+                              height: 2.5.h,
+                            ),
+                            SizedBox(
+                              width: 5.w,
+                            ),
+                            GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    if (showuploaddialog) {
+                                      showuploaddialog = false;
+                                    } else {
+                                      showuploaddialog = true;
+                                      emojiShowing = false;
+                                    }
+                                  });
+                                },
+                                child: SvgPicture.asset(
+                                  "assets/images/cameraicon.svg",
+                                  height: 2.5.h,
+                                )),
+                            SizedBox(
+                              width: 5.w,
+                            ),
+                            SvgPicture.asset(
+                              "assets/images/sendicon.svg",
+                              height: 2.5.h,
+                            ),
+                            SizedBox(
+                              width: 3.w,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  Offstage(
-                    offstage: !emojiShowing,
-                    child: SizedBox(
-                        height: 250,
-                        child: EmojiPicker(
-                          textEditingController: messagecontroller,
-                          config: Config(
-                            columns: 7,
-                            // Issue: https://github.com/flutter/flutter/issues/28894
-                            emojiSizeMax: 32 *
-                                (foundation.defaultTargetPlatform ==
-                                        TargetPlatform.iOS
-                                    ? 1.30
-                                    : 1.0),
-                            verticalSpacing: 0,
-                            horizontalSpacing: 0,
-                            gridPadding: EdgeInsets.zero,
-                            initCategory: Category.RECENT,
-                            bgColor:Appcolors().backgroundcolor,
-                            indicatorColor: Colors.blue,
-                            iconColor: Colors.grey,
-                            iconColorSelected: Colors.blue,
-                            backspaceColor: Colors.blue,
-                            skinToneDialogBgColor: Appcolors().backgroundcolor,
-                            skinToneIndicatorColor: Colors.grey,
-                            enableSkinTones: true,
-                            showRecentsTab: true,
-                            recentsLimit: 28,
-                            replaceEmojiOnLimitExceed: false,
-                            noRecents: const Text(
-                              'No Recents',
-                              style: TextStyle(
-                                  fontSize: 20, color: Colors.white),
-                              textAlign: TextAlign.center,
+                    Offstage(
+                      offstage: !emojiShowing,
+                      child: SizedBox(
+                          height: 250,
+                          child: EmojiPicker(
+                            textEditingController: messagecontroller,
+                            config: Config(
+                              columns: 7,
+                              // Issue: https://github.com/flutter/flutter/issues/28894
+                              emojiSizeMax: 32 *
+                                  (foundation.defaultTargetPlatform ==
+                                          TargetPlatform.iOS
+                                      ? 1.30
+                                      : 1.0),
+                              verticalSpacing: 0,
+                              horizontalSpacing: 0,
+                              gridPadding: EdgeInsets.zero,
+                              initCategory: Category.RECENT,
+                              bgColor:Appcolors().backgroundcolor,
+                              indicatorColor: Colors.blue,
+                              iconColor: Colors.grey,
+                              iconColorSelected: Colors.blue,
+                              backspaceColor: Colors.blue,
+                              skinToneDialogBgColor: Appcolors().backgroundcolor,
+                              skinToneIndicatorColor: Colors.grey,
+                              enableSkinTones: true,
+                              showRecentsTab: true,
+                              recentsLimit: 28,
+                              replaceEmojiOnLimitExceed: false,
+                              noRecents: const Text(
+                                'No Recents',
+                                style: TextStyle(
+                                    fontSize: 20, color: Colors.white),
+                                textAlign: TextAlign.center,
+                              ),
+                              loadingIndicator: const SizedBox.shrink(),
+                              tabIndicatorAnimDuration: kTabScrollDuration,
+                              categoryIcons: const CategoryIcons(),
+                              buttonMode: ButtonMode.MATERIAL,
+                              checkPlatformCompatibility: true,
                             ),
-                            loadingIndicator: const SizedBox.shrink(),
-                            tabIndicatorAnimDuration: kTabScrollDuration,
-                            categoryIcons: const CategoryIcons(),
-                            buttonMode: ButtonMode.MATERIAL,
-                            checkPlatformCompatibility: true,
-                          ),
-                        )),
-                  ),
-                ],
-              ),
-            ],
+                          )),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -455,7 +457,7 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
           ),
           GestureDetector(
             onTap: (){
-              capturevideo();
+              pickVideo();
             },
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -728,6 +730,7 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
     if (pickedFile != null) {
       setState(() {
         imageFile = File(pickedFile.path);
+        print("Image path:-${pickedFile.path}");
       });
     }
   }
@@ -740,19 +743,23 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
     if (pickedFile != null) {
       setState(() {
         imageFile = File(pickedFile.path);
+        print("Image path:-${pickedFile.path}");
+
       });
     }
   }
-  capturevideo() async {
-    PickedFile? pickedFile = await ImagePicker().getVideo(
-      preferredCameraDevice: CameraDevice.rear,
-      source: ImageSource.camera,
-    );
+  Future<void> pickVideo() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.getVideo(source: ImageSource.camera);
+
     if (pickedFile != null) {
-      setState(() {
-        imageFile = File(pickedFile.path);
-      });
+      imageFile = File(pickedFile.path);
+      print("Video path:-${pickedFile?.path}");
+
+      // print("Video path:-${pickedFile.path}");
     }
+
+    return null;
   }
 
   @override
@@ -760,4 +767,5 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
     messagecontroller.dispose();
     super.dispose();
   }
+
 }

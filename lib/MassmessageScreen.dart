@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:appinio_video_player/appinio_video_player.dart';
 import 'package:dotted_border/dotted_border.dart';
@@ -18,6 +19,7 @@ import 'package:sextconfidential/utils/Sidedrawer.dart';
 import 'package:sextconfidential/utils/StringConstants.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 import 'package:sizer/sizer.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
 
 class MassmessageScreen extends StatefulWidget{
   @override
@@ -38,6 +40,8 @@ class MassmessageScreenState extends State<MassmessageScreen>{
   int imagecredit=1;
   File? imageFile;
   bool videostatus=false;
+  Uint8List? thumbnail;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -222,7 +226,12 @@ class MassmessageScreenState extends State<MassmessageScreen>{
                                     children: [
                                       Container(
                                           padding:EdgeInsets.all(10),
-                                          child: Image.file(imageFile!,height:15.h,width:25.w,fit: BoxFit.fill,)),
+                                          // child: Image.file(imageFile!,height:15.h,width:25.w,fit: BoxFit.fill,)),
+                                          child:
+                                          imageFile!.path.substring(imageFile!.path.length-3,imageFile!.path.length)=="mp4"?
+                                          Image.memory(thumbnail!,height:15.h,width:25.w,fit: BoxFit.fill,):
+                                          Image.file(imageFile!,height:15.h,width:25.w,fit: BoxFit.fill,),
+                                      ),
                                       GestureDetector(
                                         onTap: (){
                                           setState((){
@@ -398,9 +407,9 @@ class MassmessageScreenState extends State<MassmessageScreen>{
                                               GestureDetector(
                                                 onTap: (){
                                                   // Future.delayed(Duration(seconds: 1), () {
-                                                    !videostatus?
-                                                    Progressdialog.showLoadingDialog(context, _key)
-                                                        :
+                                                  //   !videostatus?
+                                                  //   Progressdialog.showLoadingDialog(context, _key)
+                                                  //       :
                                                     videoplayer(context);
                                                   // });
                                                 },
@@ -751,7 +760,7 @@ class MassmessageScreenState extends State<MassmessageScreen>{
                               ),
                               GestureDetector(
                                 onTap: (){
-                                  capturevideo();
+                                  pickVideo();
                                 },
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -854,16 +863,31 @@ class MassmessageScreenState extends State<MassmessageScreen>{
       });
     }
   }
-  capturevideo() async {
-    PickedFile? pickedFile = await ImagePicker().getVideo(
-      preferredCameraDevice: CameraDevice.rear,
-      source: ImageSource.camera,
-    );
+  Future<void> pickVideo() async {
+    Navigator.pop(context);
+    final picker = ImagePicker();
+    final pickedFile = await picker.getVideo(source: ImageSource.camera);
+
     if (pickedFile != null) {
-      setState(() {
-        imageFile = File(pickedFile.path);
-      });
+      imageFile = File(pickedFile.path);
+      print("Video path:-${imageFile?.path}");
+        createthumbnail();
+      // print("Video path:-${pickedFile.path}");
     }
+
+    return null;
+  }
+  Future<void> createthumbnail() async {
+      final uint8list = await VideoThumbnail.thumbnailData(
+        video: imageFile!.path,
+        imageFormat: ImageFormat.JPEG,
+        maxWidth: 400, // specify the width of the thumbnail, let the height auto-scaled to keep the source aspect ratio
+        quality: 75,
+      );
+      setState(() {
+        thumbnail=uint8list;
+      });
+
   }
 
 }

@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
@@ -5,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:sextconfidential/Feeddetailedpage.dart';
 import 'package:sextconfidential/utils/Appcolors.dart';
 import 'package:sextconfidential/utils/CustomDropdownButton2.dart';
@@ -13,6 +17,7 @@ import 'package:sextconfidential/utils/Sidedrawer.dart';
 import 'package:sextconfidential/utils/StringConstants.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 import 'package:sizer/sizer.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
 
 class FeedScreen extends StatefulWidget {
   @override
@@ -21,7 +26,8 @@ class FeedScreen extends StatefulWidget {
 
 class FeedScreenState extends State<FeedScreen> {
   TextEditingController messagecontroller = TextEditingController();
-  TextEditingController postcontentcontoller = TextEditingController(text: "What are you up to tonight?");
+  TextEditingController postcontentcontoller =
+      TextEditingController(text: "What are you up to tonight?");
   List<String> posttypes = ["Scheduled Post", "Save as Draft"];
   List<String> postfilters = [
     StringConstants.mostrecent,
@@ -43,6 +49,10 @@ class FeedScreenState extends State<FeedScreen> {
   bool posttoexplore = false;
   final GlobalKey<ScaffoldState> _key = GlobalKey(); // Create a key
   int? editedpostid;
+  File? imageFile;
+  int imagecredit = 1;
+  Uint8List? thumbnail;
+  int selectedposttype = 0;
 
   @override
   void initState() {
@@ -167,46 +177,185 @@ class FeedScreenState extends State<FeedScreen> {
               SizedBox(
                 height: 1.5.h,
               ),
-              Container(
-                child: DottedBorder(
-                  strokeCap: StrokeCap.round,
-                  strokeWidth: 1,
-                  dashPattern: [8, 4],
-                  color: Appcolors().gradientcolorfirst,
-                  borderType: BorderType.RRect,
-                  radius: Radius.circular(15),
-                  padding: EdgeInsets.all(6),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.all(Radius.circular(12)),
-                    child: Container(
-                        height: 5.h,
-                        width: double.infinity,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Center(
-                                child: SvgPicture.asset(
-                              "assets/images/uploadimageicon.svg",
-                              height: 3.h,
-                              width: 3.w,
-                            )),
-                            SizedBox(
-                              width: 2.w,
+              GestureDetector(
+                onTap: () {},
+                child: Container(
+                  width: double.infinity,
+                  child: DottedBorder(
+                    strokeCap: StrokeCap.round,
+                    strokeWidth: 1,
+                    dashPattern: [8, 4],
+                    color: Appcolors().gradientcolorfirst,
+                    borderType: BorderType.RRect,
+                    radius: Radius.circular(15),
+                    padding: EdgeInsets.all(6),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                      child: imageFile == null
+                          ? GestureDetector(
+                              onTap: () {
+                                addmediadialog(context);
+                              },
+                              child: Container(
+                                  height: 5.h,
+                                  width: double.infinity,
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Center(
+                                          child: SvgPicture.asset(
+                                        "assets/images/uploadimageicon.svg",
+                                        height: 3.h,
+                                        width: 3.w,
+                                      )),
+                                      SizedBox(
+                                        width: 2.w,
+                                      ),
+                                      Text(
+                                        StringConstants.addphotosorvideo,
+                                        style: TextStyle(
+                                            fontSize: 10.sp,
+                                            // fontFamily: "PulpDisplay",
+                                            fontWeight: FontWeight.w500,
+                                            color: Appcolors().loginhintcolor),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ],
+                                  )
+                                  // color: Colors.amber,
+                                  ),
+                            )
+                          : Column(
+                              children: [
+                                Container(
+                                  alignment: Alignment.center,
+                                  child: Stack(
+                                    alignment: Alignment.topRight,
+                                    children: [
+                                      Container(
+                                        padding: EdgeInsets.all(10),
+                                        // child: Image.file(imageFile!,height:15.h,width:25.w,fit: BoxFit.fill,)),
+                                        child: imageFile!.path.substring(
+                                                    imageFile!.path.length - 3,
+                                                    imageFile!.path.length) ==
+                                                "mp4"
+                                            ? Image.memory(
+                                                thumbnail!,
+                                                height: 15.h,
+                                                width: 25.w,
+                                                fit: BoxFit.fill,
+                                              )
+                                            : Image.file(
+                                                imageFile!,
+                                                height: 15.h,
+                                                width: 25.w,
+                                                fit: BoxFit.fill,
+                                              ),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            imageFile = null;
+                                          });
+                                        },
+                                        child: CircleAvatar(
+                                          radius: 1.h,
+                                          backgroundColor: Colors.white,
+                                          child: Image.asset(
+                                            "assets/images/crossicon.png",
+                                            height: 1.h,
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    Container(
+                                      height: 4.h,
+                                      alignment: Alignment.center,
+                                      width: 20.w,
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color:
+                                                  Appcolors().loginhintcolor),
+                                          borderRadius:
+                                              BorderRadius.circular(8)),
+                                      child: Text(
+                                        imagecredit.toString(),
+                                        style: TextStyle(
+                                            fontSize: 8.sp,
+                                            fontFamily: "PulpDisplay",
+                                            fontWeight: FontWeight.w400,
+                                            color: Appcolors().whitecolor),
+                                      ),
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          if (imagecredit > 1) {
+                                            imagecredit = imagecredit - 1;
+                                          }
+                                        });
+                                      },
+                                      child: Container(
+                                        margin: EdgeInsets.only(right: 20.w),
+                                        alignment: Alignment.center,
+                                        width: 4.w,
+                                        height: 2.h,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                          color: Colors.white,
+                                        ),
+                                        child: Text(
+                                          "-",
+                                          style: TextStyle(
+                                              fontSize: 8.sp,
+                                              fontFamily: "PulpDisplay",
+                                              fontWeight: FontWeight.w400,
+                                              color: Appcolors().blackcolor),
+                                        ),
+                                      ),
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          imagecredit = imagecredit + 1;
+                                        });
+                                      },
+                                      child: Container(
+                                        margin: EdgeInsets.only(left: 20.w),
+                                        alignment: Alignment.center,
+                                        width: 4.w,
+                                        height: 2.h,
+                                        decoration: BoxDecoration(
+                                            shape: BoxShape.rectangle,
+                                            image: DecorationImage(
+                                                image: AssetImage(
+                                                    "assets/images/btnbackgroundgradient.png"),
+                                                fit: BoxFit.fill),
+                                            borderRadius:
+                                                BorderRadius.circular(5)),
+                                        child: Text(
+                                          "+",
+                                          style: TextStyle(
+                                              fontSize: 8.sp,
+                                              fontFamily: "PulpDisplay",
+                                              fontWeight: FontWeight.w400,
+                                              color: Appcolors().blackcolor),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              ],
                             ),
-                            Text(
-                              StringConstants.addphotosorvideo,
-                              style: TextStyle(
-                                  fontSize: 10.sp,
-                                  // fontFamily: "PulpDisplay",
-                                  fontWeight: FontWeight.w500,
-                                  color: Appcolors().loginhintcolor),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
-                        )
-                        // color: Colors.amber,
-                        ),
+                    ),
                   ),
                 ),
               ),
@@ -298,58 +447,104 @@ class FeedScreenState extends State<FeedScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    GradientText(
-                      "${StringConstants.posted}(199)",
-                      style: TextStyle(
-                          fontSize: 9.sp,
-                          // fontFamily: "PulpDisplay",
-                          fontWeight: FontWeight.w400),
-                      gradientType: GradientType.linear,
-                      gradientDirection: GradientDirection.ttb,
-                      radius: 6,
-                      colors: [
-                        Appcolors().gradientcolorfirst,
-                        Appcolors().gradientcolorsecond,
-                      ],
+                    InkWell(
+                      onTap: () {
+                        setState(() {
+                          selectedposttype = 0;
+                        });
+                      },
+                      child: GradientText(
+                        "${StringConstants.posted}(199)",
+                        style: TextStyle(
+                            fontSize: 9.sp,
+                            // fontFamily: "PulpDisplay",
+                            fontWeight: FontWeight.w400),
+                        gradientType: GradientType.linear,
+                        gradientDirection: GradientDirection.ttb,
+                        radius: 6,
+                        colors: [
+                          selectedposttype==0?Appcolors().gradientcolorfirst:Appcolors().loginhintcolor,
+                          selectedposttype==0?Appcolors().gradientcolorsecond:Appcolors().loginhintcolor,
+                        ],
+                      ),
                     ),
                     Container(
                         height: 6.h,
                         width: 1.5,
                         color: Appcolors().dividercolor),
-                    Text(
-                      "${StringConstants.scheduled}(180)",
-                      style: TextStyle(
-                          fontSize: 9.sp,
-                          // fontFamily: "PulpDisplay",
-                          fontWeight: FontWeight.w400,
-                          color: Appcolors().loginhintcolor),
-                      textAlign: TextAlign.center,
+                    InkWell(
+                      onTap: () {
+                        setState(() {
+                          selectedposttype = 1;
+                        });
+                      },
+                      child:
+                      GradientText(
+                        "${StringConstants.scheduled}(180)",
+                        style: TextStyle(
+                            fontSize: 9.sp,
+                            // fontFamily: "PulpDisplay",
+                            fontWeight: FontWeight.w400),
+                        gradientType: GradientType.linear,
+                        gradientDirection: GradientDirection.ttb,
+                        radius: 6,
+                        colors: [
+                          selectedposttype==1?Appcolors().gradientcolorfirst:Appcolors().loginhintcolor,
+                          selectedposttype==1?Appcolors().gradientcolorsecond:Appcolors().loginhintcolor,
+                        ],
+                      ),
                     ),
                     Container(
                         height: 6.h,
                         width: 1.5,
                         color: Appcolors().dividercolor),
-                    Text(
-                      "${StringConstants.drafts}(150)",
-                      style: TextStyle(
-                          fontSize: 9.sp,
-                          // fontFamily: "PulpDisplay",
-                          fontWeight: FontWeight.w400,
-                          color: Appcolors().loginhintcolor),
-                      textAlign: TextAlign.center,
+                    InkWell(
+                      onTap: () {
+                        setState(() {
+                          selectedposttype = 2;
+                        });
+                      },
+                      child:
+                      GradientText(
+                        "${StringConstants.drafts}(150)",
+                        style: TextStyle(
+                            fontSize: 9.sp,
+                            // fontFamily: "PulpDisplay",
+                            fontWeight: FontWeight.w400),
+                        gradientType: GradientType.linear,
+                        gradientDirection: GradientDirection.ttb,
+                        radius: 6,
+                        colors: [
+                          selectedposttype==2?Appcolors().gradientcolorfirst:Appcolors().loginhintcolor,
+                          selectedposttype==2?Appcolors().gradientcolorsecond:Appcolors().loginhintcolor,
+                        ],
+                      ),
                     ),
                     Container(
                         height: 6.h,
                         width: 1.5,
                         color: Appcolors().dividercolor),
-                    Text(
-                      "${StringConstants.tagged}(250)",
-                      style: TextStyle(
-                          fontSize: 9.sp,
-                          // fontFamily: "PulpDisplay",
-                          fontWeight: FontWeight.w400,
-                          color: Appcolors().loginhintcolor),
-                      textAlign: TextAlign.center,
+                    InkWell(
+                      onTap: () {
+                        setState(() {
+                          selectedposttype = 3;
+                        });
+                      },
+                      child:
+                      GradientText(
+                        "${StringConstants.tagged}(250)",
+                        style: TextStyle(
+                            fontSize: 9.sp,
+                            // fontFamily: "PulpDisplay",
+                            fontWeight: FontWeight.w400),
+                        gradientType: GradientType.linear,
+                        gradientDirection: GradientDirection.ttb,
+                        radius: 6,
+                        colors: [
+                          selectedposttype==3?Appcolors().gradientcolorfirst:Appcolors().loginhintcolor,
+                          selectedposttype==3?Appcolors().gradientcolorsecond:Appcolors().loginhintcolor,
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -476,50 +671,75 @@ class FeedScreenState extends State<FeedScreen> {
                                         ),
                                         DropdownButtonHideUnderline(
                                           child: DropdownButton2(
-                                            customButton: Image.asset("assets/images/menubtn.png",height: 4.h,fit: BoxFit.fill,),
+                                            customButton: Image.asset(
+                                              "assets/images/menubtn.png",
+                                              height: 4.h,
+                                              fit: BoxFit.fill,
+                                            ),
                                             items: [
                                               ...MenuItems.firstItems.map(
-                                                    (item) => DropdownMenuItem<CustomMenuItem>(
+                                                (item) => DropdownMenuItem<
+                                                    CustomMenuItem>(
                                                   value: item,
-                                                  child: MenuItems.buildItem(item),
+                                                  child:
+                                                      MenuItems.buildItem(item),
                                                 ),
                                               ),
-                                              const DropdownMenuItem<Divider>(enabled: false, child: Divider()),
+                                              const DropdownMenuItem<Divider>(
+                                                  enabled: false,
+                                                  child: Divider()),
                                               ...MenuItems.secondItems.map(
-                                                    (item) => DropdownMenuItem<CustomMenuItem>(
+                                                (item) => DropdownMenuItem<
+                                                    CustomMenuItem>(
                                                   value: item,
-                                                  child: MenuItems.buildItem(item),
+                                                  child:
+                                                      MenuItems.buildItem(item),
                                                 ),
                                               ),
                                             ],
                                             onChanged: (value) {
-                                              MenuItems.onChanged(context, value as CustomMenuItem);
-                                              print("Value:-"+value.text);
-                                              if(value.text==StringConstants.editpost){
-                                                setState((){
-                                                  editedpostid=index;
+                                              MenuItems.onChanged(context,
+                                                  value as CustomMenuItem);
+                                              print("Value:-" + value.text);
+                                              if (value.text ==
+                                                  StringConstants.editpost) {
+                                                setState(() {
+                                                  editedpostid = index;
                                                 });
-                                              }else if(value.text==StringConstants.deletepost){
+                                              } else if (value.text ==
+                                                  StringConstants.deletepost) {
                                                 showdeletealert(context);
                                               }
                                             },
-                                            dropdownStyleData: DropdownStyleData(
+                                            dropdownStyleData:
+                                                DropdownStyleData(
                                               width: 160,
-                                              padding: const EdgeInsets.symmetric(vertical: 5),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 5),
                                               decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(10),
-                                                color: Appcolors().bottomnavbgcolor,
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                color: Appcolors()
+                                                    .bottomnavbgcolor,
                                               ),
                                               elevation: 8,
                                               offset: const Offset(0, 8),
                                             ),
-                                            menuItemStyleData: MenuItemStyleData(
+                                            menuItemStyleData:
+                                                MenuItemStyleData(
                                               customHeights: [
-                                                ...List<double>.filled(MenuItems.firstItems.length, 35),
+                                                ...List<double>.filled(
+                                                    MenuItems.firstItems.length,
+                                                    35),
                                                 8,
-                                                ...List<double>.filled(MenuItems.secondItems.length, 48),
+                                                ...List<double>.filled(
+                                                    MenuItems
+                                                        .secondItems.length,
+                                                    48),
                                               ],
-                                              padding: const EdgeInsets.only(left: 16, right: 16),
+                                              padding: const EdgeInsets.only(
+                                                  left: 16, right: 16),
                                             ),
                                           ),
                                         ),
@@ -586,119 +806,143 @@ class FeedScreenState extends State<FeedScreen> {
                                     SizedBox(
                                       height: 2.h,
                                     ),
-                                    editedpostid!=index?
-                                    Text(
-                                      "What are you up to tonight?",
-                                      style: TextStyle(
-                                          fontSize: 12.sp,
-                                          // fontFamily: "PulpDisplay",
-                                          fontWeight: FontWeight.w500,
-                                          color: Appcolors().whitecolor),
-                                      textAlign: TextAlign.start,
-                                    ):
-                                    Container(
-                                      child: Column(
-                                        children: [
-                                          TextFormField(
-                                            minLines: 3,
-                                            maxLines: 3,
-                                            cursorColor: Appcolors().loginhintcolor,
+                                    editedpostid != index
+                                        ? Text(
+                                            "What are you up to tonight?",
                                             style: TextStyle(
-                                              color: Appcolors().whitecolor,
-                                              fontSize: 12.sp,
-                                            ),
-                                            controller: postcontentcontoller,
-                                            decoration: InputDecoration(
-                                              // prefix: Container(
-                                              //   child: SvgPicture.asset("assets/images/astrickicon.svg",width: 5.w,),
-                                              // ),
-                                              border: InputBorder.none,
-                                              // focusedBorder: InputBorder.none,
-                                              disabledBorder: InputBorder.none,
-                                              focusedBorder: OutlineInputBorder(
-                                                borderRadius: BorderRadius.circular(15.0),
-                                                borderSide:
-                                                BorderSide(color: Appcolors().logintextformborder),
-                                              ),
-                                              enabledBorder: OutlineInputBorder(
-                                                borderRadius: BorderRadius.circular(15.0),
-                                                borderSide:
-                                                BorderSide(color: Appcolors().logintextformborder),
-                                              ),
-                                              filled: true,
-                                              fillColor: Appcolors().messageboxbgcolor,
-                                              hintText: StringConstants.writesomething,
-                                              hintStyle: TextStyle(
-                                                decoration: TextDecoration.none,
-                                                fontWeight: FontWeight.w400,
                                                 fontSize: 12.sp,
-                                                // fontFamily: 'PulpDisplay',
-                                                color: Appcolors().loginhintcolor,
-                                              ),
-                                            ),
-                                            onChanged: (value) {
-                                              setState(() {});
-                                            },
-                                            validator: (value) {
-                                              if (value!.isEmpty) {
-                                                return "Please enter Message";
-                                              } else {
-                                                return null;
-                                              }
-                                            },
-                                          ),
-                                          SizedBox(
-                                            height: 2.h,
-                                          ),
-                                          Row(
+                                                // fontFamily: "PulpDisplay",
+                                                fontWeight: FontWeight.w500,
+                                                color: Appcolors().whitecolor),
+                                            textAlign: TextAlign.start,
+                                          )
+                                        : Container(
+                                            child: Column(
                                             children: [
-                                              Container(
-                                                alignment: Alignment.center,
-                                                width: 30.w,
-                                                decoration: BoxDecoration(
-                                                    image: DecorationImage(
-                                                        image: AssetImage(
-                                                            "assets/images/btnbackgroundgradient.png"),
-                                                        fit: BoxFit.fill),
-                                                    borderRadius: BorderRadius.circular(10)),
-                                                height: 5.h,
-                                                child: Text(
-                                                  StringConstants.update,
-                                                  style: TextStyle(
-                                                      fontSize: 12.sp,
-                                                      fontFamily: "PulpDisplay",
-                                                      fontWeight: FontWeight.w400,
-                                                      color: Appcolors().backgroundcolor),
-                                                  textAlign: TextAlign.center,
+                                              TextFormField(
+                                                minLines: 3,
+                                                maxLines: 3,
+                                                cursorColor:
+                                                    Appcolors().loginhintcolor,
+                                                style: TextStyle(
+                                                  color: Appcolors().whitecolor,
+                                                  fontSize: 12.sp,
                                                 ),
-                                              ),
-                                              GestureDetector(
-                                                onTap: (){
-                                                  setState((){
-                                                    editedpostid=null;
-                                                  });
-                                                },
-                                                child: Container(
-                                                  alignment: Alignment.center,
-                                                  width: 40.w,
-                                                  height: 5.h,
-                                                  child: Text(
-                                                    StringConstants.cancel,
-                                                    style: TextStyle(
-                                                        fontSize: 12.sp,
-                                                        fontFamily: "PulpDisplay",
-                                                        fontWeight: FontWeight.w400,
-                                                        color: Appcolors().whitecolor),
-                                                    textAlign: TextAlign.center,
+                                                controller:
+                                                    postcontentcontoller,
+                                                decoration: InputDecoration(
+                                                  // prefix: Container(
+                                                  //   child: SvgPicture.asset("assets/images/astrickicon.svg",width: 5.w,),
+                                                  // ),
+                                                  border: InputBorder.none,
+                                                  // focusedBorder: InputBorder.none,
+                                                  disabledBorder:
+                                                      InputBorder.none,
+                                                  focusedBorder:
+                                                      OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            15.0),
+                                                    borderSide: BorderSide(
+                                                        color: Appcolors()
+                                                            .logintextformborder),
+                                                  ),
+                                                  enabledBorder:
+                                                      OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            15.0),
+                                                    borderSide: BorderSide(
+                                                        color: Appcolors()
+                                                            .logintextformborder),
+                                                  ),
+                                                  filled: true,
+                                                  fillColor: Appcolors()
+                                                      .messageboxbgcolor,
+                                                  hintText: StringConstants
+                                                      .writesomething,
+                                                  hintStyle: TextStyle(
+                                                    decoration:
+                                                        TextDecoration.none,
+                                                    fontWeight: FontWeight.w400,
+                                                    fontSize: 12.sp,
+                                                    // fontFamily: 'PulpDisplay',
+                                                    color: Appcolors()
+                                                        .loginhintcolor,
                                                   ),
                                                 ),
+                                                onChanged: (value) {
+                                                  setState(() {});
+                                                },
+                                                validator: (value) {
+                                                  if (value!.isEmpty) {
+                                                    return "Please enter Message";
+                                                  } else {
+                                                    return null;
+                                                  }
+                                                },
                                               ),
+                                              SizedBox(
+                                                height: 2.h,
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Container(
+                                                    alignment: Alignment.center,
+                                                    width: 30.w,
+                                                    decoration: BoxDecoration(
+                                                        image: DecorationImage(
+                                                            image: AssetImage(
+                                                                "assets/images/btnbackgroundgradient.png"),
+                                                            fit: BoxFit.fill),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10)),
+                                                    height: 5.h,
+                                                    child: Text(
+                                                      StringConstants.update,
+                                                      style: TextStyle(
+                                                          fontSize: 12.sp,
+                                                          fontFamily:
+                                                              "PulpDisplay",
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          color: Appcolors()
+                                                              .backgroundcolor),
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                    ),
+                                                  ),
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      setState(() {
+                                                        editedpostid = null;
+                                                      });
+                                                    },
+                                                    child: Container(
+                                                      alignment:
+                                                          Alignment.center,
+                                                      width: 40.w,
+                                                      height: 5.h,
+                                                      child: Text(
+                                                        StringConstants.cancel,
+                                                        style: TextStyle(
+                                                            fontSize: 12.sp,
+                                                            fontFamily:
+                                                                "PulpDisplay",
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                            color: Appcolors()
+                                                                .whitecolor),
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              )
                                             ],
-                                          )
-                                        ],
-                                      )
-                                    ),
-
+                                          )),
                                     SizedBox(
                                       height: 2.h,
                                     ),
@@ -808,6 +1052,7 @@ class FeedScreenState extends State<FeedScreen> {
       ),
     );
   }
+
   Future<void> showdeletealert(BuildContext context) {
     return showDialog(
         context: context,
@@ -824,17 +1069,21 @@ class FeedScreenState extends State<FeedScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(StringConstants.deletediologmessage,style: TextStyle(
-                        fontSize: 14.sp,
-                        height: 0.2.h,
-                        // fontFamily: "PulpDisplay",
-                        fontWeight: FontWeight.w500,
-                        color: Appcolors().loginhintcolor),textAlign: TextAlign.center,),
+                    Text(
+                      StringConstants.deletediologmessage,
+                      style: TextStyle(
+                          fontSize: 14.sp,
+                          height: 0.2.h,
+                          // fontFamily: "PulpDisplay",
+                          fontWeight: FontWeight.w500,
+                          color: Appcolors().loginhintcolor),
+                      textAlign: TextAlign.center,
+                    ),
                     SizedBox(
                       height: 4.h,
                     ),
                     GestureDetector(
-                      onTap: (){
+                      onTap: () {
                         // Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
                       },
                       child: Center(
@@ -842,22 +1091,27 @@ class FeedScreenState extends State<FeedScreen> {
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                               color: Appcolors().deactivatecolor,
-                              borderRadius: BorderRadius.circular(10)
-                          ),
+                              borderRadius: BorderRadius.circular(10)),
                           width: 40.w,
                           height: 5.h,
-                          child:  Row(
-                            mainAxisAlignment:MainAxisAlignment.center,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              SvgPicture.asset("assets/images/deleteicon.svg",height: 3.h,),
+                              SvgPicture.asset(
+                                "assets/images/deleteicon.svg",
+                                height: 3.h,
+                              ),
                               SizedBox(
                                 width: 2.w,
                               ),
-                              Text(StringConstants.deletepost,style: TextStyle(
-                                  fontSize: 12.sp,
-                                  fontFamily: "PulpDisplay",
-                                  fontWeight: FontWeight.w500,
-                                  color: Appcolors().whitecolor),),
+                              Text(
+                                StringConstants.deletepost,
+                                style: TextStyle(
+                                    fontSize: 12.sp,
+                                    fontFamily: "PulpDisplay",
+                                    fontWeight: FontWeight.w500,
+                                    color: Appcolors().whitecolor),
+                              ),
                             ],
                           ),
                         ),
@@ -867,22 +1121,224 @@ class FeedScreenState extends State<FeedScreen> {
                       height: 2.h,
                     ),
                     GestureDetector(
-                      onTap: (){
+                      onTap: () {
                         Navigator.pop(context);
                       },
-                      child: Text(StringConstants.cancel,style: TextStyle(
-                          fontSize: 14.sp,
-                          height: 0.2.h,
-                          // fontFamily: "PulpDisplay",
-                          fontWeight: FontWeight.w500,
-                          color: Appcolors().whitecolor),textAlign: TextAlign.center,),
+                      child: Text(
+                        StringConstants.cancel,
+                        style: TextStyle(
+                            fontSize: 14.sp,
+                            height: 0.2.h,
+                            // fontFamily: "PulpDisplay",
+                            fontWeight: FontWeight.w500,
+                            color: Appcolors().whitecolor),
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ],
                 ),
-              )
+              ));
+        });
+  }
+
+  Future<void> addmediadialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            contentPadding: EdgeInsets.zero,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10.0))),
+            backgroundColor: Colors.transparent,
+            //title: Text("Image Picker"),
+            content: StatefulBuilder(
+              // You need this, notice the parameters below:
+              builder: (BuildContext context, StateSetter setState) {
+                return Stack(
+                  alignment: Alignment.topRight,
+                  children: [
+                    Container(
+                      color: Colors.transparent,
+                      padding: EdgeInsets.all(10),
+                      child: Container(
+                        width: 80.w,
+                        // margin: EdgeInsets.only(left: 2.w, right: 2.w,bottom: 1.h),
+                        alignment: Alignment.center,
+                        height: 10.h,
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage(
+                                "assets/images/btnbackgroundgradient.png",
+                              ),
+                              fit: BoxFit.fill,
+                            ),
+                            borderRadius: BorderRadius.circular(15)),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                _getFromGallery();
+                              },
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SvgPicture.asset(
+                                    "assets/images/documentupload.svg",
+                                    height: 3.h,
+                                    width: 3.w,
+                                    color: Appcolors().bottomnavbgcolor,
+                                  ),
+                                  SizedBox(
+                                    height: 1.h,
+                                  ),
+                                  Text(
+                                    StringConstants.choosefile,
+                                    style: TextStyle(
+                                        fontSize: 10.sp,
+                                        // fontFamily: "PulpDisplay",
+                                        fontWeight: FontWeight.w500,
+                                        color: Appcolors().bottomnavbgcolor),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                clickphotofromcamera();
+                              },
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SvgPicture.asset(
+                                    "assets/images/cameraicon.svg",
+                                    height: 3.h,
+                                    width: 3.w,
+                                    color: Appcolors().bottomnavbgcolor,
+                                  ),
+                                  SizedBox(
+                                    height: 1.h,
+                                  ),
+                                  Text(
+                                    StringConstants.takephoto,
+                                    style: TextStyle(
+                                        fontSize: 10.sp,
+                                        // fontFamily: "PulpDisplay",
+                                        fontWeight: FontWeight.w500,
+                                        color: Appcolors().bottomnavbgcolor),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                pickVideo();
+                              },
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SvgPicture.asset(
+                                    "assets/images/videoicon.svg",
+                                    height: 3.h,
+                                    width: 3.w,
+                                    color: Appcolors().bottomnavbgcolor,
+                                  ),
+                                  SizedBox(
+                                    height: 1.h,
+                                  ),
+                                  Text(
+                                    StringConstants.recordvideo,
+                                    style: TextStyle(
+                                        fontSize: 10.sp,
+                                        // fontFamily: "PulpDisplay",
+                                        fontWeight: FontWeight.w500,
+                                        color: Appcolors().bottomnavbgcolor),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: CircleAvatar(
+                        radius: 1.5.h,
+                        backgroundColor: Colors.white,
+                        child: Image.asset(
+                          "assets/images/crossicon.png",
+                          height: 1.5.h,
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
           );
         });
   }
 
+  _getFromGallery() async {
+    Navigator.pop(context);
+    PickedFile? pickedFile = await ImagePicker().getImage(
+      source: ImageSource.gallery,
+      maxWidth: 1800,
+      maxHeight: 1800,
+    );
+    if (pickedFile != null) {
+      setState(() {
+        imageFile = File(pickedFile.path);
+      });
+    }
+  }
 
+  clickphotofromcamera() async {
+    Navigator.pop(context);
+    PickedFile? pickedFile = await ImagePicker().getImage(
+      source: ImageSource.camera,
+      maxWidth: 1800,
+      maxHeight: 1800,
+    );
+    if (pickedFile != null) {
+      setState(() {
+        imageFile = File(pickedFile.path);
+      });
+    }
+  }
+
+  Future<void> pickVideo() async {
+    Navigator.pop(context);
+    final picker = ImagePicker();
+    final pickedFile = await picker.getVideo(source: ImageSource.camera);
+
+    if (pickedFile != null) {
+      imageFile = File(pickedFile.path);
+      print("Video path:-${imageFile?.path}");
+      createthumbnail();
+      // print("Video path:-${pickedFile.path}");
+    }
+
+    return null;
+  }
+
+  Future<void> createthumbnail() async {
+    final uint8list = await VideoThumbnail.thumbnailData(
+      video: imageFile!.path,
+      imageFormat: ImageFormat.JPEG,
+      maxWidth:
+          400, // specify the width of the thumbnail, let the height auto-scaled to keep the source aspect ratio
+      quality: 75,
+    );
+    setState(() {
+      thumbnail = uint8list;
+    });
+  }
 }

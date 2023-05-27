@@ -15,6 +15,8 @@ class LoginScreen extends StatefulWidget {
 class LoginScreenState extends State<LoginScreen> {
   TextEditingController emailcontoller = TextEditingController();
   TextEditingController passwordcontoller = TextEditingController();
+  final GlobalKey<FormState> _key = GlobalKey(); // Create a key
+
   bool passwordobsecure=true;
   @override
   void initState() {
@@ -51,7 +53,8 @@ class LoginScreenState extends State<LoginScreen> {
                         height: 12.h,
                       )),
                     ),
-                    Container(
+                    Form(
+                      key: _key,
                       child: Column(
                         children: [
                           SizedBox(
@@ -88,6 +91,7 @@ class LoginScreenState extends State<LoginScreen> {
                           Container(
                             margin: EdgeInsets.only(left: 3.w, right: 3.w),
                             child: TextFormField(
+                              // autovalidateMode: AutovalidateMode.always,
                               cursorColor: Appcolors().loginhintcolor,
                               style: TextStyle(color:Appcolors().loginhintcolor,fontSize: 12.sp,),
                               controller: emailcontoller,
@@ -103,7 +107,17 @@ class LoginScreenState extends State<LoginScreen> {
                                     borderSide: BorderSide(
                                         color: Appcolors().logintextformborder),
                                   ),
+                                  errorBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                    borderSide: BorderSide(
+                                        color: Appcolors().logintextformborder),
+                                  ),
                                   enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                    borderSide: BorderSide(
+                                        color: Appcolors().logintextformborder),
+                                  ),
+                                  focusedErrorBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(15.0),
                                     borderSide: BorderSide(
                                         color: Appcolors().logintextformborder),
@@ -130,7 +144,7 @@ class LoginScreenState extends State<LoginScreen> {
                               },
                               validator: (value) {
                                 if (value!.isEmpty) {
-                                  return "Please enter password";
+                                  return "Please enter Email or phone no.";
                                 } else {
                                   return null;
                                 }
@@ -143,6 +157,7 @@ class LoginScreenState extends State<LoginScreen> {
                           Container(
                             margin: EdgeInsets.only(left: 3.5.w, right: 3.5.w),
                             child: TextFormField(
+                              // autovalidateMode: AutovalidateMode.always,
                               style: TextStyle(color:Appcolors().loginhintcolor,fontSize: 12.sp,),
                               controller: passwordcontoller,
                               obscureText: passwordobsecure,
@@ -156,7 +171,16 @@ class LoginScreenState extends State<LoginScreen> {
                                     borderSide: BorderSide(
                                         color: Appcolors().logintextformborder),
                                   ),
+                                  errorBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                    borderSide: BorderSide(
+                                        color: Appcolors().logintextformborder),
+                                  ),
                                   enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                    borderSide: BorderSide(
+                                        color: Appcolors().logintextformborder),
+                                  ),focusedErrorBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(15.0),
                                     borderSide: BorderSide(
                                         color: Appcolors().logintextformborder),
@@ -215,7 +239,9 @@ class LoginScreenState extends State<LoginScreen> {
                           ),
                           GestureDetector(
                             onTap: (){
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => Bottomnavigation()));
+                              if(_key.currentState!.validate()){
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => Bottomnavigation()));
+                              }
                             },
                             child: Container(
                               alignment: Alignment.center,
