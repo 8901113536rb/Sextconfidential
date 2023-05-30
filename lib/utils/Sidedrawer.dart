@@ -224,13 +224,15 @@ class SidedrawerState extends State<Sidedrawer> {
                                         builder: (context) =>
                                             PayoutInfoScreen()));
                                 break;
-                                case 3:
+                                case 3:{
+                                  Navigator.pop(context);
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
                                               TimezoneScreen()));
                                   break;
+                                }
                                   case 4:
                                     Navigator.push(
                                         context,
@@ -239,12 +241,15 @@ class SidedrawerState extends State<Sidedrawer> {
                                                 LocationdenialScreen()));
                                   break;
                                 case 5:
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              Changepassword()));
-                                  break;
+                                  {
+                                    Navigator.pop(context);
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                Changepassword()));
+                                    break;
+                                  }
                                   case 6:
                                   Navigator.push(
                                       context,

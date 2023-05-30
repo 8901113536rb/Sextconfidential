@@ -14,6 +14,7 @@ import 'package:sizer/sizer.dart';
 import 'package:flutter/foundation.dart' as foundation;
 import 'package:social_media_recorder/audio_encoder_type.dart';
 import 'package:social_media_recorder/screen/social_media_recorder.dart';
+import 'package:voice_message_package/voice_message_package.dart';
 
 class ConvertsationScreen extends StatefulWidget {
   @override
@@ -183,6 +184,8 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
                                               daydivider(),
                                               sendermessage(index),
                                               receivermessage(index),
+                                              voicemessage()
+
                                             ],
                                           ),
                                         ),
@@ -284,15 +287,7 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
                                 // },
                               ),
                             ),
-                            // Align(
-                            //   alignment: Alignment.centerRight,
-                            //   child: SocialMediaRecorder(
-                            //     sendRequestFunction: (soundFile) {
-                            //       print("the current path is ${soundFile.path}");
-                            //     },
-                            //     encode: AudioEncoderType.AAC,
-                            //   ),
-                            // ),
+
                             SvgPicture.asset(
                               "assets/images/micicon.svg",
                               height: 2.5.h,
@@ -318,6 +313,7 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
                             SizedBox(
                               width: 5.w,
                             ),
+
                             SvgPicture.asset(
                               "assets/images/sendicon.svg",
                               height: 2.5.h,
@@ -329,6 +325,12 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
                         ),
                       ),
                     ),
+                    // SocialMediaRecorder(
+                    //   sendRequestFunction: (soundFile) {
+                    //     // print("the current path is ${soundFile.path}");
+                    //   },
+                    //   encode: AudioEncoderType.AAC,
+                    // ),
                     Offstage(
                       offstage: !emojiShowing,
                       child: SizedBox(
@@ -758,8 +760,23 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
 
       // print("Video path:-${pickedFile.path}");
     }
-
     return null;
+  }
+  Widget voicemessage(){
+    return Container(
+      alignment: Alignment.centerRight,
+      // width: double.infinity,
+      child: VoiceMessage(
+        mePlayIconColor: Appcolors().profileboxcolor,
+        // meFgColor: Appcolors().bottomnavbgcolor,
+        meBgColor: Appcolors().profileboxcolor,
+        contactFgColor: Appcolors().profileboxcolor,
+        audioSrc: "https://samplelib.com/lib/preview/mp3/sample-9s.mp3",
+        played: true, // To show played badge or not.
+        me: true, // Set message side.
+        onPlay: () {}, // Do something when voice played.
+      ),
+    );
   }
 
   @override

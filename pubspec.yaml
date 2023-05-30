@@ -53,6 +53,10 @@ dependencies:
   loading_animation_widget: ^1.2.0+4
   social_media_recorder: ^0.1.86
   video_thumbnail: ^0.5.3
+  voice_message_package: ^1.0.41
+  http: ^0.13.5
+  shared_preferences: ^2.1.1
+#  chat_package: ^1.0.0
 
 dev_dependencies:
   flutter_test:

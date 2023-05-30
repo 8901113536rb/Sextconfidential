@@ -1,11 +1,17 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:sextconfidential/Bottomnavigation.dart';
 import 'package:sextconfidential/utils/Appcolors.dart';
+import 'package:sextconfidential/utils/Helpingwidgets.dart';
+import 'package:sextconfidential/utils/Networks.dart';
 import 'package:sextconfidential/utils/StringConstants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 import 'package:sizer/sizer.dart';
+import 'package:http/http.dart' as http;
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -240,7 +246,7 @@ class LoginScreenState extends State<LoginScreen> {
                           GestureDetector(
                             onTap: (){
                               if(_key.currentState!.validate()){
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => Bottomnavigation()));
+                                login();
                               }
                             },
                             child: Container(
@@ -274,5 +280,31 @@ class LoginScreenState extends State<LoginScreen> {
             ],
           )),
     );
+  }
+  Future<void> login() async {
+    Map data ={
+      "email":emailcontoller.text,
+      "password":passwordcontoller.text,
+    };
+    var jsonResponse = null;
+    var response = await http.post(
+        Uri.parse(Networks.baseurl + Networks.login),
+        body: data
+    );
+    jsonResponse = json.decode(response.body);
+    print("jsonResponse:-" + jsonResponse.toString());
+    if (response.statusCode == 200) {
+      if (jsonResponse["status"] == false) {
+        Helpingwidgets.failedsnackbar(jsonResponse["message"].toString(), context);
+      } else {
+        SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+        sharedPreferences.setString("token", jsonResponse["token"].toString());
+        Navigator.push(context, MaterialPageRoute(builder: (context) => Bottomnavigation()));
+        Helpingwidgets.successsnackbar(jsonResponse["message"].toString(), context);
+        print("Response:${jsonResponse["message"]}");
+      }
+    } else {
+      Helpingwidgets.failedsnackbar(jsonResponse["message"].toString(), context);
+    }
   }
 }

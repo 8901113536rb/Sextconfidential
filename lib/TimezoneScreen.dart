@@ -1,9 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sextconfidential/utils/Appcolors.dart';
 import 'package:sextconfidential/utils/CustomDropdownButton2.dart';
+import 'package:sextconfidential/utils/Helpingwidgets.dart';
+import 'package:sextconfidential/utils/Networks.dart';
 import 'package:sextconfidential/utils/StringConstants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
+import 'package:http/http.dart' as http;
 
 class TimezoneScreen extends StatefulWidget{
   @override
@@ -16,6 +22,13 @@ class TimezoneScreenState extends State<TimezoneScreen>{
   String dropdownvalue="Eastern UTC -05:00";
   String userselectedzone="Eastern UTC -05:00";
   bool savebtnstatus=false;
+  String? token;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getsharedpreference();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,7 +41,7 @@ class TimezoneScreenState extends State<TimezoneScreen>{
             offstage: !savebtnstatus,
             child: GestureDetector(
               onTap: (){
-                // Navigator.push(context, MaterialPageRoute(builder: (context) => Bottomnavigation()));
+                settimezone();
               },
               child: Container(
                 alignment: Alignment.center,
@@ -116,5 +129,38 @@ class TimezoneScreenState extends State<TimezoneScreen>{
         ),
       ),
     );
+  }
+
+  Future<void> getsharedpreference() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    setState((){
+      token=sharedPreferences.getString("token");
+    });
+    print("Token value:-"+token.toString());
+  }
+  Future<void> settimezone() async {
+    Map data ={
+      "timezone":dropdownvalue,
+      "token":token,
+    };
+    var jsonResponse = null;
+    var response = await http.post(
+        Uri.parse(Networks.baseurl + Networks.updatetimezone),
+        body: data
+    );
+    jsonResponse = json.decode(response.body);
+    print("jsonResponse:-" + jsonResponse.toString());
+    if (response.statusCode == 200) {
+      if (jsonResponse["status"] == false) {
+        Helpingwidgets.failedsnackbar(jsonResponse["message"].toString(), context);
+      } else {
+        Helpingwidgets.successsnackbar(jsonResponse["message"].toString(), context);
+        print("Response:${jsonResponse["message"]}");
+        Navigator.pop(context);
+
+      }
+    } else {
+      Helpingwidgets.failedsnackbar(jsonResponse["message"].toString(), context);
+    }
   }
 }
