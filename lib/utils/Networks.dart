@@ -5,4 +5,7 @@ class Networks{
   static String getprofile = "getprofile";
   static String deactivateaccount = "deactivateaccount";
   static String updatetimezone = "updatetimezone";
+  static String updatepayoutinfo = "updatepayoutinfo";
+  static String updateprofile = "updateprofile";
+  static String updateonline = "updateonline";
 }

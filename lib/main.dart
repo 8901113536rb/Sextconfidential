@@ -5,6 +5,7 @@ import 'package:flutter_switch/flutter_switch.dart';
 import 'package:sextconfidential/Chatusersscreen.dart';
 import 'package:sextconfidential/utils/Appcolors.dart';
 import 'package:sextconfidential/utils/StringConstants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 
 import 'Bottomnavigation.dart';
@@ -62,13 +63,24 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
+  String? token;
+  bool? loginstatus=false;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    getsharedpreference();
     Future.delayed(Duration(seconds: 3), () {
-      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
-          LoginScreen()), (Route<dynamic> route) => false);
+      if(loginstatus==false){
+        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+            LoginScreen()), (Route<dynamic> route) => false);
+      }else{
+        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+            Bottomnavigation()), (Route<dynamic> route) => false);
+      }
+
     });
   }
   @override
@@ -84,5 +96,9 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         )
     );
+  }
+  Future<void> getsharedpreference() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    loginstatus=sharedPreferences.getBool("loginstatus")??false;
   }
 }

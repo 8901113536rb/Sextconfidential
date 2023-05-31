@@ -84,7 +84,6 @@ class ChangepasswordState extends State<Changepassword>{
                       // ),
                       // suffixIcon: Icon(Icons.verified,color: Appcolors().verifiedicon,),
                       border: InputBorder.none,
-                      // focusedBorder: InputBorder.none,
                       disabledBorder: InputBorder.none,
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15.0),

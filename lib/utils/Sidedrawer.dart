@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +14,11 @@ import 'package:sextconfidential/PayoutInfoScreen.dart';
 import 'package:sextconfidential/TimezoneScreen.dart';
 import 'package:sextconfidential/utils/Appcolors.dart';
 import 'package:sextconfidential/utils/StringConstants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
+import 'package:http/http.dart' as http;
+import 'Helpingwidgets.dart';
+import 'Networks.dart';
 
 class Sidedrawer extends StatefulWidget {
   @override
@@ -43,6 +49,15 @@ class SidedrawerState extends State<Sidedrawer> {
     "assets/images/deactivateacc.png",
     "assets/images/logout.png",
   ];
+  String? username,profilepic,token;
+  SharedPreferences? sharedPreferences;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getsharedpreference();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -99,8 +114,7 @@ class SidedrawerState extends State<Sidedrawer> {
                     children: [
                       Container(
                         child: CachedNetworkImage(
-                          imageUrl:
-                              "https://c4.wallpaperflare.com/wallpaper/702/785/274/eiza-gonzalez-music-celebrities-girls-wallpaper-thumb.jpg",
+                          imageUrl:profilepic.toString(),
                           imageBuilder: (context, imageProvider) => Container(
                             width: 20.w,
                             alignment: Alignment.centerLeft,
@@ -134,7 +148,7 @@ class SidedrawerState extends State<Sidedrawer> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Elexa Steele",
+                              username.toString(),
                               style: TextStyle(
                                   fontSize: 14.sp,
                                   fontFamily: "PulpDisplay",
@@ -153,6 +167,7 @@ class SidedrawerState extends State<Sidedrawer> {
                                       :onlinestatus==1?
                                       onlinestatus=2
                                       :onlinestatus=0;
+                                  changestatus();
                                 });
                               },
                               child: Container(
@@ -321,6 +336,7 @@ class SidedrawerState extends State<Sidedrawer> {
                                           onToggle: (val) {
                                             setState(() {
                                               switchlist[index] = val;
+                                              changestatus();
                                             });
                                           },
                                         ),
@@ -340,5 +356,50 @@ class SidedrawerState extends State<Sidedrawer> {
         ),
       ),
     );
+  }
+  Future<void> getsharedpreference() async {
+    sharedPreferences = await SharedPreferences.getInstance();
+    setState((){
+      username=sharedPreferences!.getString("stagename")!;
+      token=sharedPreferences!.getString("token")!;
+      switchlist[0]=sharedPreferences!.getBool("phonecall")!;
+      switchlist[1]=sharedPreferences!.getBool("videocall")!;
+      onlinestatus=int.parse(sharedPreferences!.getString("userstatus").toString());
+      profilepic=sharedPreferences!.getString("profilepic").toString();
+    });
+    print("username value:-"+username.toString());
+    print("profilepic value:-"+profilepic.toString());
+  }
+  Future<void> changestatus() async {
+    Map data ={
+      "token":token,
+      "show_online":onlinestatus.toString(),
+      "video_calls":switchlist[0]==true?"yes":"no",
+      "phone_calls":switchlist[1]==true?"yes":"no",
+    };
+    print("Data:-"+data.toString());
+    var jsonResponse = null;
+    var response = await http.post(
+        Uri.parse(Networks.baseurl + Networks.updateonline),
+        body: data
+    );
+    jsonResponse = json.decode(response.body);
+    print("jsonResponse:-" + jsonResponse.toString());
+    if (response.statusCode == 200) {
+      if (jsonResponse["status"] == false) {
+        Helpingwidgets.failedsnackbar(jsonResponse["message"].toString(), context);
+      } else {
+        SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+        sharedPreferences.setBool("phonecall",switchlist[0]);
+        sharedPreferences.setBool("videocall",switchlist[1]);
+        sharedPreferences!.setString("userstatus", onlinestatus.toString());
+        Helpingwidgets.successsnackbar(jsonResponse["message"].toString(), context);
+        print("Response:${jsonResponse["message"]}");
+        Navigator.pop(context);
+
+      }
+    } else {
+      Helpingwidgets.failedsnackbar(jsonResponse["message"].toString(), context);
+    }
   }
 }

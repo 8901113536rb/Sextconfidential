@@ -1,9 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sextconfidential/utils/Appcolors.dart';
+import 'package:sextconfidential/utils/Helpingwidgets.dart';
+import 'package:sextconfidential/utils/Networks.dart';
 import 'package:sextconfidential/utils/StringConstants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 import 'package:sizer/sizer.dart';
+import 'package:http/http.dart' as http;
 
 class PayoutInfoScreen extends StatefulWidget {
   @override
@@ -14,6 +20,14 @@ class PayoutInfoScreenState extends State<PayoutInfoScreen> {
   bool twelvehouralert = false;
   bool endofpayalert = false;
   bool payoutprocessedalert = false;
+  SharedPreferences? sharedPreferences;
+  String? token;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getsharedpreference();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,6 +98,7 @@ class PayoutInfoScreenState extends State<PayoutInfoScreen> {
                         onChanged: (value) {
                           setState(() {
                             twelvehouralert = value!;
+                            payoutinfo();
                           });
                         },
                       ),
@@ -154,6 +169,7 @@ class PayoutInfoScreenState extends State<PayoutInfoScreen> {
                         onChanged: (value) {
                           setState(() {
                             payoutprocessedalert = value!;
+                            payoutinfo();
                           });
                         },
                       ),
@@ -224,6 +240,7 @@ class PayoutInfoScreenState extends State<PayoutInfoScreen> {
                         onChanged: (value) {
                           setState(() {
                             endofpayalert = value!;
+                            payoutinfo();
                           });
                         },
                       ),
@@ -263,5 +280,46 @@ class PayoutInfoScreenState extends State<PayoutInfoScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> getsharedpreference() async {
+    sharedPreferences = await SharedPreferences.getInstance();
+    setState((){
+      token=sharedPreferences?.getString("token");
+      twelvehouralert=sharedPreferences!.getBool("twelvehouralert")??false;
+      payoutprocessedalert=sharedPreferences!.getBool("payoutprocessed")??false;
+      endofpayalert=sharedPreferences!.getBool("endofpayperiod")??false;
+    });
+    print("Token value:-"+token.toString());
+  }
+  Future<void> payoutinfo() async {
+    Map data ={
+      "token":token,
+      "hours":twelvehouralert.toString(),
+      "processed":payoutprocessedalert.toString(),
+      "endpayperiod":endofpayalert.toString(),
+    };
+    print("Data:-"+data.toString());
+    var jsonResponse = null;
+    var response = await http.post(
+        Uri.parse(Networks.baseurl + Networks.updatepayoutinfo),
+        body: data
+    );
+    jsonResponse = json.decode(response.body);
+    print("jsonResponse:-" + jsonResponse.toString());
+    if (response.statusCode == 200) {
+      if (jsonResponse["status"] == false) {
+        Helpingwidgets.failedsnackbar(jsonResponse["message"].toString(), context);
+      } else {
+        Helpingwidgets.successsnackbar(jsonResponse["message"].toString(), context);
+        print("Response:${jsonResponse["message"]}");
+        sharedPreferences!.setBool("twelvehouralert", twelvehouralert);
+        sharedPreferences!.setBool("payoutprocessed", payoutprocessedalert);
+        sharedPreferences!.setBool("endofpayperiod", endofpayalert);
+        // Navigator.pop(context);
+      }
+    } else {
+      Helpingwidgets.failedsnackbar(jsonResponse["message"].toString(), context);
+    }
   }
 }

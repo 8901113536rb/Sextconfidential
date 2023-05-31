@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:sextconfidential/Bottomnavigation.dart';
+import 'package:sextconfidential/pojo/getprofilepojo.dart';
 import 'package:sextconfidential/utils/Appcolors.dart';
 import 'package:sextconfidential/utils/Helpingwidgets.dart';
 import 'package:sextconfidential/utils/Networks.dart';
@@ -22,8 +23,9 @@ class LoginScreenState extends State<LoginScreen> {
   TextEditingController emailcontoller = TextEditingController();
   TextEditingController passwordcontoller = TextEditingController();
   final GlobalKey<FormState> _key = GlobalKey(); // Create a key
-
+  Getprofilepojo? getprofilepojo;
   bool passwordobsecure=true;
+  String? userstatus;
   @override
   void initState() {
     // TODO: implement initState
@@ -297,8 +299,18 @@ class LoginScreenState extends State<LoginScreen> {
       if (jsonResponse["status"] == false) {
         Helpingwidgets.failedsnackbar(jsonResponse["message"].toString(), context);
       } else {
+        getprofilepojo=Getprofilepojo.fromJson(jsonResponse);
         SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-        sharedPreferences.setString("token", jsonResponse["token"].toString());
+        sharedPreferences.setString("token", getprofilepojo!.token!.id.toString());
+        sharedPreferences!.setString("profilepic", getprofilepojo!.token!.image==null?"":getprofilepojo!.token!.image.toString());
+        sharedPreferences!.setString("stagename", getprofilepojo!.token!.stagename.toString());
+        sharedPreferences!.setString("bio", getprofilepojo!.token!.bio.toString());
+        sharedPreferences!.setString("phone", getprofilepojo!.token!.phone.toString());
+        sharedPreferences!.setString("email", getprofilepojo!.token!.email.toString());
+        sharedPreferences!.setString("userstatus", getprofilepojo!.token!.showOnline??"0");
+        sharedPreferences.setBool("phonecall",getprofilepojo!.token!.phoneCalls=="yes"?true:false);
+        sharedPreferences.setBool("videocall",getprofilepojo!.token!.videoCalls=="yes"?true:false);
+        sharedPreferences.setBool("loginstatus", true);
         Navigator.push(context, MaterialPageRoute(builder: (context) => Bottomnavigation()));
         Helpingwidgets.successsnackbar(jsonResponse["message"].toString(), context);
         print("Response:${jsonResponse["message"]}");

@@ -80,5 +80,8 @@ class StringConstants{
   static String deletediologmessage ="Are you sure you want to delete this post?";
   static String cancel ="Cancel";
   static String update ="Update";
+  static String pleaseentermodelbio ="Please Enter Model Bio!";
+  static String pleaseenteremailaddress ="Please enter Email Address";
+  static String pleaseenterphonenumber ="Please enter Phone Number";
 
 }
