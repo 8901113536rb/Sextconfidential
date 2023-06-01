@@ -23,6 +23,7 @@ class TimezoneScreenState extends State<TimezoneScreen>{
   String userselectedzone="Eastern UTC -05:00";
   bool savebtnstatus=false;
   String? token;
+  GlobalKey<State>key=GlobalKey();
   @override
   void initState() {
     // TODO: implement initState
@@ -139,6 +140,7 @@ class TimezoneScreenState extends State<TimezoneScreen>{
     print("Token value:-"+token.toString());
   }
   Future<void> settimezone() async {
+    Helpingwidgets.showLoadingDialog(context, key);
     Map data ={
       "timezone":dropdownvalue,
       "token":token,
@@ -153,14 +155,16 @@ class TimezoneScreenState extends State<TimezoneScreen>{
     if (response.statusCode == 200) {
       if (jsonResponse["status"] == false) {
         Helpingwidgets.failedsnackbar(jsonResponse["message"].toString(), context);
+        Navigator.pop(context);
       } else {
         Helpingwidgets.successsnackbar(jsonResponse["message"].toString(), context);
         print("Response:${jsonResponse["message"]}");
         Navigator.pop(context);
-
       }
     } else {
       Helpingwidgets.failedsnackbar(jsonResponse["message"].toString(), context);
+      Navigator.pop(context);
+
     }
   }
 }

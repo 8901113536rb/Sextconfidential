@@ -113,7 +113,9 @@ class SidedrawerState extends State<Sidedrawer> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Container(
-                        child: CachedNetworkImage(
+                        child: 
+                        profilepic!=null?
+                        CachedNetworkImage(
                           imageUrl:profilepic.toString(),
                           imageBuilder: (context, imageProvider) => Container(
                             width: 20.w,
@@ -136,7 +138,8 @@ class SidedrawerState extends State<Sidedrawer> {
                             ),
                           ),
                           // errorWidget: (context, url, error) => errorWidget,
-                        ),
+                        ):
+                        Image.asset("assets/images/userprofile.png",height: 10.h,width: 20.w,),
                       ),
                       SizedBox(
                         width: 5.w,

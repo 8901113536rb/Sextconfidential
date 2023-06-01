@@ -82,6 +82,7 @@ class EditprofilescreenState extends State<Editprofilescreen> {
                         alignment: Alignment.bottomRight,
                         children: [
                           imageFile==null?
+                          profilepic!=null?
                           CachedNetworkImage(
                             alignment: Alignment.topCenter,
                             imageUrl:
@@ -107,7 +108,8 @@ class EditprofilescreenState extends State<Editprofilescreen> {
                               ),
                             ),
                             // errorWidget: (context, url, error) => errorWidget,
-                          )
+                          ):
+                    Image.asset("assets/images/userprofile.png",height: 10.h,width: 20.w,)
                           :
                               CircleAvatar(
                                 radius: 7.h,
