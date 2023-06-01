@@ -101,7 +101,7 @@ class LoginScreenState extends State<LoginScreen> {
                             child: TextFormField(
                               // autovalidateMode: AutovalidateMode.always,
                               cursorColor: Appcolors().loginhintcolor,
-                              style: TextStyle(color:Appcolors().loginhintcolor,fontSize: 12.sp,),
+                              style: TextStyle(color:Appcolors().whitecolor,fontSize: 12.sp,),
                               controller: emailcontoller,
                               decoration: InputDecoration(
                                   // prefix: Container(
@@ -166,7 +166,7 @@ class LoginScreenState extends State<LoginScreen> {
                             margin: EdgeInsets.only(left: 3.5.w, right: 3.5.w),
                             child: TextFormField(
                               // autovalidateMode: AutovalidateMode.always,
-                              style: TextStyle(color:Appcolors().loginhintcolor,fontSize: 12.sp,),
+                              style: TextStyle(color:Appcolors().whitecolor,fontSize: 12.sp,),
                               controller: passwordcontoller,
                               obscureText: passwordobsecure,
                               cursorColor: Appcolors().loginhintcolor,

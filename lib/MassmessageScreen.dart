@@ -21,38 +21,52 @@ import 'package:simple_gradient_text/simple_gradient_text.dart';
 import 'package:sizer/sizer.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
-class MassmessageScreen extends StatefulWidget{
+class MassmessageScreen extends StatefulWidget {
   @override
   MassmessageScreenState createState() => MassmessageScreenState();
-
 }
 
-class MassmessageScreenState extends State<MassmessageScreen>{
-  List<String>massmessagetype=["All Available","Favourites","Create New group"];
-  String dropdownvalue="All Available";
+class MassmessageScreenState extends State<MassmessageScreen> {
+  List<String> massmessagetype = [
+    "All Available",
+    "Favourites",
+    "Create New group"
+  ];
+  String dropdownvalue = "All Available";
   final GlobalKey<ScaffoldState> _key = GlobalKey(); // Create a key
-  List<String>messagehistorytype=[StringConstants.mostrecent,StringConstants.mostsends,StringConstants.mostread,StringConstants.readrate,StringConstants.mostunlocks,StringConstants.mostearnings,];
-  String messagehistoryvalue="Most Recent";
-  TextEditingController messagecontroller=TextEditingController();
+  List<String> messagehistorytype = [
+    StringConstants.mostrecent,
+    StringConstants.mostsends,
+    StringConstants.mostread,
+    StringConstants.readrate,
+    StringConstants.mostunlocks,
+    StringConstants.mostearnings,
+  ];
+  String messagehistoryvalue = "Most Recent";
+  TextEditingController messagecontroller = TextEditingController();
+  TextEditingController searchclientcontroller = TextEditingController();
+  TextEditingController groupnamecontroller = TextEditingController();
+  final FocusNode focusNode = FocusNode();
   late VideoPlayerController _controller;
   late CustomVideoPlayerController _customVideoPlayerController;
   late final VideoPlayerController videoPlayerController;
-  int imagecredit=1;
+  int imagecredit = 1;
   File? imageFile;
-  bool videostatus=false;
+  bool videostatus = false;
   Uint8List? thumbnail;
+  List<int>groupusers=[];
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-   startvideo();
-
+    startvideo();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        // key: _key,
+      // key: _key,
       drawer: Sidedrawer(),
       // appBar: AppBar(
       //   elevation: 0,
@@ -69,7 +83,7 @@ class MassmessageScreenState extends State<MassmessageScreen>{
       //       color: Appcolors().whitecolor),),
       // ),
       body: Container(
-        padding: EdgeInsets.only(left: 3.w,right: 3.w),
+        padding: EdgeInsets.only(left: 3.w, right: 3.w),
         color: Appcolors().backgroundcolor,
         width: double.infinity,
         height: double.infinity,
@@ -108,6 +122,9 @@ class MassmessageScreenState extends State<MassmessageScreen>{
                             buttonWidth: 27.w,
                             onChanged: (value) {
                               setState(() {
+                                if (value == "Create New group") {
+                                  createnewgroup(context);
+                                }
                                 dropdownvalue = value!;
                               });
                             },
@@ -123,36 +140,40 @@ class MassmessageScreenState extends State<MassmessageScreen>{
                         minLines: 3,
                         maxLines: 3,
                         cursorColor: Appcolors().loginhintcolor,
-                        style: TextStyle(color:Appcolors().whitecolor,fontSize: 12.sp,),
+                        style: TextStyle(
+                          color: Appcolors().whitecolor,
+                          fontSize: 12.sp,
+                        ),
                         controller: messagecontroller,
                         decoration: InputDecoration(
                           // prefix: Container(
                           //   child: SvgPicture.asset("assets/images/astrickicon.svg",width: 5.w,),
                           // ),
-                            border: InputBorder.none,
-                            // focusedBorder: InputBorder.none,
-                            disabledBorder: InputBorder.none,
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15.0),
-                              borderSide: BorderSide(
-                                  color: Appcolors().logintextformborder),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15.0),
-                              borderSide: BorderSide(
-                                  color: Appcolors().logintextformborder),
-                            ),
-                            filled: true,
-                            fillColor: Appcolors().messageboxbgcolor,
-                            hintText:
-                            StringConstants.whatareyouupto,
-                            hintStyle: TextStyle(
-                              decoration: TextDecoration.none,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 12.sp,
-                              // fontFamily: 'PulpDisplay',
-                              color: Appcolors().loginhintcolor,
-                            ),),
+                          border: InputBorder.none,
+                          // focusedBorder: InputBorder.none,
+                          disabledBorder: InputBorder.none,
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                            borderSide: BorderSide(
+                                color: Appcolors().logintextformborder),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                            borderSide: BorderSide(
+                                color: Appcolors().logintextformborder),
+                          ),
+                          filled: true,
+                          isDense: true,
+                          fillColor: Appcolors().messageboxbgcolor,
+                          hintText: StringConstants.whatareyouupto,
+                          hintStyle: TextStyle(
+                            decoration: TextDecoration.none,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 12.sp,
+                            // fontFamily: 'PulpDisplay',
+                            color: Appcolors().loginhintcolor,
+                          ),
+                        ),
                         onChanged: (value) {
                           setState(() {});
                         },
@@ -169,9 +190,7 @@ class MassmessageScreenState extends State<MassmessageScreen>{
                       height: 1.5.h,
                     ),
                     GestureDetector(
-                      onTap: (){
-                        
-                      },
+                      onTap: () {},
                       child: Container(
                         width: double.infinity,
                         child: DottedBorder(
@@ -184,150 +203,180 @@ class MassmessageScreenState extends State<MassmessageScreen>{
                           padding: EdgeInsets.all(6),
                           child: ClipRRect(
                             borderRadius: BorderRadius.all(Radius.circular(12)),
-                            child:
-                            imageFile==null?
-                            GestureDetector(
-                              onTap: (){
-                                addmediadialog(context);
-                              },
-                              child: Container(
-                                height: 5.h,
-                                width: double.infinity,
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Center(
-                                        child: SvgPicture.asset("assets/images/uploadimageicon.svg",height: 3.h,width: 3.w,)),
-                                    SizedBox(
-                                      width: 2.w,
-                                    ),
-                                    Text(
-                                      StringConstants.addphotosorvideo,
-                                      style: TextStyle(
-                                          fontSize: 10.sp,
-                                          // fontFamily: "PulpDisplay",
-                                          fontWeight: FontWeight.w500,
-                                          color: Appcolors().loginhintcolor),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ],
-                                )
-                                // color: Colors.amber,
-                              ),
-                            )
-                            :
-                            Column(
-                              children: [
-                                Container(
-                                  alignment: Alignment.center,
-                                  child: Stack(
-                                    alignment: Alignment.topRight,
+                            child: imageFile == null
+                                ? GestureDetector(
+                                    onTap: () {
+                                      addmediadialog(context);
+                                    },
+                                    child: Container(
+                                        height: 5.h,
+                                        width: double.infinity,
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Center(
+                                                child: SvgPicture.asset(
+                                              "assets/images/uploadimageicon.svg",
+                                              height: 3.h,
+                                              width: 3.w,
+                                            )),
+                                            SizedBox(
+                                              width: 2.w,
+                                            ),
+                                            Text(
+                                              StringConstants.addphotosorvideo,
+                                              style: TextStyle(
+                                                  fontSize: 10.sp,
+                                                  // fontFamily: "PulpDisplay",
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Appcolors()
+                                                      .loginhintcolor),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ],
+                                        )
+                                        // color: Colors.amber,
+                                        ),
+                                  )
+                                : Column(
                                     children: [
                                       Container(
-                                          padding:EdgeInsets.all(10),
-                                          // child: Image.file(imageFile!,height:15.h,width:25.w,fit: BoxFit.fill,)),
-                                          child:
-                                          imageFile!.path.substring(imageFile!.path.length-3,imageFile!.path.length)=="mp4"?
-                                          Image.memory(thumbnail!,height:15.h,width:25.w,fit: BoxFit.fill,):
-                                          Image.file(imageFile!,height:15.h,width:25.w,fit: BoxFit.fill,),
-                                      ),
-                                      GestureDetector(
-                                        onTap: (){
-                                          setState((){
-                                            imageFile=null;
-
-                                          });
-                                        },
-                                        child: CircleAvatar(
-                                          radius: 1.h,
-                                          backgroundColor: Colors.white,
-                                          child: Image.asset("assets/images/crossicon.png",height: 1.h,),
+                                        alignment: Alignment.center,
+                                        child: Stack(
+                                          alignment: Alignment.topRight,
+                                          children: [
+                                            Container(
+                                              padding: EdgeInsets.all(10),
+                                              // child: Image.file(imageFile!,height:15.h,width:25.w,fit: BoxFit.fill,)),
+                                              child: imageFile!.path.substring(
+                                                          imageFile!
+                                                                  .path.length -
+                                                              3,
+                                                          imageFile!
+                                                              .path.length) ==
+                                                      "mp4"
+                                                  ? Image.memory(
+                                                      thumbnail!,
+                                                      height: 15.h,
+                                                      width: 25.w,
+                                                      fit: BoxFit.fill,
+                                                    )
+                                                  : Image.file(
+                                                      imageFile!,
+                                                      height: 15.h,
+                                                      width: 25.w,
+                                                      fit: BoxFit.fill,
+                                                    ),
+                                            ),
+                                            GestureDetector(
+                                              onTap: () {
+                                                setState(() {
+                                                  imageFile = null;
+                                                });
+                                              },
+                                              child: CircleAvatar(
+                                                radius: 1.h,
+                                                backgroundColor: Colors.white,
+                                                child: Image.asset(
+                                                  "assets/images/crossicon.png",
+                                                  height: 1.h,
+                                                ),
+                                              ),
+                                            )
+                                          ],
                                         ),
+                                      ),
+                                      Stack(
+                                        alignment: Alignment.center,
+                                        children: [
+                                          Container(
+                                            height: 4.h,
+                                            alignment: Alignment.center,
+                                            width: 20.w,
+                                            decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    color: Appcolors()
+                                                        .loginhintcolor),
+                                                borderRadius:
+                                                    BorderRadius.circular(8)),
+                                            child: Text(
+                                              imagecredit.toString(),
+                                              style: TextStyle(
+                                                  fontSize: 8.sp,
+                                                  fontFamily: "PulpDisplay",
+                                                  fontWeight: FontWeight.w400,
+                                                  color:
+                                                      Appcolors().whitecolor),
+                                            ),
+                                          ),
+                                          GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                if (imagecredit > 1) {
+                                                  imagecredit = imagecredit - 1;
+                                                }
+                                              });
+                                            },
+                                            child: Container(
+                                              margin:
+                                                  EdgeInsets.only(right: 20.w),
+                                              alignment: Alignment.center,
+                                              width: 4.w,
+                                              height: 2.h,
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(5),
+                                                color: Colors.white,
+                                              ),
+                                              child: Text(
+                                                "-",
+                                                style: TextStyle(
+                                                    fontSize: 8.sp,
+                                                    fontFamily: "PulpDisplay",
+                                                    fontWeight: FontWeight.w400,
+                                                    color:
+                                                        Appcolors().blackcolor),
+                                              ),
+                                            ),
+                                          ),
+                                          GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                imagecredit = imagecredit + 1;
+                                              });
+                                            },
+                                            child: Container(
+                                              margin:
+                                                  EdgeInsets.only(left: 20.w),
+                                              alignment: Alignment.center,
+                                              width: 4.w,
+                                              height: 2.h,
+                                              decoration: BoxDecoration(
+                                                  shape: BoxShape.rectangle,
+                                                  image: DecorationImage(
+                                                      image: AssetImage(
+                                                          "assets/images/btnbackgroundgradient.png"),
+                                                      fit: BoxFit.fill),
+                                                  borderRadius:
+                                                      BorderRadius.circular(5)),
+                                              child: Text(
+                                                "+",
+                                                style: TextStyle(
+                                                    fontSize: 8.sp,
+                                                    fontFamily: "PulpDisplay",
+                                                    fontWeight: FontWeight.w400,
+                                                    color:
+                                                        Appcolors().blackcolor),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       )
                                     ],
                                   ),
-                                ),
-                                Stack(
-                                  alignment: Alignment.center,
-                                  children: [
-                                    Container(
-                                      height: 4.h,
-                                      alignment: Alignment.center,
-                                      width:20.w,
-                                      decoration: BoxDecoration(
-                                          border: Border.all(color: Appcolors().loginhintcolor),
-                                          borderRadius: BorderRadius.circular(8)
-                                      ),
-                                      child: Text(
-                                        imagecredit.toString(),
-                                        style: TextStyle(
-                                            fontSize: 8.sp,
-                                            fontFamily: "PulpDisplay",
-                                            fontWeight: FontWeight.w400,
-                                            color: Appcolors().whitecolor),
-                                      ),
-                                    ),
-                                    GestureDetector(
-                                      onTap: (){
-                                        setState(() {
-                                          if(imagecredit>1){
-                                            imagecredit=imagecredit-1;
-                                          }
-                                        });
-                                      },
-                                      child: Container(
-                                        margin: EdgeInsets.only(right: 20.w),
-                                        alignment: Alignment.center,
-                                        width: 4.w,
-                                        height: 2.h,
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(5),
-                                          color: Colors.white,
-                                        ),
-                                        child: Text(
-                                          "-",
-                                          style: TextStyle(
-                                              fontSize: 8.sp,
-                                              fontFamily: "PulpDisplay",
-                                              fontWeight: FontWeight.w400,
-                                              color: Appcolors().blackcolor),
-                                        ),
-                                      ),
-                                    ),
-                                    GestureDetector(
-                                      onTap: (){
-                                        setState(() {
-                                            imagecredit=imagecredit+1;
-                                        });
-                                      },
-                                      child: Container(
-                                        margin: EdgeInsets.only(left: 20.w),
-                                        alignment: Alignment.center,
-                                        width: 4.w,
-                                        height: 2.h,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.rectangle,
-                                            image: DecorationImage(
-                                              image: AssetImage("assets/images/btnbackgroundgradient.png"),fit: BoxFit.fill
-                                            ),
-                                            borderRadius: BorderRadius.circular(5)
-                                        ),
-                                        child: Text(
-                                          "+",
-                                          style: TextStyle(
-                                              fontSize: 8.sp,
-                                              fontFamily: "PulpDisplay",
-                                              fontWeight: FontWeight.w400,
-                                              color: Appcolors().blackcolor),
-                                        ),
-                                      ),
-                                    ),
-
-                                  ],
-                                )
-                              ],
-                            ),
                           ),
                         ),
                       ),
@@ -339,11 +388,11 @@ class MassmessageScreenState extends State<MassmessageScreen>{
                       alignment: Alignment.center,
                       width: double.infinity,
                       decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage("assets/images/btnbackgroundgradient.png"),fit: BoxFit.fill
-                        ),
-                        borderRadius: BorderRadius.circular(10)
-                      ),
+                          image: DecorationImage(
+                              image: AssetImage(
+                                  "assets/images/btnbackgroundgradient.png"),
+                              fit: BoxFit.fill),
+                          borderRadius: BorderRadius.circular(10)),
                       height: 5.h,
                       child: Text(
                         StringConstants.send,
@@ -381,7 +430,7 @@ class MassmessageScreenState extends State<MassmessageScreen>{
                       child: ListView.builder(
                         shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(),
-                       itemCount: 10,
+                        itemCount: 10,
                         itemBuilder: (BuildContext context, int index) {
                           return AnimationConfiguration.staggeredList(
                             position: index,
@@ -392,198 +441,289 @@ class MassmessageScreenState extends State<MassmessageScreen>{
                                 child: Column(
                                   children: [
                                     Container(
-                                      padding: EdgeInsets.all(2.h),
-                                      decoration: BoxDecoration(
-                                          border: Border.all(color: Appcolors().chatuserborder),
-                                          borderRadius: BorderRadius.circular(2.h)
-                                      ),
-                                      width: double.infinity,
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          index%2==0?
-                                          Column(
-                                            children: [
-                                              GestureDetector(
-                                                onTap: (){
-                                                  // Future.delayed(Duration(seconds: 1), () {
-                                                  //   !videostatus?
-                                                  //   Progressdialog.showLoadingDialog(context, _key)
-                                                  //       :
-                                                    videoplayer(context);
-                                                  // });
-                                                },
-                                                child: Container(
-                                                  width:35.w,
-                                                  height: 16.h,
-                                                  decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(15),
-                                                    image: DecorationImage(
-                                                        image: AssetImage("assets/images/modelimage.png",),fit: BoxFit.fill
-                                                    ),
-                                                  ),
-                                                  child: Icon(Icons.play_circle_outline_rounded,color: Colors.white,),
-                                                ),
+                                        padding: EdgeInsets.all(2.h),
+                                        decoration: BoxDecoration(
+                                            border: Border.all(
+                                                color:
+                                                    Appcolors().chatuserborder),
+                                            borderRadius:
+                                                BorderRadius.circular(2.h)),
+                                        width: double.infinity,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            index % 2 == 0
+                                                ? Column(
+                                                    children: [
+                                                      GestureDetector(
+                                                        onTap: () {
+                                                          // Future.delayed(Duration(seconds: 1), () {
+                                                          //   !videostatus?
+                                                          //   Progressdialog.showLoadingDialog(context, _key)
+                                                          //       :
+                                                          videoplayer(context);
+                                                          // });
+                                                        },
+                                                        child: Container(
+                                                          width: 35.w,
+                                                          height: 16.h,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        15),
+                                                            image:
+                                                                DecorationImage(
+                                                                    image:
+                                                                        AssetImage(
+                                                                      "assets/images/modelimage.png",
+                                                                    ),
+                                                                    fit: BoxFit
+                                                                        .fill),
+                                                          ),
+                                                          child: Icon(
+                                                            Icons
+                                                                .play_circle_outline_rounded,
+                                                            color: Colors.white,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        height: 2.h,
+                                                      ),
+                                                    ],
+                                                  )
+                                                : const SizedBox(),
+                                            Container(
+                                              decoration: BoxDecoration(
+                                                  color: Appcolors()
+                                                      .loginhintcolor,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          1.5.h)),
+                                              padding: EdgeInsets.only(
+                                                  left: 3.w,
+                                                  right: 3.w,
+                                                  top: 1.5.h,
+                                                  bottom: 1.5.h),
+                                              child: Text(
+                                                "Babe wanna video call?",
+                                                style: TextStyle(
+                                                    fontSize: 12.sp,
+                                                    fontFamily: "PulpDisplay",
+                                                    fontWeight: FontWeight.w400,
+                                                    color: Appcolors()
+                                                        .backgroundcolor),
                                               ),
-                                              SizedBox(
-                                                height: 2.h,
-                                              ),
-                                            ],
-                                          ):
-                                          const SizedBox(),
-                                          Container(
-                                            decoration: BoxDecoration(
-                                                color:Appcolors().loginhintcolor,
-                                                borderRadius: BorderRadius.circular(1.5.h)
                                             ),
-                                            padding:EdgeInsets.only(left: 3.w,right: 3.w,top: 1.5.h,bottom: 1.5.h),
-                                            child: Text("Babe wanna video call?",style: TextStyle(
-                                                fontSize: 12.sp,
-                                                fontFamily: "PulpDisplay",
-                                                fontWeight: FontWeight.w400,
-                                                color: Appcolors().backgroundcolor),),
-                                          ),
-                                          SizedBox(
-                                            height: 1.h ,
-                                          ),
-                                          Container(
-                                            width: double.infinity,
-                                            child: Text("Sent 23/04/2023 01:30 am",style: TextStyle(
-                                                fontSize: 10.sp,
-                                                // fontFamily: "PulpDisplay",
-                                                fontStyle: FontStyle.italic,
-                                                fontWeight: FontWeight.w500,
-                                                color: Appcolors().loginhintcolor,),textAlign: TextAlign.end,),
-                                          ),
-                                          SizedBox(
-                                            height: 1.h,
-                                          ),
-                                          Divider(
-                                            thickness: 1.2,
-                                            height: 1.h,
-                                            color: Appcolors().dividercolor
-                                          ),
-                                          SizedBox(
-                                            height: 1.h,
-                                          ),
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  SizedBox(
-                                                    height: 0.5.h,
-                                                  ),
-                                                  Container(
-                                                    child:  GradientText(
-                                                      "1343",
-                                                      style: TextStyle(
-                                                          fontSize: 16.sp,
-                                                          fontFamily: "PulpDisplay",
-                                                          fontWeight: FontWeight.w500),
-                                                      gradientType: GradientType.linear,
-                                                      gradientDirection: GradientDirection.ttb,
-                                                      radius: 8,
-                                                      colors: [
-                                                        Appcolors().gradientcolorfirst,
-                                                        Appcolors().gradientcolorsecond,
-                                                      ],
+                                            SizedBox(
+                                              height: 1.h,
+                                            ),
+                                            Container(
+                                              width: double.infinity,
+                                              child: Text(
+                                                "Sent 23/04/2023 01:30 am",
+                                                style: TextStyle(
+                                                  fontSize: 10.sp,
+                                                  // fontFamily: "PulpDisplay",
+                                                  fontStyle: FontStyle.italic,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Appcolors()
+                                                      .loginhintcolor,
+                                                ),
+                                                textAlign: TextAlign.end,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 1.h,
+                                            ),
+                                            Divider(
+                                                thickness: 1.2,
+                                                height: 1.h,
+                                                color:
+                                                    Appcolors().dividercolor),
+                                            SizedBox(
+                                              height: 1.h,
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceAround,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    SizedBox(
+                                                      height: 0.5.h,
                                                     ),
-                                                  ),SizedBox(
-                                                    height: 1.h,
-                                                  ),
-                                                  Container(
-                                                    child: Text(StringConstants.sent,style: TextStyle(
-                                                      fontSize: 10.sp,
-                                                      fontFamily: "PulpDisplay",
-                                                      fontWeight: FontWeight.w400,
-                                                      color: Appcolors().loginhintcolor,),textAlign: TextAlign.end,),
-                                                  ),
-                                                ],
-                                              ),
-                                              Container(
-                                                height: 6.h,
-                                                  width: 1.5,
-                                                color: Appcolors().dividercolor
-                                              ),
-                                              Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  SizedBox(
-                                                    height: 0.5.h,
-                                                  ),
-                                                  Container(
-                                                    child:  GradientText(
-                                                      "245",
-                                                      style: TextStyle(
-                                                          fontSize: 16.sp,
-                                                          fontFamily: "PulpDisplay",
-                                                          fontWeight: FontWeight.w500),
-                                                      gradientType: GradientType.linear,
-                                                      gradientDirection: GradientDirection.ttb,
-                                                      radius: 6,
-                                                      colors: [
-                                                        Appcolors().gradientcolorfirst,
-                                                        Appcolors().gradientcolorsecond,
-                                                      ],
+                                                    Container(
+                                                      child: GradientText(
+                                                        "1343",
+                                                        style: TextStyle(
+                                                            fontSize: 16.sp,
+                                                            fontFamily:
+                                                                "PulpDisplay",
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w500),
+                                                        gradientType:
+                                                            GradientType.linear,
+                                                        gradientDirection:
+                                                            GradientDirection
+                                                                .ttb,
+                                                        radius: 8,
+                                                        colors: [
+                                                          Appcolors()
+                                                              .gradientcolorfirst,
+                                                          Appcolors()
+                                                              .gradientcolorsecond,
+                                                        ],
+                                                      ),
                                                     ),
-                                                  ),SizedBox(
-                                                    height: 1.h,
-                                                  ),
-                                                  Container(
-                                                    child: Text(StringConstants.reads,style: TextStyle(
-                                                      fontSize: 10.sp,
-                                                      fontFamily: "PulpDisplay",
-                                                      fontWeight: FontWeight.w400,
-                                                      color: Appcolors().loginhintcolor,),textAlign: TextAlign.end,),
-                                                  ),
-                                                ],
-                                              ),
-                                              Container(
-                                                height: 6.h,
-                                                width: 1.5,
-                                                color: Appcolors().dividercolor
-                                              ),
-                                              Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  SizedBox(
-                                                    height: 0.5.h,
-                                                  ),
-                                                  Container(
-                                                    child:  GradientText(
-                                                      "17.2%",
-                                                      style: TextStyle(
-                                                          fontSize: 16.sp,
-                                                          fontFamily: "PulpDisplay",
-                                                          fontWeight: FontWeight.w500),
-                                                      gradientType: GradientType.linear,
-                                                      gradientDirection: GradientDirection.ttb,
-                                                      radius: 6,
-                                                      colors: [
-                                                        Appcolors().gradientcolorfirst,
-                                                        Appcolors().gradientcolorsecond,
-                                                      ],
+                                                    SizedBox(
+                                                      height: 1.h,
                                                     ),
-                                                  ),SizedBox(
-                                                    height: 1.h,
-                                                  ),
-                                                  Container(
-                                                    child: Text(StringConstants.readrate,style: TextStyle(
-                                                      fontSize: 10.sp,
-                                                      fontFamily: "PulpDisplay",
-                                                      fontWeight: FontWeight.w400,
-                                                      color: Appcolors().loginhintcolor,),textAlign: TextAlign.end,),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          )
-                                        ],
-                                      )
-                                    ),
+                                                    Container(
+                                                      child: Text(
+                                                        StringConstants.sent,
+                                                        style: TextStyle(
+                                                          fontSize: 10.sp,
+                                                          fontFamily:
+                                                              "PulpDisplay",
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          color: Appcolors()
+                                                              .loginhintcolor,
+                                                        ),
+                                                        textAlign:
+                                                            TextAlign.end,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                Container(
+                                                    height: 6.h,
+                                                    width: 1.5,
+                                                    color: Appcolors()
+                                                        .dividercolor),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    SizedBox(
+                                                      height: 0.5.h,
+                                                    ),
+                                                    Container(
+                                                      child: GradientText(
+                                                        "245",
+                                                        style: TextStyle(
+                                                            fontSize: 16.sp,
+                                                            fontFamily:
+                                                                "PulpDisplay",
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w500),
+                                                        gradientType:
+                                                            GradientType.linear,
+                                                        gradientDirection:
+                                                            GradientDirection
+                                                                .ttb,
+                                                        radius: 6,
+                                                        colors: [
+                                                          Appcolors()
+                                                              .gradientcolorfirst,
+                                                          Appcolors()
+                                                              .gradientcolorsecond,
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 1.h,
+                                                    ),
+                                                    Container(
+                                                      child: Text(
+                                                        StringConstants.reads,
+                                                        style: TextStyle(
+                                                          fontSize: 10.sp,
+                                                          fontFamily:
+                                                              "PulpDisplay",
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          color: Appcolors()
+                                                              .loginhintcolor,
+                                                        ),
+                                                        textAlign:
+                                                            TextAlign.end,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                Container(
+                                                    height: 6.h,
+                                                    width: 1.5,
+                                                    color: Appcolors()
+                                                        .dividercolor),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    SizedBox(
+                                                      height: 0.5.h,
+                                                    ),
+                                                    Container(
+                                                      child: GradientText(
+                                                        "17.2%",
+                                                        style: TextStyle(
+                                                            fontSize: 16.sp,
+                                                            fontFamily:
+                                                                "PulpDisplay",
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w500),
+                                                        gradientType:
+                                                            GradientType.linear,
+                                                        gradientDirection:
+                                                            GradientDirection
+                                                                .ttb,
+                                                        radius: 6,
+                                                        colors: [
+                                                          Appcolors()
+                                                              .gradientcolorfirst,
+                                                          Appcolors()
+                                                              .gradientcolorsecond,
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 1.h,
+                                                    ),
+                                                    Container(
+                                                      child: Text(
+                                                        StringConstants
+                                                            .readrate,
+                                                        style: TextStyle(
+                                                          fontSize: 10.sp,
+                                                          fontFamily:
+                                                              "PulpDisplay",
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          color: Appcolors()
+                                                              .loginhintcolor,
+                                                        ),
+                                                        textAlign:
+                                                            TextAlign.end,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            )
+                                          ],
+                                        )),
                                     SizedBox(
                                       height: 1.5.h,
                                     ),
@@ -595,7 +735,6 @@ class MassmessageScreenState extends State<MassmessageScreen>{
                         },
                       ),
                     )
-
                   ],
                 ),
               ),
@@ -605,238 +744,485 @@ class MassmessageScreenState extends State<MassmessageScreen>{
       ),
     );
   }
+
   Future<void> videoplayer(BuildContext context) {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             contentPadding: EdgeInsets.all(5),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10.0))),
-              backgroundColor: Appcolors().blackcolor,
-              //title: Text("Image Picker"),
-              content: StatefulBuilder(  // You need this, notice the parameters below:
-                builder: (BuildContext context, StateSetter setState) {
-                  return Container(
-                      alignment: Alignment.center,
-                      height: 50.h,
-                      width: 80.h,
-                      child:
-                      Stack(
-                        alignment: Alignment.topRight,
-                        children: [
-                          Container(
-                              width: 80.h,
-                              color: Colors.black,
-                              height:
-                              (MediaQuery.of(context)
-                                  .size
-                                  .height /
-                                  100) *
-                                  50,
-                              child: AspectRatio(
-                                aspectRatio: _controller
-                                    .value.aspectRatio,
-                                child:
-                                CustomVideoPlayer(
-                                  customVideoPlayerController: _customVideoPlayerController,
-
-                                ),
-                                // VideoPlayer(
-                                //     _controller),
-                              )),
-                          InkWell(
-                            onTap: (){
-                              Navigator.pop(context);
-                            },
-                            child:
-                            Container(
-                              margin: EdgeInsets.only(right: 5.w,top: 1.h),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10.0))),
+            backgroundColor: Appcolors().blackcolor,
+            //title: Text("Image Picker"),
+            content: StatefulBuilder(
+              // You need this, notice the parameters below:
+              builder: (BuildContext context, StateSetter setState) {
+                return Container(
+                    alignment: Alignment.center,
+                    height: 50.h,
+                    width: 80.h,
+                    child: Stack(
+                      alignment: Alignment.topRight,
+                      children: [
+                        Container(
+                            width: 80.h,
+                            color: Colors.black,
+                            height:
+                                (MediaQuery.of(context).size.height / 100) * 50,
+                            child: AspectRatio(
+                              aspectRatio: _controller.value.aspectRatio,
+                              child: CustomVideoPlayer(
+                                customVideoPlayerController:
+                                    _customVideoPlayerController,
+                              ),
+                              // VideoPlayer(
+                              //     _controller),
+                            )),
+                        InkWell(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: Container(
+                            margin: EdgeInsets.only(right: 5.w, top: 1.h),
+                            height: 4.h,
+                            width: 4.w,
+                            alignment: Alignment.topRight,
+                            child: Image.asset(
+                              "assets/images/crossicon.png",
+                              color: Colors.white,
                               height: 4.h,
                               width: 4.w,
-                              alignment: Alignment.topRight,
-                              child: Image.asset("assets/images/crossicon.png",color: Colors.white,height: 4.h,
-                                width: 4.w,),
                             ),
                           ),
-                        ],
-                      )
-                  );
-                },
-              ),
+                        ),
+                      ],
+                    ));
+              },
+            ),
           );
         });
   }
+
   Future<void> addmediadialog(BuildContext context) {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             contentPadding: EdgeInsets.zero,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10.0))),
-              backgroundColor: Colors.transparent,
-              //title: Text("Image Picker"),
-              content: StatefulBuilder(  // You need this, notice the parameters below:
-                builder: (BuildContext context, StateSetter setState) {
-                  return Stack(
-                    alignment: Alignment.topRight,
-                    children: [
-                      Container(
-                        color: Colors.transparent,
-                        padding: EdgeInsets.all(10),
-                        child: Container(
-                          width: 80.w,
-                          // margin: EdgeInsets.only(left: 2.w, right: 2.w,bottom: 1.h),
-                          alignment: Alignment.center,
-                          height: 10.h,
-                          decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: AssetImage(
-                                  "assets/images/btnbackgroundgradient.png",
-                                ),
-                                fit: BoxFit.fill,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10.0))),
+            backgroundColor: Colors.transparent,
+            //title: Text("Image Picker"),
+            content: StatefulBuilder(
+              // You need this, notice the parameters below:
+              builder: (BuildContext context, StateSetter setState) {
+                return Stack(
+                  alignment: Alignment.topRight,
+                  children: [
+                    Container(
+                      color: Colors.transparent,
+                      padding: EdgeInsets.all(10),
+                      child: Container(
+                        width: 80.w,
+                        // margin: EdgeInsets.only(left: 2.w, right: 2.w,bottom: 1.h),
+                        alignment: Alignment.center,
+                        height: 10.h,
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage(
+                                "assets/images/btnbackgroundgradient.png",
                               ),
-                              borderRadius: BorderRadius.circular(15)),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              GestureDetector(
-                                onTap: (){
-                                  _getFromGallery();
-                                },
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    SvgPicture.asset(
-                                      "assets/images/documentupload.svg",
-                                      height: 3.h,
-                                      width: 3.w,
-                                      color: Appcolors().bottomnavbgcolor,
-                                    ),
-                                    SizedBox(
-                                      height: 1.h,
-                                    ),
-                                    Text(
-                                      StringConstants.choosefile,
-                                      style: TextStyle(
-                                          fontSize: 10.sp,
-                                          // fontFamily: "PulpDisplay",
-                                          fontWeight: FontWeight.w500,
-                                          color: Appcolors().bottomnavbgcolor),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ],
-                                ),
+                              fit: BoxFit.fill,
+                            ),
+                            borderRadius: BorderRadius.circular(15)),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                _getFromGallery();
+                              },
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SvgPicture.asset(
+                                    "assets/images/documentupload.svg",
+                                    height: 3.h,
+                                    width: 3.w,
+                                    color: Appcolors().bottomnavbgcolor,
+                                  ),
+                                  SizedBox(
+                                    height: 1.h,
+                                  ),
+                                  Text(
+                                    StringConstants.choosefile,
+                                    style: TextStyle(
+                                        fontSize: 10.sp,
+                                        // fontFamily: "PulpDisplay",
+                                        fontWeight: FontWeight.w500,
+                                        color: Appcolors().bottomnavbgcolor),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
                               ),
-                              GestureDetector(
-                                onTap: (){
-                                  clickphotofromcamera();
-                                },
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    SvgPicture.asset(
-                                      "assets/images/cameraicon.svg",
-                                      height: 3.h,
-                                      width: 3.w,
-                                      color: Appcolors().bottomnavbgcolor,
-                                    ),
-                                    SizedBox(
-                                      height: 1.h,
-                                    ),
-                                    Text(
-                                      StringConstants.takephoto,
-                                      style: TextStyle(
-                                          fontSize: 10.sp,
-                                          // fontFamily: "PulpDisplay",
-                                          fontWeight: FontWeight.w500,
-                                          color: Appcolors().bottomnavbgcolor),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ],
-                                ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                clickphotofromcamera();
+                              },
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SvgPicture.asset(
+                                    "assets/images/cameraicon.svg",
+                                    height: 3.h,
+                                    width: 3.w,
+                                    color: Appcolors().bottomnavbgcolor,
+                                  ),
+                                  SizedBox(
+                                    height: 1.h,
+                                  ),
+                                  Text(
+                                    StringConstants.takephoto,
+                                    style: TextStyle(
+                                        fontSize: 10.sp,
+                                        // fontFamily: "PulpDisplay",
+                                        fontWeight: FontWeight.w500,
+                                        color: Appcolors().bottomnavbgcolor),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
                               ),
-                              GestureDetector(
-                                onTap: (){
-                                  pickVideo();
-                                },
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    SvgPicture.asset(
-                                      "assets/images/videoicon.svg",
-                                      height: 3.h,
-                                      width: 3.w,
-                                      color: Appcolors().bottomnavbgcolor,
-                                    ),
-                                    SizedBox(
-                                      height: 1.h,
-                                    ),
-                                    Text(
-                                      StringConstants.recordvideo,
-                                      style: TextStyle(
-                                          fontSize: 10.sp,
-                                          // fontFamily: "PulpDisplay",
-                                          fontWeight: FontWeight.w500,
-                                          color: Appcolors().bottomnavbgcolor),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ],
-                                ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                pickVideo();
+                              },
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SvgPicture.asset(
+                                    "assets/images/videoicon.svg",
+                                    height: 3.h,
+                                    width: 3.w,
+                                    color: Appcolors().bottomnavbgcolor,
+                                  ),
+                                  SizedBox(
+                                    height: 1.h,
+                                  ),
+                                  Text(
+                                    StringConstants.recordvideo,
+                                    style: TextStyle(
+                                        fontSize: 10.sp,
+                                        // fontFamily: "PulpDisplay",
+                                        fontWeight: FontWeight.w500,
+                                        color: Appcolors().bottomnavbgcolor),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
-                      GestureDetector(
-                        onTap: (){
-                          Navigator.pop(context);
-                        },
-                        child: CircleAvatar(
-                          radius: 1.5.h,
-                          backgroundColor: Colors.white,
-                          child: Image.asset("assets/images/crossicon.png",height: 1.5.h,),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: CircleAvatar(
+                        radius: 1.5.h,
+                        backgroundColor: Colors.white,
+                        child: Image.asset(
+                          "assets/images/crossicon.png",
+                          height: 1.5.h,
                         ),
                       ),
-
-                    ],
-                  );
-                },
-              ),
+                    ),
+                  ],
+                );
+              },
+            ),
           );
         });
   }
-  void startvideo(){
-      videoPlayerController = VideoPlayerController.network("https://coderzbar.info/dev/worldofquotes_dev/storage/app/public/author/498330079authorimage.mp4")
-        ..initialize().then((value) => setState(() {
-          print("Video working");
-          var durationOfVideo = videoPlayerController.value.position.inSeconds.round();
-          print("Duration of video:-"+durationOfVideo.toString());
-          debugPrint("========"+_controller.value.duration.toString());
 
-        }));
-      _customVideoPlayerController = CustomVideoPlayerController(
+  Future<void> createnewgroup(BuildContext context) {
+    return showDialog(
         context: context,
-        videoPlayerController: videoPlayerController,
-      );
-
-        _controller = VideoPlayerController.network(
-            "https://coderzbar.info/dev/worldofquotes_dev/storage/app/public/author/498330079authorimage.mp4")
-          ..initialize().then((_) {
-            debugPrint("========"+_controller.value.duration.toString());
-            print("Video Started");
-            setState((){
-            videostatus=true;
-            });
-            var durationOfVideo = videoPlayerController.value.position.inSeconds.round();
-            print("Duration of videos:-"+durationOfVideo.toString());
-          },
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: Appcolors().backgroundcolor,
+            // contentPadding: EdgeInsets.zero,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(15.0))),
+            //title: Text("Image Picker"),
+            content: StatefulBuilder(
+              // You need this, notice the parameters below:
+              builder: (BuildContext context, StateSetter setState) {
+                return Container(
+                    width: 90.w,
+                    // margin: EdgeInsets.only(left: 2.w, right: 2.w,bottom: 1.h),
+                    alignment: Alignment.center,
+                    height: 80.h,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                alignment: Alignment.topLeft,
+                                child: Text(
+                                  StringConstants.createagroup,
+                                  style: TextStyle(
+                                    fontSize: 15.sp,
+                                    fontFamily: "PulpDisplay",
+                                    fontWeight: FontWeight.w400,
+                                    color: Appcolors().whitecolor,
+                                  ),
+                                  textAlign: TextAlign.end,
+                                ),
+                              ),
+                              SvgPicture.asset(
+                                "assets/images/searchicon.svg",
+                                color: Colors.white,
+                              )
+                            ],
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(top: 1.5.h),
+                            // padding: EdgeInsets.only(top: 1.h,bottom: 1.h),
+                            child: TextFormField(
+                              cursorColor: Appcolors().loginhintcolor,
+                              style: TextStyle(
+                                color: Appcolors().whitecolor,
+                                fontSize: 12.sp,
+                              ),
+                              controller: searchclientcontroller,
+                              decoration: InputDecoration(
+                                prefix: SvgPicture.asset("assets/images/searchicon.svg",color: Colors.white,width: 4.w,),
+                                isDense: true,
+                                border: InputBorder.none,
+                                // focusedBorder: InputBorder.none,
+                                disabledBorder: InputBorder.none,
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderSide: BorderSide(
+                                      color: Appcolors().logintextformborder),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderSide: BorderSide(
+                                      color: Appcolors().logintextformborder),
+                                ),
+                                filled: true,
+                                fillColor: Appcolors().backgroundcolor,
+                                hintText: StringConstants.searchclients,
+                                hintStyle: TextStyle(
+                                  decoration: TextDecoration.none,
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 12.sp,
+                                  // fontFamily: 'PulpDisplay',
+                                  color: Appcolors().loginhintcolor,
+                                ),
+                              ),
+                              onChanged: (value) {
+                                setState(() {});
+                              },
+                            ),
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(top: 1.5.h),
+                            child: TextFormField(
+                              cursorColor: Appcolors().loginhintcolor,
+                              style: TextStyle(
+                                color: Appcolors().whitecolor,
+                                fontSize: 12.sp,
+                              ),
+                              controller: groupnamecontroller,
+                              decoration: InputDecoration(
+                                // prefix: Container(
+                                //   child: SvgPicture.asset("assets/images/astrickicon.svg",width: 5.w,),
+                                // ),
+                                border: InputBorder.none,
+                                // focusedBorder: InputBorder.none,
+                                disabledBorder: InputBorder.none,
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderSide: BorderSide(
+                                      color: Appcolors().logintextformborder),
+                                ),
+                                isDense: true,
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderSide: BorderSide(
+                                      color: Appcolors().logintextformborder),
+                                ),
+                                filled: true,
+                                fillColor: Appcolors().backgroundcolor,
+                                hintText: StringConstants.enteryourgroupname,
+                                hintStyle: TextStyle(
+                                  decoration: TextDecoration.none,
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 12.sp,
+                                  // fontFamily: 'PulpDisplay',
+                                  color: Appcolors().loginhintcolor,
+                                ),
+                              ),
+                              onChanged: (value) {
+                                setState(() {});
+                              },
+                            ),
+                          ),
+                          SizedBox(
+                            height: 2.h,
+                          ),
+                          Container(
+                            width: double.infinity,
+                            height: 47.h,
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              // physics: NeverScrollableScrollPhysics(),
+                              itemCount: 10,
+                              itemBuilder: (BuildContext context, int index) {
+                                return Column(
+                                  children: [
+                                    Container(
+                                      alignment: Alignment.center,
+                                      height:5.h,
+                                        padding: EdgeInsets.only(left: 2.w,right: 2.w),
+                                        decoration: BoxDecoration(
+                                          color:groupusers.contains(index)?Appcolors().selectedusercolor:Colors.transparent,
+                                            border: Border.all(
+                                                color:
+                                                    Appcolors().chatuserborder),
+                                            borderRadius:
+                                                BorderRadius.circular(1.5.h)),
+                                        width: double.infinity,
+                                        child: Row(
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              "Rohit",
+                                              style: TextStyle(
+                                                  fontSize: 12.sp,
+                                                  fontFamily: "PulpDisplay",
+                                                  fontWeight: FontWeight.w400,
+                                                  color:
+                                                  groupusers.contains(index)?Appcolors().bottomnavbgcolor:Appcolors().whitecolor),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            GestureDetector(
+                                                onTap: () {
+                                                  setState((){
+                                                    if(groupusers.contains(index)){
+                                                      groupusers.remove(index);
+                                                    }else{
+                                                      groupusers.add(index);
+                                                    }
+                                                  });
+                                                },
+                                                child: Icon(
+                                                  groupusers.contains(index)?Icons.close_sharp:Icons.add,
+                                                  color: groupusers.contains(index)?Appcolors().bottomnavbgcolor:Colors.white,
+                                                ))
+                                          ],
+                                        )),
+                                    SizedBox(
+                                      height: 1.5.h,
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
+                          ),
+                          SizedBox(
+                            height: 2.h,
+                          ),
+                          Container(
+                            alignment: Alignment.center,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    image: AssetImage(
+                                        "assets/images/btnbackgroundgradient.png"),
+                                    fit: BoxFit.fill),
+                                borderRadius: BorderRadius.circular(10)),
+                            height: 5.h,
+                            child: Text(
+                              StringConstants.creategroup,
+                              style: TextStyle(
+                                  fontSize: 12.sp,
+                                  fontFamily: "PulpDisplay",
+                                  fontWeight: FontWeight.w400,
+                                  color: Appcolors().backgroundcolor),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: (){
+                              Navigator.pop(context);
+                            },
+                            child: Container(
+                              alignment: Alignment.center,
+                              width: double.infinity,
+                              height: 5.h,
+                              child: Text(
+                                StringConstants.close,
+                                style: TextStyle(
+                                    fontSize: 12.sp,
+                                    fontFamily: "PulpDisplay",
+                                    fontWeight: FontWeight.w400,
+                                    color: Appcolors().whitecolor),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ));
+              },
+            ),
           );
-
-
+        });
   }
+
+  void startvideo() {
+    videoPlayerController = VideoPlayerController.network(
+        "https://coderzbar.info/dev/worldofquotes_dev/storage/app/public/author/498330079authorimage.mp4")
+      ..initialize().then((value) => setState(() {
+            print("Video working");
+            var durationOfVideo =
+                videoPlayerController.value.position.inSeconds.round();
+            print("Duration of video:-" + durationOfVideo.toString());
+            debugPrint("========" + _controller.value.duration.toString());
+          }));
+    _customVideoPlayerController = CustomVideoPlayerController(
+      context: context,
+      videoPlayerController: videoPlayerController,
+    );
+
+    _controller = VideoPlayerController.network(
+        "https://coderzbar.info/dev/worldofquotes_dev/storage/app/public/author/498330079authorimage.mp4")
+      ..initialize().then(
+        (_) {
+          debugPrint("========" + _controller.value.duration.toString());
+          print("Video Started");
+          setState(() {
+            videostatus = true;
+          });
+          var durationOfVideo =
+              videoPlayerController.value.position.inSeconds.round();
+          print("Duration of videos:-" + durationOfVideo.toString());
+        },
+      );
+  }
+
   _getFromGallery() async {
     Navigator.pop(context);
     PickedFile? pickedFile = await ImagePicker().getImage(
@@ -850,6 +1236,7 @@ class MassmessageScreenState extends State<MassmessageScreen>{
       });
     }
   }
+
   clickphotofromcamera() async {
     Navigator.pop(context);
     PickedFile? pickedFile = await ImagePicker().getImage(
@@ -863,31 +1250,30 @@ class MassmessageScreenState extends State<MassmessageScreen>{
       });
     }
   }
+
   Future<void> pickVideo() async {
     Navigator.pop(context);
     final picker = ImagePicker();
     final pickedFile = await picker.getVideo(source: ImageSource.camera);
-
     if (pickedFile != null) {
       imageFile = File(pickedFile.path);
       print("Video path:-${imageFile?.path}");
-        createthumbnail();
+      createthumbnail();
       // print("Video path:-${pickedFile.path}");
     }
-
     return null;
   }
+
   Future<void> createthumbnail() async {
-      final uint8list = await VideoThumbnail.thumbnailData(
-        video: imageFile!.path,
-        imageFormat: ImageFormat.JPEG,
-        maxWidth: 400, // specify the width of the thumbnail, let the height auto-scaled to keep the source aspect ratio
-        quality: 75,
-      );
-      setState(() {
-        thumbnail=uint8list;
-      });
-
+    final uint8list = await VideoThumbnail.thumbnailData(
+      video: imageFile!.path,
+      imageFormat: ImageFormat.JPEG,
+      maxWidth:
+          400, // specify the width of the thumbnail, let the height auto-scaled to keep the source aspect ratio
+      quality: 75,
+    );
+    setState(() {
+      thumbnail = uint8list;
+    });
   }
-
 }

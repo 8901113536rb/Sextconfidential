@@ -19,6 +19,7 @@ class Appcolors{
   Color deactivatecolor = const Color(0xffE70037);
   Color verifiedicon = const Color(0xff32DF60);
   Color dialogbgcolor = const Color(0xff141415);
+  Color selectedusercolor = const Color(0xff999797);
 
 
 }

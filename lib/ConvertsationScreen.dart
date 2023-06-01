@@ -309,6 +309,7 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
                                 child: SvgPicture.asset(
                                   "assets/images/cameraicon.svg",
                                   height: 2.5.h,
+                                  color: showuploaddialog?Appcolors().gradientcolorsecond:Appcolors().whitecolor,
                                 )),
                             SizedBox(
                               width: 5.w,

@@ -83,5 +83,10 @@ class StringConstants{
   static String pleaseentermodelbio ="Please Enter Model Bio!";
   static String pleaseenteremailaddress ="Please enter Email Address";
   static String pleaseenterphonenumber ="Please enter Phone Number";
+  static String createagroup ="Create a Group";
+  static String searchclients ="Search Clients";
+  static String enteryourgroupname ="Enter your Group Name";
+  static String creategroup ="Create Group";
+  static String close ="Close";
 
 }

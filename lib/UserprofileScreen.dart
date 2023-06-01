@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:favorite_button/favorite_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:sextconfidential/utils/Appcolors.dart';
 import 'package:sextconfidential/utils/StringConstants.dart';
 import 'package:sizer/sizer.dart';
@@ -52,51 +54,70 @@ class UserprofileScreenState extends State<UserprofileScreen>{
                     SizedBox(
                       height: 2.5.h,
                     ),
-                    Container(
-                      padding: EdgeInsets.all(0.6.h),
-                      decoration:
-                      BoxDecoration(
-                        shape: BoxShape.circle,
-                        // color: Colors.white,
-                          gradient: LinearGradient(
-                              colors: [
-                                Appcolors().gradientcolorsecond,
-                                Appcolors().gradientcolorfirst,
-                              ],
-                              begin: Alignment.bottomLeft,
-                              end: Alignment.topRight
-                          )
-                      ),
-                      child: CachedNetworkImage(
-                        imageUrl:"https://c4.wallpaperflare.com/wallpaper/702/785/274/eiza-gonzalez-music-celebrities-girls-wallpaper-thumb.jpg",
-                        imageBuilder: (context,
-                            imageProvider) =>
-                            Container(
-                              width: 23.w,
-                              alignment: Alignment
-                                  .centerLeft,
-                              height: 9.5.h,
-                              decoration:
-                              BoxDecoration(
-                                shape: BoxShape.circle,
-                                image:
-                                DecorationImage(
-                                  image:
-                                  imageProvider,
-                                  fit: BoxFit.cover,
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          width: 20.w,
+                        ),
+                        Container(
+                          width: 30.w,
+                          padding: EdgeInsets.all(0.6.h),
+                          decoration:
+                          BoxDecoration(
+                            shape: BoxShape.circle,
+                            // color: Colors.white,
+                              gradient: LinearGradient(
+                                  colors: [
+                                    Appcolors().gradientcolorsecond,
+                                    Appcolors().gradientcolorfirst,
+                                  ],
+                                  begin: Alignment.bottomLeft,
+                                  end: Alignment.topRight
+                              )
+                          ),
+                          child: CachedNetworkImage(
+                            imageUrl:"https://c4.wallpaperflare.com/wallpaper/702/785/274/eiza-gonzalez-music-celebrities-girls-wallpaper-thumb.jpg",
+                            imageBuilder: (context,
+                                imageProvider) =>
+                                Container(
+                                  width: 23.w,
+                                  alignment: Alignment
+                                      .centerLeft,
+                                  height: 10.h,
+                                  decoration:
+                                  BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    image:
+                                    DecorationImage(
+                                      image:
+                                      imageProvider,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                        placeholder:
-                            (context, url) =>
-                            Container(
-                              child: Center(
-                                child:
-                                CircularProgressIndicator(strokeWidth: 2,color: Appcolors().backgroundcolor,),
-                              ),
-                            ),
-                        // errorWidget: (context, url, error) => errorWidget,
-                      ),
+                            placeholder:
+                                (context, url) =>
+                                Container(
+                                  child: Center(
+                                    child:
+                                    CircularProgressIndicator(strokeWidth: 2,color: Appcolors().backgroundcolor,),
+                                  ),
+                                ),
+                            // errorWidget: (context, url, error) => errorWidget,
+                          ),
+                        ),
+                        Container(
+                          alignment: Alignment.topRight,
+                            width: 20.w,
+                            child: FavoriteButton(
+                              iconSize: 4.h,
+                              valueChanged: (_isFavorite) {
+                                print('Is Favorite $_isFavorite)');
+                              },
+                            ))
+                      ],
                     ),
                     SizedBox(
                       height: 1.h,

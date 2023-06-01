@@ -84,9 +84,10 @@ class ChangepasswordState extends State<Changepassword>{
                       // ),
                       // suffixIcon: Icon(Icons.verified,color: Appcolors().verifiedicon,),
                       border: InputBorder.none,
+                      isDense: true,
                       disabledBorder: InputBorder.none,
                       focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15.0),
+                        borderRadius: BorderRadius.circular(10.0),
                         borderSide: BorderSide(
                             color: Appcolors().logintextformborder),
                       ),
@@ -156,6 +157,7 @@ class ChangepasswordState extends State<Changepassword>{
                       // prefix: Container(
                       //   child: SvgPicture.asset("assets/images/astrickicon.svg",width: 5.w,),
                       // ),
+                      isDense: true,
                       border: InputBorder.none,
                       // focusedBorder: InputBorder.none,
                       disabledBorder: InputBorder.none,
@@ -245,6 +247,7 @@ class ChangepasswordState extends State<Changepassword>{
                           color: Appcolors().logintextformborder),
                     ),
                       filled: true,
+                      isDense: true,
                       fillColor: Appcolors().backgroundcolor,
                       hintText:
                       StringConstants.confirmnewpassword,

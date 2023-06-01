@@ -393,9 +393,8 @@ class SidedrawerState extends State<Sidedrawer> {
         sharedPreferences.setBool("phonecall",switchlist[0]);
         sharedPreferences.setBool("videocall",switchlist[1]);
         sharedPreferences!.setString("userstatus", onlinestatus.toString());
-        Helpingwidgets.successsnackbar(jsonResponse["message"].toString(), context);
+        // Helpingwidgets.successsnackbar(jsonResponse["message"].toString(), context);
         print("Response:${jsonResponse["message"]}");
-        Navigator.pop(context);
 
       }
     } else {

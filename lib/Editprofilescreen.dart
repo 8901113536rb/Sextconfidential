@@ -183,6 +183,7 @@ class EditprofilescreenState extends State<Editprofilescreen> {
                               BorderSide(color: Appcolors().logintextformborder),
                         ),
                         filled: true,
+                        isDense: true,
                         fillColor: Appcolors().backgroundcolor,
                         hintText: "Elexa Steele",
                         hintStyle: TextStyle(
@@ -262,6 +263,7 @@ class EditprofilescreenState extends State<Editprofilescreen> {
                         borderSide: BorderSide(
                             color: Appcolors().logintextformborder),
                       ),
+                        isDense: true,
                         filled: true,
                         fillColor: Appcolors().backgroundcolor,
                         hintText:
@@ -320,6 +322,7 @@ class EditprofilescreenState extends State<Editprofilescreen> {
                         // prefix: Container(
                         //   child: SvgPicture.asset("assets/images/astrickicon.svg",width: 5.w,),
                         // ),
+                        isDense: true,
                         border: InputBorder.none,
                         // focusedBorder: InputBorder.none,
                         disabledBorder: OutlineInputBorder(
@@ -426,6 +429,7 @@ class EditprofilescreenState extends State<Editprofilescreen> {
                         borderSide: BorderSide(
                             color: Appcolors().logintextformborder),
                       ),
+                        isDense: true,
                         filled: true,
                         fillColor: Appcolors().backgroundcolor,
                         hintText: "+1 2345 7890",
@@ -531,9 +535,12 @@ class EditprofilescreenState extends State<Editprofilescreen> {
     print("email:-"+emailcontroller.text.trim());
     print("phone:-"+phonenumbercontroller.text.trim());
     print("token:-"+token.toString());
-    print("Image path:-"+imageFile!.path.toString());
-    request.files.add(await http.MultipartFile.fromPath("image", imageFile!.path,
-        filename: imageFile!.path),);
+    // print("Image path:-"+imageFile!.path.toString());
+    if(imageFile!=null){
+      request.files.add(await http.MultipartFile.fromPath("image", imageFile!.path,
+          filename: imageFile!.path),);
+    }
+
     var response = await request.send();
     response.stream.transform(utf8.decoder).listen((value) {
       jsonData = json.decode(value);
@@ -547,10 +554,10 @@ class EditprofilescreenState extends State<Editprofilescreen> {
               Bottomnavigation()), (Route<dynamic> route) => false);
           Helpingwidgets.successsnackbar(jsonData["message"].toString(), context);
           getprofilepojo=Getprofilepojo.fromJson(jsonData);
-          sharedPreferences!.setString("profilepic", jsonData["message"]["image"].toString());
-          sharedPreferences!.setString("stagename", jsonData["message"]["stagename"].toString());
-          sharedPreferences!.setString("bio", jsonData["message"]["bio"].toString());
-          sharedPreferences!.setString("phone", jsonData["message"]["phone"].toString());
+          sharedPreferences!.setString("profilepic", jsonData["data"]["image"].toString());
+          sharedPreferences!.setString("stagename", jsonData["data"]["stagename"].toString());
+          sharedPreferences!.setString("bio", jsonData["data"]["bio"].toString());
+          sharedPreferences!.setString("phone", jsonData["data"]["phone"].toString());
           print("Response:${jsonData["message"]}");
           // Navigator.pop(context);
         }

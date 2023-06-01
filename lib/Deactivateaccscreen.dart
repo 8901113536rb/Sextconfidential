@@ -89,6 +89,7 @@ class DeactivateaccscreenState extends State<Deactivateaccscreen>{
                       // prefix: Container(
                       //   child: SvgPicture.asset("assets/images/astrickicon.svg",width: 5.w,),
                       // ),
+                      isDense: true,
                       border: InputBorder.none,
                       // focusedBorder: InputBorder.none,
                       disabledBorder: InputBorder.none,
@@ -193,6 +194,7 @@ class DeactivateaccscreenState extends State<Deactivateaccscreen>{
                         borderSide: BorderSide(
                             color: Appcolors().logintextformborder),
                       ),
+                      isDense: true,
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15.0),
                         borderSide: BorderSide(

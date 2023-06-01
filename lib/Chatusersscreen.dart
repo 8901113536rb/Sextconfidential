@@ -73,6 +73,7 @@ class ChatusersscreenState extends State<Chatusersscreen> {
                 controller: searchcontroller,
                 decoration: InputDecoration(
                   border: InputBorder.none,
+                  isDense: true,
                   prefixIcon: Padding(
                     padding: EdgeInsets.only(
                       left: 4.w,
