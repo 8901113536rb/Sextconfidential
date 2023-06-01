@@ -26,6 +26,7 @@ class LoginScreenState extends State<LoginScreen> {
   Getprofilepojo? getprofilepojo;
   bool passwordobsecure=true;
   String? userstatus;
+  GlobalKey<State>key=GlobalKey();
   @override
   void initState() {
     // TODO: implement initState
@@ -284,6 +285,7 @@ class LoginScreenState extends State<LoginScreen> {
     );
   }
   Future<void> login() async {
+    Helpingwidgets.showLoadingDialog(context, key);
     Map data ={
       "email":emailcontoller.text,
       "password":passwordcontoller.text,

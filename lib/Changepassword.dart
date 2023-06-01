@@ -11,6 +11,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:http/http.dart' as http;
 
+import 'Bottomnavigation.dart';
+
 class Changepassword extends StatefulWidget{
   @override
   ChangepasswordState createState() => ChangepasswordState();
@@ -23,6 +25,7 @@ class ChangepasswordState extends State<Changepassword>{
   TextEditingController newpasswordcontroller=TextEditingController();
   TextEditingController confirmnewpasswordcontroller=TextEditingController();
   GlobalKey<FormState>_key=GlobalKey();
+  GlobalKey<State>key=GlobalKey();
   String? token;
   @override
   void initState() {
@@ -317,6 +320,7 @@ class ChangepasswordState extends State<Changepassword>{
     print("Token value:-"+token.toString());
   }
   Future<void> changepassword() async {
+    Helpingwidgets.showLoadingDialog(context, key);
     Map data ={
       "opassword":passwordcontroller.text,
       "npassword":newpasswordcontroller.text,
@@ -333,14 +337,18 @@ class ChangepasswordState extends State<Changepassword>{
     if (response.statusCode == 200) {
       if (jsonResponse["status"] == false) {
         Helpingwidgets.failedsnackbar(jsonResponse["message"].toString(), context);
+        Navigator.pop(context);
       } else {
         Helpingwidgets.successsnackbar(jsonResponse["message"].toString(), context);
         print("Response:${jsonResponse["message"]}");
-        Navigator.pop(context);
+        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+            Bottomnavigation()), (Route<dynamic> route) => false);
 
       }
     } else {
       Helpingwidgets.failedsnackbar(jsonResponse["message"].toString(), context);
+      Navigator.pop(context);
+
     }
   }
 

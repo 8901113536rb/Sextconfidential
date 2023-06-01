@@ -29,6 +29,7 @@ class DeactivateaccscreenState extends State<Deactivateaccscreen>{
   String dropdownvalue="Not Sure Why";
   String? token;
   GlobalKey<FormState>_key=GlobalKey();
+  GlobalKey<State>progresskey=GlobalKey();
 
   @override
   void initState() {
@@ -342,6 +343,7 @@ class DeactivateaccscreenState extends State<Deactivateaccscreen>{
     print("Token value:-"+token.toString());
   }
   Future<void> deactivateaccount() async {
+    Helpingwidgets.showLoadingDialog(context, progresskey);
     Map data ={
       "password":passwordcontroller.text,
       "reason":dropdownvalue,
@@ -359,6 +361,7 @@ class DeactivateaccscreenState extends State<Deactivateaccscreen>{
     if (response.statusCode == 200) {
       if (jsonResponse["status"] == false) {
         Helpingwidgets.failedsnackbar(jsonResponse["message"].toString(), context);
+        Navigator.pop(context);
       } else {
         Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
             LoginScreen()), (Route<dynamic> route) => false);
@@ -368,6 +371,8 @@ class DeactivateaccscreenState extends State<Deactivateaccscreen>{
       }
     } else {
       Helpingwidgets.failedsnackbar(jsonResponse["message"].toString(), context);
+      Navigator.pop(context);
+
     }
   }
 }

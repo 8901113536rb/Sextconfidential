@@ -8,4 +8,6 @@ class Networks{
   static String updatepayoutinfo = "updatepayoutinfo";
   static String updateprofile = "updateprofile";
   static String updateonline = "updateonline";
+  static String massmessagedetail = "massmessagedetail";
+  static String massmessage = "massmessage";
 }

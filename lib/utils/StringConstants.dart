@@ -48,7 +48,7 @@ class StringConstants{
   static String deactivateacccount="Deactivate Account";
   static String phonecallon="Phone Call on";
   static String duration="Duration";
-  static String sent="Sent";
+  static String sent="Sent ";
   static String readrate="Read Rate";
   static String deletepost="Delete Post";
   static String mostunlocks="Most Unlocks";

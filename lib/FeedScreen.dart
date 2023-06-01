@@ -152,7 +152,6 @@ class FeedScreenState extends State<FeedScreen> {
                           BorderSide(color: Appcolors().logintextformborder),
                     ),
                     filled: true,
-                    isDense: true,
                     fillColor: Appcolors().messageboxbgcolor,
                     hintText: StringConstants.writesomething,
                     hintStyle: TextStyle(

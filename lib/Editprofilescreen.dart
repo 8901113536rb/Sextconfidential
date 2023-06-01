@@ -540,7 +540,6 @@ class EditprofilescreenState extends State<Editprofilescreen> {
       request.files.add(await http.MultipartFile.fromPath("image", imageFile!.path,
           filename: imageFile!.path),);
     }
-
     var response = await request.send();
     response.stream.transform(utf8.decoder).listen((value) {
       jsonData = json.decode(value);
@@ -568,6 +567,5 @@ class EditprofilescreenState extends State<Editprofilescreen> {
       }
     }
     );
-
   }
 }
