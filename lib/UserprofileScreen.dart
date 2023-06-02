@@ -261,8 +261,8 @@ class UserprofileScreenState extends State<UserprofileScreen>{
                               },
                               child: Container(
                                 child: CachedNetworkImage(
-                                  imageUrl:index%2==0?"https://images.squarespace-cdn.com/content/v1/53cc306ee4b04fd213249899/1657760960280-QKY0G0PHGZBAW4T3K5T9/Boudoir+Photo+Shoot+Salem+Oregon+Boudoir+Photographer.jpg"
-                                      :"https://t3.ftcdn.net/jpg/00/81/64/18/360_F_81641867_qNkdJpUrCMQPu7BSnObppnKIXcQy0jPh.jpg",
+                                  imageUrl:index%2==0?"https://c4.wallpaperflare.com/wallpaper/1019/82/568/beauties-fatal-girl-lingerie-wallpaper-preview.jpg"
+                                      :"https://c4.wallpaperflare.com/wallpaper/409/240/922/beauties-fatal-girl-lingerie-wallpaper-preview.jpg",
                                   imageBuilder: (context, imageProvider) => Container(
                                     width: 25.w,
                                     alignment: Alignment.centerLeft,

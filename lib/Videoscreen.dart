@@ -40,11 +40,17 @@ class VideoscreenState extends State<Videoscreen>{
               margin: EdgeInsets.only(left: 2.w),
               child: const Icon(Icons.arrow_back_ios_rounded)),
         ),
-        title: Text("Back",style: TextStyle(
-            fontSize: 8.sp,
-            fontFamily: "PulpDisplay",
-            fontWeight: FontWeight.w500,
-            color: Appcolors().whitecolor),),
+        title: GestureDetector(
+          onTap: (){
+            Navigator.pop(context);
+            print("Click back");
+          },
+          child: Text("Back",style: TextStyle(
+              fontSize: 8.sp,
+              fontFamily: "PulpDisplay",
+              fontWeight: FontWeight.w500,
+              color: Appcolors().whitecolor),),
+        ),
       ),
       body: SafeArea(
         child: Container(

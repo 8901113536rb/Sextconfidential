@@ -287,8 +287,8 @@ class LoginScreenState extends State<LoginScreen> {
   Future<void> login() async {
     Helpingwidgets.showLoadingDialog(context, key);
     Map data ={
-      "email":emailcontoller.text,
-      "password":passwordcontoller.text,
+      "email":emailcontoller.text.trim(),
+      "password":passwordcontoller.text.trim(),
     };
     var jsonResponse = null;
     var response = await http.post(
@@ -301,6 +301,7 @@ class LoginScreenState extends State<LoginScreen> {
       if (jsonResponse["status"] == false) {
         Helpingwidgets.failedsnackbar(jsonResponse["message"].toString(), context);
       } else {
+        Navigator.pop(context);
         getprofilepojo=Getprofilepojo.fromJson(jsonResponse);
         SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
         sharedPreferences.setString("token", getprofilepojo!.token!.id.toString());
@@ -319,6 +320,7 @@ class LoginScreenState extends State<LoginScreen> {
       }
     } else {
       Helpingwidgets.failedsnackbar(jsonResponse["message"].toString(), context);
+      Navigator.pop(context);
     }
   }
 }

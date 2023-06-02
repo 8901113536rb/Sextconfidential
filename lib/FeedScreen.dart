@@ -771,8 +771,8 @@ class FeedScreenState extends State<FeedScreen> {
                                         height: 30.h,
                                         child: CachedNetworkImage(
                                           imageUrl: index % 2 == 0
-                                              ? "https://images.squarespace-cdn.com/content/v1/53cc306ee4b04fd213249899/1657760960280-QKY0G0PHGZBAW4T3K5T9/Boudoir+Photo+Shoot+Salem+Oregon+Boudoir+Photographer.jpg"
-                                              : "https://t3.ftcdn.net/jpg/00/81/64/18/360_F_81641867_qNkdJpUrCMQPu7BSnObppnKIXcQy0jPh.jpg",
+                                              ? "https://c4.wallpaperflare.com/wallpaper/18/354/513/actress-adult-babe-brunette-wallpaper-preview.jpg"
+                                              : "https://wallpapers.com/images/hd/model-with-sexy-body-teah567kt7aud3o2.jpg",
                                           imageBuilder:
                                               (context, imageProvider) =>
                                                   Container(

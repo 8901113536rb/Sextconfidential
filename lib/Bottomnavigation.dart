@@ -1,11 +1,16 @@
+import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:sextconfidential/pojo/getpayoutpojo.dart';
 import 'package:sextconfidential/utils/Appcolors.dart';
+import 'package:sextconfidential/utils/Helpingwidgets.dart';
+import 'package:sextconfidential/utils/Networks.dart';
 import 'package:sextconfidential/utils/Sidedrawer.dart';
 import 'package:sextconfidential/utils/StringConstants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
-
+import 'package:http/http.dart' as http;
 import 'CallsScreen.dart';
 import 'Chatusersscreen.dart';
 import 'FeedScreen.dart';
@@ -18,6 +23,7 @@ class Bottomnavigation extends StatefulWidget {
 
 class BottomnavigationState extends State<Bottomnavigation> {
   int selectedindex = 0;
+  SharedPreferences? sharedPreferences;
   String? token;
   final pages = [
     Chatusersscreen(),
@@ -25,13 +31,14 @@ class BottomnavigationState extends State<Bottomnavigation> {
     FeedScreen(),
     CallsScreen(),
   ];
-
+  Getpayoutpojo? getpayoutpojo;
   final GlobalKey<ScaffoldState> _key = GlobalKey(); // Create a key
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
   }
 
   @override
@@ -161,5 +168,40 @@ class BottomnavigationState extends State<Bottomnavigation> {
         ),
       ),
     );
+  }
+  Future<void> getsharedpreference() async {
+    sharedPreferences = await SharedPreferences.getInstance();
+    setState((){
+      token=sharedPreferences?.getString("token");
+    });
+    print("Token value:-"+token.toString());
+  }
+  Future<void> payoutinfo() async {
+
+    Map data={
+      "token":token
+    };
+    print("Data:-"+data.toString());
+    var jsonResponse = null;
+    var response = await http.post(
+        Uri.parse(Networks.baseurl + Networks.getpayoutinfo),
+        body: data
+    );
+    jsonResponse = json.decode(response.body);
+    print("jsonResponse:-" + jsonResponse.toString());
+    if (response.statusCode == 200) {
+      if (jsonResponse["status"] == false) {
+        Helpingwidgets.failedsnackbar(jsonResponse["message"].toString(), context);
+      } else {
+        Helpingwidgets.successsnackbar(jsonResponse["message"].toString(), context);
+        print("Response:${jsonResponse["message"]}");
+        // sharedPreferences!.setBool("twelvehouralert", bool.parse(getpayoutpojo!.data!.elementAt(0).status.toString()));
+        // sharedPreferences!.setBool("payoutprocessed", payoutprocessedalert);
+        // sharedPreferences!.setBool("endofpayperiod", endofpayalert);
+        // Navigator.pop(context);
+      }
+    } else {
+      Helpingwidgets.failedsnackbar(jsonResponse["message"].toString(), context);
+    }
   }
 }

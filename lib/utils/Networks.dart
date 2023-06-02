@@ -10,4 +10,5 @@ class Networks{
   static String updateonline = "updateonline";
   static String massmessagedetail = "massmessagedetail";
   static String massmessage = "massmessage";
+  static String getpayoutinfo = "getpayoutinfo";
 }
