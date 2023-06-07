@@ -20,6 +20,7 @@ class Appcolors{
   Color verifiedicon = const Color(0xff32DF60);
   Color dialogbgcolor = const Color(0xff141415);
   Color selectedusercolor = const Color(0xff999797);
+  Color selectedaddressbg = const Color(0xff4b4b4c);
 
 
 }

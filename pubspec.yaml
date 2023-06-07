@@ -58,6 +58,10 @@ dependencies:
   shared_preferences: ^2.1.1
   favorite_button: ^0.0.4
   video_thumbnail_imageview: ^0.0.5
+  google_places_flutter: ^2.0.5
+  flutter_typeahead: ^3.2.0
+#  getwidget: ^1.2.4
+#  searchfield: ^0.8.3
 
 #  chat_package: ^1.0.0
 

@@ -286,8 +286,6 @@ class UserprofileScreenState extends State<UserprofileScreen>{
                         ),
                       );
                   })
-
-
             ],
           ),
         )
