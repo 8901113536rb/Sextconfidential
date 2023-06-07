@@ -1486,9 +1486,7 @@ class MassmessageScreenState extends State<MassmessageScreen> {
         setState(() {
           responsestatus = true;
         });
-        Helpingwidgets.successsnackbar(
-            jsonResponse["message"].toString(), context);
-        print("Response:${jsonResponse["message"]}");
+        print("Message:-"+jsonResponse["message"].toString());
         massmassagespojo = Massmassagespojo.fromJson(jsonResponse);
       }
     } else {

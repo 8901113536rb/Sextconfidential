@@ -11,6 +11,7 @@ import 'package:sextconfidential/pojo/googleplacepojo.dart';
 // import 'package:searchfield/searchfield.dart';
 import 'package:sextconfidential/utils/Appcolors.dart';
 import 'package:sextconfidential/utils/Helpingwidgets.dart';
+import 'package:sextconfidential/utils/Networks.dart';
 import 'package:sextconfidential/utils/StringConstants.dart';
 import 'package:sizer/sizer.dart';
 import 'package:http/http.dart' as http;
@@ -84,37 +85,64 @@ class LocationdenialScreenState extends State<LocationdenialScreen> {
               textFieldConfiguration: TextFieldConfiguration(
                   autofocus: false,
                   // focusNode: FocusNode(canRequestFocus: false),
-                  style: TextStyle(fontSize: 15, color: Colors.white,overflow: TextOverflow.ellipsis),
+                  style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.white,
+                      overflow: TextOverflow.ellipsis),
                   decoration: InputDecoration(
-                    border: OutlineInputBorder(
+                      isDense: true,
+                      border: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Appcolors().loginhintcolor)),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15.0),
                         borderSide:
-                            BorderSide(color: Appcolors().loginhintcolor)),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                      borderSide:
-                          BorderSide(color: Appcolors().logintextformborder),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                      borderSide:
-                          BorderSide(color: Appcolors().logintextformborder),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                      borderSide:
-                          BorderSide(color: Appcolors().logintextformborder),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                      borderSide:
-                          BorderSide(color: Appcolors().logintextformborder),
-                    ),
-                  ),
+                            BorderSide(color: Appcolors().logintextformborder),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15.0),
+                        borderSide:
+                            BorderSide(color: Appcolors().logintextformborder),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15.0),
+                        borderSide:
+                            BorderSide(color: Appcolors().logintextformborder),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15.0),
+                        borderSide:
+                            BorderSide(color: Appcolors().logintextformborder),
+                      ),
+                      prefixIcon: Padding(
+                        padding: EdgeInsets.only(left: 2.w,right: 2.w,top: 1.h,bottom: 1.h),
+                        child: Container(
+                          // : EdgeInsets.only(top: 3.h,bottom: 3.h),
+                          margin: EdgeInsets.only(right: 2.w),
+                          height: 4.h,
+                          width: 20.w,
+                          alignment: Alignment.center,
+                          // padding: EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                              color: Appcolors().selectedaddressbg,
+                              borderRadius: BorderRadius.circular(15),
+                              border: Border.all(
+                                color: Appcolors().whitecolor,
+                              )),
+                          child: Text(
+                            "Seleted:" + selectedItems!.length.toString() + "  ",
+                            style: TextStyle(
+                              color: Appcolors().whitecolor,
+                            ),
+                          ),
+                        ),
+                      )),
                   onChanged: (value) {
                     searchlocation(value);
                   }),
-              suggestionsBoxDecoration:
-                  SuggestionsBoxDecoration(color: Appcolors().loginhintcolor,),
+              suggestionsBoxDecoration: SuggestionsBoxDecoration(
+                color: Appcolors().loginhintcolor,
+              ),
               suggestionsCallback: (pattern) {
                 List<String> matches = <String>[];
                 matches.addAll(suggestons);
@@ -125,58 +153,92 @@ class LocationdenialScreenState extends State<LocationdenialScreen> {
               },
               itemBuilder: (context, sone) {
                 return Container(
-                  width: 80.w,
                   color: Appcolors().bottomnavbgcolor,
                   padding: EdgeInsets.all(10),
                   child: Row(
                     children: [
-                      selectedItems.contains(sone)?Icon(Icons.check_box_outlined,color: Appcolors().whitecolor,):  Icon(Icons.check_box_outline_blank,color: Appcolors().whitecolor),
-                      Text(
-                        sone.toString(),
-                        style: TextStyle(color: Colors.white,overflow: TextOverflow.ellipsis),
+                      selectedItems.contains(sone)
+                          ? Icon(
+                              Icons.check_box_outlined,
+                              color: Appcolors().whitecolor,
+                            )
+                          : Icon(Icons.check_box_outline_blank,
+                              color: Appcolors().whitecolor),
+                      Container(
+                        width: 80.w,
+                        child: Text(
+                          sone.toString(),
+                          style: TextStyle(
+                              fontFamily: "PulpDisplay",
+                              color: Colors.white,
+                              overflow: TextOverflow.ellipsis),
+                        ),
                       ),
                     ],
                   ),
                 );
               },
               onSuggestionSelected: (suggestion) {
-                selectedItems.contains(suggestion)
-                    ? selectedItems.remove(suggestion)
-                    : selectedItems.add(suggestion);
+                setState(() {
+                  selectedItems.contains(suggestion)
+                      ? selectedItems.remove(suggestion)
+                      : selectedItems.add(suggestion);
+                });
                 print("Suggestions:-" + suggestion);
               },
             ),
             Expanded(
-                child:  ListView.builder(
-                  itemCount: selectedItems.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Column(
-                      children: [
-                        SizedBox(
-                          height: 2.h,
+              child: ListView.builder(
+                itemCount: selectedItems.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Column(
+                    children: [
+                      SizedBox(
+                        height: 1.5.h,
+                      ),
+                      Container(
+                        // margin: EdgeInsets.only(top: 3.h),
+                        decoration: BoxDecoration(
+                            color: Appcolors().selectedaddressbg,
+                            borderRadius: BorderRadius.circular(15),
+                            border: Border.all(
+                              color: Appcolors().whitecolor,
+                            )),
+                        padding: EdgeInsets.only(
+                            left: 15, right: 15, top: 7, bottom: 7),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              width:75.w,
+                              child: Text(
+                                selectedItems.elementAt(index),
+                                style: TextStyle(
+                                  fontFamily: "PulpDisplay",
+                                  color: Appcolors().whitecolor,
+                                    fontSize: 12.sp,),overflow: TextOverflow.ellipsis
+                              ),
+                            ),
+                            GestureDetector(
+                                onTap: () {
+                                  print("Removed");
+                                  setState(() {
+                                    selectedItems.removeAt(index);
+                                  });
+                                },
+                                child: Icon(
+                                  Icons.clear_rounded,
+                                  size: 25.sp,
+                                  color: Appcolors().whitecolor,
+                                ))
+                          ],
                         ),
-                        Container(
-                          // margin: EdgeInsets.only(top: 3.h),
-                          decoration: BoxDecoration(
-                              color: Appcolors().selectedaddressbg,
-                              borderRadius: BorderRadius.circular(15),
-                              border: Border.all(color: Appcolors().whitecolor,)
-                          ),
-                          padding: EdgeInsets.only(left: 15,right: 15,top: 10,bottom: 10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment
-                                .spaceBetween,
-                            children: [
-                              Text(selectedItems.elementAt(index),style: TextStyle(color: Appcolors().whitecolor,fontSize: 12.sp),),
-                              Icon(Icons.clear_rounded,size: 25.sp,color: Appcolors().whitecolor,)
-                            ],
-                          ),
-                        ),
-
-                      ],
-                    );
-                  },
-                ),)
+                      ),
+                    ],
+                  );
+                },
+              ),
+            )
             // Container(
             //   height: 5.h,
             //   decoration: BoxDecoration(
@@ -311,7 +373,7 @@ class LocationdenialScreenState extends State<LocationdenialScreen> {
     var jsonResponse = null;
     var response = await http.get(
       Uri.parse(
-          "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$searchdata&key=$kGoogleApiKey"),
+          "${Networks.autocompletebase}$searchdata&key=$kGoogleApiKey"),
     );
     jsonResponse = json.decode(response.body);
     print("jsonResponse:-" + jsonResponse.toString());

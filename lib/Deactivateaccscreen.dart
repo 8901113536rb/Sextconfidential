@@ -27,6 +27,7 @@ class DeactivateaccscreenState extends State<Deactivateaccscreen>{
   TextEditingController notecontroller=TextEditingController();
   List<String>items=["Not Sure Why","Don't like","Missing features"];
   String dropdownvalue="Not Sure Why";
+  SharedPreferences? sharedPreferences;
   String? token;
   GlobalKey<FormState>_key=GlobalKey();
   GlobalKey<State>progresskey=GlobalKey();
@@ -336,9 +337,9 @@ class DeactivateaccscreenState extends State<Deactivateaccscreen>{
         });
   }
   Future<void> getsharedpreference() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    sharedPreferences = await SharedPreferences.getInstance();
     setState((){
-      token=sharedPreferences.getString("token");
+      token=sharedPreferences!.getString("token");
     });
     print("Token value:-"+token.toString());
   }
@@ -363,6 +364,7 @@ class DeactivateaccscreenState extends State<Deactivateaccscreen>{
         Helpingwidgets.failedsnackbar(jsonResponse["message"].toString(), context);
         Navigator.pop(context);
       } else {
+        sharedPreferences!.clear();
         Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
             LoginScreen()), (Route<dynamic> route) => false);
         Helpingwidgets.successsnackbar(jsonResponse["message"].toString(), context);
