@@ -9,6 +9,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:record/record.dart';
+import 'package:record_mp3/record_mp3.dart';
 import 'package:sextconfidential/UserprofileScreen.dart';
 import 'package:sextconfidential/utils/Appcolors.dart';
 import 'package:sextconfidential/utils/StringConstants.dart';
@@ -18,6 +19,9 @@ import 'package:social_media_recorder/audio_encoder_type.dart';
 import 'package:social_media_recorder/screen/social_media_recorder.dart';
 import 'package:voice_message_package/voice_message_package.dart';
 // import 'package:voice_message_package/voice_message_package.dart';
+import 'package:audioplayers/audioplayers.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class ConvertsationScreen extends StatefulWidget {
   @override
@@ -31,6 +35,10 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
   File? imageFile;
   FocusNode messsagefocus = FocusNode();
   bool micstatus = false;
+  String statusText = "";
+  bool isComplete = false;
+  String recordingTime = '0:0'; // to store value
+  bool isRecording = false;
   @override
   void initState() {
     // TODO: implement initState
@@ -215,157 +223,213 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
                   children: [
                     showuploaddialog ? uploadcontainer() : SizedBox(),
                     Container(
-                      margin: EdgeInsets.only(left: 2.w, right: 2.w),
-                      color: Appcolors().backgroundcolor,
-                      width: double.infinity,
-                      child: !micstatus
-                          ? Container(
-                              width: double.infinity,
-                              alignment: Alignment.bottomCenter,
-                              margin: EdgeInsets.only(bottom: 1.h),
-                              padding: EdgeInsets.only(
-                                left: 2.w,
-                                right: 2.w,
-                                top: 1.h,
-                                bottom: 1.h,
-                              ),
-                              decoration: BoxDecoration(
-                                  color: Appcolors().bottomnavbgcolor,
-                                  borderRadius: BorderRadius.circular(15)),
-                              // height: 7.h,
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  InkWell(
-                                    onTap: () {
-                                      setState(() {
-                                        FocusManager.instance.primaryFocus
-                                            ?.unfocus();
-                                        emojiShowing = !emojiShowing;
-                                      });
-                                    },
-                                    child: SvgPicture.asset(
-                                      "assets/images/emojiimg.svg",
-                                      height: 3.h,
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: TextFormField(
-                                      maxLines: null,
-                                      keyboardType: TextInputType.multiline,
-                                      cursorColor: Appcolors().loginhintcolor,
-                                      style: TextStyle(
-                                        color: Appcolors().loginhintcolor,
-                                        fontSize: 12.sp,
+                        margin: EdgeInsets.only(left: 2.w, right: 2.w),
+                        color: Appcolors().backgroundcolor,
+                        width: double.infinity,
+                        child: Container(
+                          width: double.infinity,
+                          alignment: Alignment.bottomCenter,
+                          margin: EdgeInsets.only(bottom: 1.h),
+                          padding: EdgeInsets.only(
+                            left: 2.w,
+                            right: 2.w,
+                            top: 1.h,
+                            bottom: 1.h,
+                          ),
+                          decoration: BoxDecoration(
+                              color: Appcolors().bottomnavbgcolor,
+                              borderRadius: BorderRadius.circular(15)),
+                          // height: 7.h,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              !micstatus
+                                  ? Container(
+                                      height: 4.h,
+                                      width: 80.w,
+                                      child: Row(
+                                        children: [
+                                          InkWell(
+                                            onTap: () {
+                                              setState(() {
+                                                FocusManager
+                                                    .instance.primaryFocus
+                                                    ?.unfocus();
+                                                emojiShowing = !emojiShowing;
+                                              });
+                                            },
+                                            child: SvgPicture.asset(
+                                              "assets/images/emojiimg.svg",
+                                              height: 3.h,
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: TextFormField(
+                                              maxLines: null,
+                                              keyboardType:
+                                                  TextInputType.multiline,
+                                              cursorColor:
+                                                  Appcolors().loginhintcolor,
+                                              style: TextStyle(
+                                                color:
+                                                    Appcolors().loginhintcolor,
+                                                fontSize: 12.sp,
+                                              ),
+                                              controller: messagecontroller,
+                                              focusNode: messsagefocus,
+                                              decoration: InputDecoration(
+                                                isDense: true,
+                                                border: InputBorder.none,
+                                                // focusedBorder: InputBorder.none,
+                                                filled: true,
+                                                fillColor: Appcolors()
+                                                    .bottomnavbgcolor,
+                                                hintText: StringConstants.type,
+                                                hintStyle: TextStyle(
+                                                  decoration:
+                                                      TextDecoration.none,
+                                                  fontWeight: FontWeight.w400,
+                                                  fontSize: 12.sp,
+                                                  // fontFamily: 'PulpDisplay',
+                                                  color: Appcolors()
+                                                      .loginhintcolor,
+                                                ),
+                                              ),
+                                              onTap: () {
+                                                setState(() {
+                                                  emojiShowing = false;
+                                                  showuploaddialog = false;
+                                                });
+                                              },
+                                              onChanged: (value) {
+                                                setState(() {});
+                                              },
+                                              // validator: (value) {
+                                              //   if (value!.isEmpty) {
+                                              //     return "Please enter Message";
+                                              //   } else {
+                                              //     return null;
+                                              //   }
+                                              // },
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: 5.w,
+                                          ),
+                                          GestureDetector(
+                                              onTap: () {
+                                                setState(() {
+                                                  if (showuploaddialog) {
+                                                    showuploaddialog = false;
+                                                  } else {
+                                                    showuploaddialog = true;
+                                                    emojiShowing = false;
+                                                  }
+                                                });
+                                              },
+                                              child: SvgPicture.asset(
+                                                "assets/images/cameraicon.svg",
+                                                height: 2.5.h,
+                                                color: showuploaddialog
+                                                    ? Appcolors()
+                                                        .gradientcolorsecond
+                                                    : Appcolors().whitecolor,
+                                              )),
+                                          SizedBox(
+                                            width: 5.w,
+                                          ),
+                                        ],
                                       ),
-                                      controller: messagecontroller,
-                                      focusNode: messsagefocus,
-                                      decoration: InputDecoration(
-                                        isDense: true,
-                                        border: InputBorder.none,
-                                        // focusedBorder: InputBorder.none,
-                                        filled: true,
-                                        fillColor: Appcolors().bottomnavbgcolor,
-                                        hintText: StringConstants.type,
-                                        hintStyle: TextStyle(
-                                          decoration: TextDecoration.none,
-                                          fontWeight: FontWeight.w400,
-                                          fontSize: 12.sp,
-                                          // fontFamily: 'PulpDisplay',
-                                          color: Appcolors().loginhintcolor,
-                                        ),
+                                    )
+                                  : Container(
+                                      height: 4.h,
+                                      width: 80.w,
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.mic,
+                                            color: Colors.red,
+                                            size: 7.w,
+                                          ),
+                                          Container(
+                                            margin: EdgeInsets.only(left: 2.w),
+                                            child: Text(
+                                              recordingTime,
+                                              style: TextStyle(
+                                                  fontSize: 15.sp,
+                                                  // fontFamily: "PulpDisplay",
+                                                  fontWeight: FontWeight.w400,
+                                                  color: Appcolors()
+                                                      .loginhintcolor),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: 10.w,
+                                          ),
+                                          GestureDetector(
+                                              onTap: () {
+                                                setState(() {
+                                                  recordingTime="0:0";
+                                                  micstatus = false;
+                                                  stopRecord();
+                                                });
+                                              },
+                                              child: SvgPicture.asset(
+                                                  "assets/images/deleteicon.svg"))
+                                        ],
                                       ),
-                                      onTap: () {
-                                        setState(() {
-                                          emojiShowing = false;
-                                          showuploaddialog = false;
-                                        });
-                                      },
-                                      onChanged: (value) {
-                                        setState(() {});
-                                      },
-                                      // validator: (value) {
-                                      //   if (value!.isEmpty) {
-                                      //     return "Please enter Message";
-                                      //   } else {
-                                      //     return null;
-                                      //   }
-                                      // },
                                     ),
-                                  ),
-                                  SizedBox(
-                                    width: 5.w,
-                                  ),
-                                  GestureDetector(
-                                      onTap: () {
+                              // messagecontroller.text.isEmpty
+                              //     ? Listener(
+                              //         onPointerDown: (details) {
+                              //           setState(() {
+                              //             micstatus=true;
+                              //           });
+                              //           print("pointer details down:-" +
+                              //               details.down.toString());
+                              //         },
+                              //         onPointerUp: (details) {
+                              //           setState(() {
+                              //             micstatus=false;
+                              //           });
+                              //           print("pointer details up:-" +
+                              //               details.down.toString());
+                              //         },
+                              //         child:
+                              // messagecontroller.text.isEmpty ||
+                                  !micstatus
+                                  ? GestureDetector(
+                                      onTap: () async {
                                         setState(() {
-                                          if (showuploaddialog) {
-                                            showuploaddialog = false;
-                                          } else {
-                                            showuploaddialog = true;
-                                            emojiShowing = false;
-                                          }
+                                          micstatus = true;
+                                          startRecord();
                                         });
                                       },
                                       child: SvgPicture.asset(
-                                        "assets/images/cameraicon.svg",
+                                        "assets/images/micicon.svg",
                                         height: 2.5.h,
-                                        color: showuploaddialog
-                                            ? Appcolors().gradientcolorsecond
-                                            : Appcolors().whitecolor,
-                                      )),
-                                  SizedBox(
-                                    width: 5.w,
+                                      ),
+                                    )
+                                  : GestureDetector(
+                                    onTap: () async {
+                                      setState(() {
+                                        recordingTime="0:0";
+                                        micstatus = false;
+                                        stopRecord();
+                                      });
+                                    },
+                                    child: SvgPicture.asset(
+                                        "assets/images/sendicon.svg",
+                                        height: 2.5.h,
+                                      ),
                                   ),
-                                  messagecontroller.text.isEmpty
-                                      ? Listener(
-                                          onPointerDown: (details) {
-                                            setState(() {
-                                              micstatus=true;
-                                            });
-                                            print("pointer details down:-" +
-                                                details.down.toString());
-                                          },
-                                          onPointerUp: (details) {
-                                            setState(() {
-                                              micstatus=false;
-                                            });
-                                            print("pointer details up:-" +
-                                                details.down.toString());
-                                          },
-                                          child: SvgPicture.asset(
-                                            "assets/images/micicon.svg",
-                                            height: 2.5.h,
-                                          ),
-                                        )
-                                      : SvgPicture.asset(
-                                          "assets/images/sendicon.svg",
-                                          height: 2.5.h,
-                                        ),
-                                  SizedBox(
-                                    width: 3.w,
-                                  ),
-                                ],
+                              SizedBox(
+                                width: 3.w,
                               ),
-                            )
-                          : Container(
-                              alignment: Alignment.centerRight,
-                              child: SocialMediaRecorder(
-
-                                //   sendButtonIcon: Container(
-                                // width: double.infinity,
-                                // alignment: Alignment.centerRight,
-                                // child: Icon(Icons.mic),
-                                // ),
-                                sendRequestFunction: (soundFile) {
-                                  print(
-                                      "the current path is ${soundFile.path}");
-                                },
-                                encode: AudioEncoderType.AAC,
-                              ),
-                            ),
-                    ),
+                            ],
+                          ),
+                        )),
                     Offstage(
                       offstage: !emojiShowing,
                       child: SizedBox(
@@ -775,7 +839,7 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
   }
 
   clickphotofromcamera() async {
-    PickedFile? pickedFile =      await ImagePicker().getImage(
+    PickedFile? pickedFile = await ImagePicker().getImage(
       source: ImageSource.camera,
       maxWidth: 1800,
       maxHeight: 1800,
@@ -825,5 +889,109 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
     messagecontroller.dispose();
     messsagefocus.dispose();
     super.dispose();
+  }
+
+  Future<bool> checkPermission() async {
+    if (!await Permission.microphone.isGranted) {
+      PermissionStatus status = await Permission.microphone.request();
+      if (status != PermissionStatus.granted) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  void startRecord() async {
+    bool hasPermission = await checkPermission();
+    if (hasPermission) {
+      statusText = "Recording...";
+      recordFilePath = await getFilePath();
+      isComplete = false;
+      setState(() {
+        print("Recording start");
+        recordTime();
+        isRecording = true;
+      });
+      RecordMp3.instance.start(recordFilePath!, (type) {
+        statusText = "Record error--->$type";
+      });
+      print("Recording path:-" + recordFilePath.toString());
+    } else {
+      statusText = "No microphone permission";
+    }
+    setState(() {});
+  }
+
+  void pauseRecord() {
+    if (RecordMp3.instance.status == RecordStatus.PAUSE) {
+      bool s = RecordMp3.instance.resume();
+      if (s) {
+        statusText = "Recording...";
+        setState(() {});
+      }
+    } else {
+      bool s = RecordMp3.instance.pause();
+      if (s) {
+        statusText = "Recording pause...";
+        setState(() {});
+      }
+    }
+  }
+
+  void stopRecord() {
+    bool s = RecordMp3.instance.stop();
+    if (s) {
+      statusText = "Record complete";
+      isComplete = true;
+      setState(() {
+        isRecording = false;
+      });
+    }
+  }
+
+  void resumeRecord() {
+    bool s = RecordMp3.instance.resume();
+    if (s) {
+      statusText = "Recording...";
+      setState(() {});
+    }
+  }
+
+  String? recordFilePath;
+
+  void play() {
+    if (recordFilePath != null && File(recordFilePath!).existsSync()) {
+      AudioPlayer audioPlayer = AudioPlayer();
+      // audioPlayer.play(recordFilePath!, isLocal: true);
+    }
+  }
+
+  int i = 0;
+
+  Future<String> getFilePath() async {
+    Directory storageDirectory = await getApplicationDocumentsDirectory();
+    String sdPath = storageDirectory.path + "/record";
+    var d = Directory(sdPath);
+    if (!d.existsSync()) {
+      d.createSync(recursive: true);
+    }
+    return sdPath + "/test_${i++}.mp3";
+  }
+
+  void recordTime() {
+    // setState(() {
+    var startTime = DateTime.now();
+    Timer.periodic(const Duration(seconds: 1), (Timer t) {
+      var diff = DateTime.now().difference(startTime);
+      setState(() {
+        recordingTime = '${diff.inHours < 60 ? diff.inHours : 0}:'
+            '${diff.inMinutes < 60 ? diff.inMinutes : 0}:${diff.inSeconds < 60 ? diff.inSeconds : 0}';
+      });
+      print(recordingTime);
+      if (!isRecording) {
+        t.cancel(); //cancel function calling
+      }
+    });
+    // });
   }
 }

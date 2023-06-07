@@ -101,4 +101,5 @@ class _MyHomePageState extends State<MyHomePage> {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     loginstatus=sharedPreferences.getBool("loginstatus")??false;
   }
+
 }
