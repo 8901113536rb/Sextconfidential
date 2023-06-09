@@ -11,5 +11,7 @@ class Networks{
   static String massmessagedetail = "massmessagedetail";
   static String massmessage = "massmessage";
   static String getpayoutinfo = "getpayoutinfo";
+  static String newpost = "newpost";
   static String autocompletebase = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=";
+  static String myposts = "myposts";
 }

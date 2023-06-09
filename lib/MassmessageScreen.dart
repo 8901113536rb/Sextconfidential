@@ -42,7 +42,6 @@ class MassmessageScreenState extends State<MassmessageScreen> {
     "Create New group"
   ];
   String dropdownvalue = "All Available";
-  final GlobalKey<ScaffoldState> _key = GlobalKey(); // Create a key
   List<String> messagehistorytype = [
     StringConstants.mostrecent,
     StringConstants.mostsends,
@@ -408,9 +407,9 @@ class MassmessageScreenState extends State<MassmessageScreen> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          if (formkey.currentState!.validate()) {
+                          // if (formkey.currentState!.validate()) {
                             massmessages();
-                          }
+                          // }
                         },
                         child: Container(
                           alignment: Alignment.center,
@@ -1529,10 +1528,14 @@ class MassmessageScreenState extends State<MassmessageScreen> {
           print("Response:${jsonData["message"]}");
           Navigator.pop(context);
         } else {
+          setState(() {
+            imageFile=null;
+          });
           messagecontroller.clear();
           Helpingwidgets.successsnackbar(
               jsonData["message"].toString(), context);
           print("Response:${jsonData["message"]}");
+          massmessageslisting();
           Navigator.pop(context);
         }
       } else {

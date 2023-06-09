@@ -8,9 +8,13 @@ import 'package:sextconfidential/utils/Appcolors.dart';
 import 'package:sextconfidential/utils/CustomMenu.dart';
 import 'package:sextconfidential/utils/Helpingwidgets.dart';
 import 'package:sextconfidential/utils/StringConstants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 
 class Feeddetailedpage extends StatefulWidget{
+  String? type,url,ago,text,views,likes;
+  Feeddetailedpage({super.key,this.type,this.url,this.ago,this.text,this.views,this.likes});
+
   @override
   FeeddetailedpageState createState() => FeeddetailedpageState();
 
@@ -24,12 +28,16 @@ class FeeddetailedpageState extends State<Feeddetailedpage>{
   bool videostatus=false;
   bool editpost=false;
   TextEditingController postcontentcontoller = TextEditingController(text: "What are you up to tonight?");
-
+  String? token,userprofilepic,username;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    startvideo();
+    getsharedpreference();
+    if(widget.type=="mp4"){
+      startvideo();
+    }
+
   }
   @override
   Widget build(BuildContext context) {
@@ -71,7 +79,7 @@ class FeeddetailedpageState extends State<Feeddetailedpage>{
                   children: [
                     Container(
                       child: CachedNetworkImage(
-                        imageUrl:"https://img.freepik.com/free-photo/isolated-shot-pleasant-looking-cheerful-beautiful-brunette-posing-against-pink-wall_273609-20417.jpg",
+                        imageUrl:userprofilepic.toString(),
                         imageBuilder: (context,
                             imageProvider) =>
                             Container(
@@ -105,7 +113,7 @@ class FeeddetailedpageState extends State<Feeddetailedpage>{
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Elexa Steele",
+                          username.toString(),
                           style: TextStyle(
                               fontSize: 14.sp,
                               fontFamily: "PulpDisplay",
@@ -114,7 +122,7 @@ class FeeddetailedpageState extends State<Feeddetailedpage>{
                           textAlign: TextAlign.center,
                         ),
                         Text(
-                          "23/04/2023 01:30 am",
+                          widget.ago.toString(),
                           style: TextStyle(
                               fontSize: 10.sp,
                               // fontFamily: "PulpDisplay",
@@ -182,6 +190,7 @@ class FeeddetailedpageState extends State<Feeddetailedpage>{
             SizedBox(
               height: 1.5.h,
             ),
+            widget.type=="mp4"?
             !videostatus?
             Container(
               alignment: Alignment.center,
@@ -210,48 +219,48 @@ class FeeddetailedpageState extends State<Feeddetailedpage>{
                   ),
                   // VideoPlayer(
                   //     _controller),
-                )),
-            // Container(
-            //   width:double.infinity,
-            //   height: 50.h,
-            //   child: CachedNetworkImage(
-            //     imageUrl:"https://images.squarespace-cdn.com/content/v1/53cc306ee4b04fd213249899/1657760960280-QKY0G0PHGZBAW4T3K5T9/Boudoir+Photo+Shoot+Salem+Oregon+Boudoir+Photographer.jpg",
-            //     imageBuilder: (context,
-            //         imageProvider) =>
-            //         Container(
-            //           width: 15.w,
-            //           alignment: Alignment
-            //               .centerLeft,
-            //           height: 4.5.h,
-            //           decoration:
-            //           BoxDecoration(
-            //             borderRadius: BorderRadius.circular(20),
-            //             shape: BoxShape.rectangle,
-            //             image:
-            //             DecorationImage(
-            //               image:
-            //               imageProvider,
-            //               fit: BoxFit.cover,
-            //             ),
-            //           ),
-            //         ),
-            //     placeholder:
-            //         (context, url) =>
-            //         Container(
-            //           child: Center(
-            //             child:
-            //             CircularProgressIndicator(strokeWidth: 2,color: Appcolors().backgroundcolor,),
-            //           ),
-            //         ),
-            //     // errorWidget: (context, url, error) => errorWidget,
-            //   ),
-            // ),
+                )):
+            Container(
+              width:double.infinity,
+              height: 50.h,
+              child: CachedNetworkImage(
+                imageUrl:widget.url.toString(),
+                imageBuilder: (context,
+                    imageProvider) =>
+                    Container(
+                      width: 15.w,
+                      alignment: Alignment
+                          .centerLeft,
+                      height: 4.5.h,
+                      decoration:
+                      BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        shape: BoxShape.rectangle,
+                        image:
+                        DecorationImage(
+                          image:
+                          imageProvider,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                placeholder:
+                    (context, url) =>
+                    Container(
+                      child: Center(
+                        child:
+                        CircularProgressIndicator(strokeWidth: 2,color: Appcolors().backgroundcolor,),
+                      ),
+                    ),
+                // errorWidget: (context, url, error) => errorWidget,
+              ),
+            ),
             SizedBox(
               height: 2.h,
             ),
         editpost!=true?
         Text(
-              "What are you up to tonight?",
+              widget.text.toString(),
               style: TextStyle(
                   fontSize: 12.sp,
                   // fontFamily: "PulpDisplay",
@@ -379,7 +388,7 @@ class FeeddetailedpageState extends State<Feeddetailedpage>{
                       children: [
                         SvgPicture.asset("assets/images/likeicon.svg"),
                         Text(
-                          "121",
+                          widget.likes.toString(),
                           style: TextStyle(
                               fontSize: 12.sp,
                               // fontFamily: "PulpDisplay",
@@ -398,7 +407,7 @@ class FeeddetailedpageState extends State<Feeddetailedpage>{
                       children: [
                         SvgPicture.asset("assets/images/viewsicon.svg"),
                         Text(
-                          "1171",
+                          widget.views.toString(),
                           style: TextStyle(
                               fontSize: 12.sp,
                               // fontFamily: "PulpDisplay",
@@ -441,7 +450,7 @@ class FeeddetailedpageState extends State<Feeddetailedpage>{
     );
   }
   void startvideo(){
-      videoPlayerController = VideoPlayerController.network("https://coderzbar.info/dev/worldofquotes_dev/storage/app/public/author/498330079authorimage.mp4")
+      videoPlayerController = VideoPlayerController.network(widget.url.toString())
         ..initialize().then((value) => setState(() {
           print("Video working");
           var durationOfVideo = videoPlayerController.value.position.inSeconds.round();
@@ -453,8 +462,7 @@ class FeeddetailedpageState extends State<Feeddetailedpage>{
         context: context,
         videoPlayerController: videoPlayerController,
       );
-      _controller = VideoPlayerController.network(
-          "https://coderzbar.info/dev/worldofquotes_dev/storage/app/public/author/498330079authorimage.mp4")
+      _controller = VideoPlayerController.network(widget.url.toString())
         ..initialize().then((_) {
           setState(() {
             debugPrint("========"+_controller.value.duration.toString());
@@ -540,5 +548,16 @@ class FeeddetailedpageState extends State<Feeddetailedpage>{
               )
           );
         });
+  }
+  Future<void> getsharedpreference() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    setState(() {
+      token = sharedPreferences.getString("token");
+      userprofilepic=sharedPreferences.getString("profilepic");
+      username=sharedPreferences.getString("stagename");
+    });
+    print("Token value:-" + token.toString());
+    print("Userprofile value:-" + userprofilepic.toString());
+
   }
 }

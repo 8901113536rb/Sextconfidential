@@ -80,7 +80,6 @@ class _MyHomePageState extends State<MyHomePage> {
         Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
             Bottomnavigation()), (Route<dynamic> route) => false);
       }
-
     });
   }
   @override
@@ -101,5 +100,4 @@ class _MyHomePageState extends State<MyHomePage> {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     loginstatus=sharedPreferences.getBool("loginstatus")??false;
   }
-
 }

@@ -9,7 +9,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:record/record.dart';
-import 'package:record_mp3/record_mp3.dart';
+// import 'package:record_mp3/record_mp3.dart';
 import 'package:sextconfidential/UserprofileScreen.dart';
 import 'package:sextconfidential/utils/Appcolors.dart';
 import 'package:sextconfidential/utils/StringConstants.dart';
@@ -372,7 +372,7 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
                                                 setState(() {
                                                   recordingTime="0:0";
                                                   micstatus = false;
-                                                  stopRecord();
+                                                  // stopRecord();
                                                 });
                                               },
                                               child: SvgPicture.asset(
@@ -397,13 +397,12 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
                               //               details.down.toString());
                               //         },
                               //         child:
-                              // messagecontroller.text.isEmpty ||
-                                  !micstatus
+                                  !micstatus && messagecontroller.text.isEmpty
                                   ? GestureDetector(
                                       onTap: () async {
                                         setState(() {
                                           micstatus = true;
-                                          startRecord();
+                                          // startRecord();
                                         });
                                       },
                                       child: SvgPicture.asset(
@@ -416,7 +415,8 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
                                       setState(() {
                                         recordingTime="0:0";
                                         micstatus = false;
-                                        stopRecord();
+                                        // stopRecord();
+                                        messagecontroller.text="";
                                       });
                                     },
                                     child: SvgPicture.asset(
@@ -901,61 +901,58 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
     return true;
   }
 
-  void startRecord() async {
-    bool hasPermission = await checkPermission();
-    if (hasPermission) {
-      statusText = "Recording...";
-      recordFilePath = await getFilePath();
-      isComplete = false;
-      setState(() {
-        print("Recording start");
-        recordTime();
-        isRecording = true;
-      });
-      RecordMp3.instance.start(recordFilePath!, (type) {
-        statusText = "Record error--->$type";
-      });
-      print("Recording path:-" + recordFilePath.toString());
-    } else {
-      statusText = "No microphone permission";
-    }
-    setState(() {});
-  }
-
-  void pauseRecord() {
-    if (RecordMp3.instance.status == RecordStatus.PAUSE) {
-      bool s = RecordMp3.instance.resume();
-      if (s) {
-        statusText = "Recording...";
-        setState(() {});
-      }
-    } else {
-      bool s = RecordMp3.instance.pause();
-      if (s) {
-        statusText = "Recording pause...";
-        setState(() {});
-      }
-    }
-  }
-
-  void stopRecord() {
-    bool s = RecordMp3.instance.stop();
-    if (s) {
-      statusText = "Record complete";
-      isComplete = true;
-      setState(() {
-        isRecording = false;
-      });
-    }
-  }
-
-  void resumeRecord() {
-    bool s = RecordMp3.instance.resume();
-    if (s) {
-      statusText = "Recording...";
-      setState(() {});
-    }
-  }
+  // void startRecord() async {
+  //   bool hasPermission = await checkPermission();
+  //   if (hasPermission) {
+  //     statusText = "Recording...";
+  //     recordFilePath = await getFilePath();
+  //     isComplete = false;
+  //     setState(() {
+  //       print("Recording start");
+  //       recordTime();
+  //       isRecording = true;
+  //     });
+  //     RecordMp3.instance.start(recordFilePath!, (type) {
+  //       statusText = "Record error--->$type";
+  //     });
+  //     print("Recording path:-" + recordFilePath.toString());
+  //   } else {
+  //     statusText = "No microphone permission";
+  //   }
+  //   setState(() {});
+  // }
+  // void pauseRecord() {
+  //   if (RecordMp3.instance.status == RecordStatus.PAUSE) {
+  //     bool s = RecordMp3.instance.resume();
+  //     if (s) {
+  //       statusText = "Recording...";
+  //       setState(() {});
+  //     }
+  //   } else {
+  //     bool s = RecordMp3.instance.pause();
+  //     if (s) {
+  //       statusText = "Recording pause...";
+  //       setState(() {});
+  //     }
+  //   }
+  // }
+  // void stopRecord() {
+  //   bool s = RecordMp3.instance.stop();
+  //   if (s) {
+  //     statusText = "Record complete";
+  //     isComplete = true;
+  //     setState(() {
+  //       isRecording = false;
+  //     });
+  //   }
+  // }
+  // void resumeRecord() {
+  //   bool s = RecordMp3.instance.resume();
+  //   if (s) {
+  //     statusText = "Recording...";
+  //     setState(() {});
+  //   }
+  // }
 
   String? recordFilePath;
 
