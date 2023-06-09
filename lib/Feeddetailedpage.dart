@@ -94,7 +94,7 @@ class FeeddetailedpageState extends State<Feeddetailedpage>{
                                 DecorationImage(
                                   image:
                                   imageProvider,
-                                  fit: BoxFit.cover,
+                                  fit: BoxFit.contain,
                                 ),
                               ),
                             ),
@@ -258,121 +258,127 @@ class FeeddetailedpageState extends State<Feeddetailedpage>{
             SizedBox(
               height: 2.h,
             ),
-        editpost!=true?
-        Text(
-              widget.text.toString(),
-              style: TextStyle(
-                  fontSize: 12.sp,
-                  // fontFamily: "PulpDisplay",
-                  fontWeight: FontWeight.w500,
-                  color: Appcolors().whitecolor),
-              textAlign: TextAlign.start,
-            ):
-            Container(
-                child: Column(
-                  children: [
-                    TextFormField(
-                      minLines: 3,
-                      maxLines: 3,
-                      cursorColor: Appcolors().loginhintcolor,
-                      style: TextStyle(
-                        color: Appcolors().whitecolor,
+            Offstage(
+              offstage: widget.text==null,
+              child:  Column(
+                children: [
+                  editpost!=true?
+                  Text(
+                    widget.text.toString(),
+                    style: TextStyle(
                         fontSize: 12.sp,
-                      ),
-                      controller: postcontentcontoller,
-                      decoration: InputDecoration(
-                        // prefix: Container(
-                        //   child: SvgPicture.asset("assets/images/astrickicon.svg",width: 5.w,),
-                        // ),
-                        border: InputBorder.none,
-                        // focusedBorder: InputBorder.none,
-                        disabledBorder: InputBorder.none,
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15.0),
-                          borderSide:
-                          BorderSide(color: Appcolors().logintextformborder),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15.0),
-                          borderSide:
-                          BorderSide(color: Appcolors().logintextformborder),
-                        ),
-                        filled: true,
-                        fillColor: Appcolors().messageboxbgcolor,
-                        hintText: StringConstants.writesomething,
-                        hintStyle: TextStyle(
-                          decoration: TextDecoration.none,
-                          fontWeight: FontWeight.w400,
-                          fontSize: 12.sp,
-                          // fontFamily: 'PulpDisplay',
-                          color: Appcolors().loginhintcolor,
-                        ),
-                      ),
-                      onChanged: (value) {
-                        setState(() {});
-                      },
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return "Please enter Message";
-                        } else {
-                          return null;
-                        }
-                      },
-                    ),
-                    SizedBox(
-                      height: 2.h,
-                    ),
-                    Row(
-                      children: [
-                        Container(
-                          alignment: Alignment.center,
-                          width: 30.w,
-                          decoration: BoxDecoration(
-                              image: DecorationImage(
-                                  image: AssetImage(
-                                      "assets/images/btnbackgroundgradient.png"),
-                                  fit: BoxFit.fill),
-                              borderRadius: BorderRadius.circular(10)),
-                          height: 5.h,
-                          child: Text(
-                            StringConstants.update,
+                        // fontFamily: "PulpDisplay",
+                        fontWeight: FontWeight.w500,
+                        color: Appcolors().whitecolor),
+                    textAlign: TextAlign.start,
+                  ):
+                  Container(
+                      child: Column(
+                        children: [
+                          TextFormField(
+                            minLines: 3,
+                            maxLines: 3,
+                            cursorColor: Appcolors().loginhintcolor,
                             style: TextStyle(
-                                fontSize: 12.sp,
-                                fontFamily: "PulpDisplay",
-                                fontWeight: FontWeight.w400,
-                                color: Appcolors().backgroundcolor),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: (){
-                            setState((){
-                              editpost=false;
-                            });
-                          },
-                          child: Container(
-                            alignment: Alignment.center,
-                            width: 40.w,
-                            height: 5.h,
-                            child: Text(
-                              StringConstants.cancel,
-                              style: TextStyle(
-                                  fontSize: 12.sp,
-                                  fontFamily: "PulpDisplay",
-                                  fontWeight: FontWeight.w400,
-                                  color: Appcolors().whitecolor),
-                              textAlign: TextAlign.center,
+                              color: Appcolors().whitecolor,
+                              fontSize: 12.sp,
                             ),
+                            controller: postcontentcontoller,
+                            decoration: InputDecoration(
+                              // prefix: Container(
+                              //   child: SvgPicture.asset("assets/images/astrickicon.svg",width: 5.w,),
+                              // ),
+                              border: InputBorder.none,
+                              // focusedBorder: InputBorder.none,
+                              disabledBorder: InputBorder.none,
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15.0),
+                                borderSide:
+                                BorderSide(color: Appcolors().logintextformborder),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15.0),
+                                borderSide:
+                                BorderSide(color: Appcolors().logintextformborder),
+                              ),
+                              filled: true,
+                              fillColor: Appcolors().messageboxbgcolor,
+                              hintText: StringConstants.writesomething,
+                              hintStyle: TextStyle(
+                                decoration: TextDecoration.none,
+                                fontWeight: FontWeight.w400,
+                                fontSize: 12.sp,
+                                // fontFamily: 'PulpDisplay',
+                                color: Appcolors().loginhintcolor,
+                              ),
+                            ),
+                            onChanged: (value) {
+                              setState(() {});
+                            },
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "Please enter Message";
+                              } else {
+                                return null;
+                              }
+                            },
                           ),
-                        ),
-                      ],
-                    )
-                  ],
-                )
-            ),
-
-            SizedBox(
-              height: 2.h,
+                          SizedBox(
+                            height: 2.h,
+                          ),
+                          Row(
+                            children: [
+                              Container(
+                                alignment: Alignment.center,
+                                width: 30.w,
+                                decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                        image: AssetImage(
+                                            "assets/images/btnbackgroundgradient.png"),
+                                        fit: BoxFit.fill),
+                                    borderRadius: BorderRadius.circular(10)),
+                                height: 5.h,
+                                child: Text(
+                                  StringConstants.update,
+                                  style: TextStyle(
+                                      fontSize: 12.sp,
+                                      fontFamily: "PulpDisplay",
+                                      fontWeight: FontWeight.w400,
+                                      color: Appcolors().backgroundcolor),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: (){
+                                  setState((){
+                                    editpost=false;
+                                  });
+                                },
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  width: 40.w,
+                                  height: 5.h,
+                                  child: Text(
+                                    StringConstants.cancel,
+                                    style: TextStyle(
+                                        fontSize: 12.sp,
+                                        fontFamily: "PulpDisplay",
+                                        fontWeight: FontWeight.w400,
+                                        color: Appcolors().whitecolor),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
+                      )
+                  ),
+                  SizedBox(
+                    height: 2.h,
+                  ),
+                ],
+              )
             ),
             Container(
               width: 75.w,

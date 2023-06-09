@@ -1341,8 +1341,7 @@ class FeedScreenState extends State<FeedScreen> {
                                                   .post!
                                                   .elementAt(
                                                   index)
-                                                  .text
-                                                  .toString(),
+                                                  .text,
                                               likes: feedpostspojo!
                                                   .message!
                                                   .post!
@@ -1453,180 +1452,184 @@ class FeedScreenState extends State<FeedScreen> {
                                 .message!.post!
                                 .elementAt(index)
                                 .text==null,
-                            child: editedpostid != index
-                                ? Text(
-                              feedpostspojo!
-                                  .message!.post!
-                                  .elementAt(index)
-                                  .text
-                                  .toString(),
-                              style: TextStyle(
-                                  fontSize: 12.sp,
-                                  // fontFamily: "PulpDisplay",
-                                  fontWeight:
-                                  FontWeight.w500,
-                                  color: Appcolors()
-                                      .whitecolor),
-                              textAlign:
-                              TextAlign.start,
-                            )
-                                : Container(
-                                child: Column(
-                                  children: [
-                                    TextFormField(
-                                      minLines: 3,
-                                      maxLines: 3,
-                                      cursorColor: Appcolors()
-                                          .loginhintcolor,
-                                      style: TextStyle(
-                                        color: Appcolors()
-                                            .whitecolor,
-                                        fontSize: 12.sp,
-                                      ),
-                                      controller:
-                                      postcontentcontoller,
-                                      decoration:
-                                      InputDecoration(
-                                        // prefix: Container(
-                                        //   child: SvgPicture.asset("assets/images/astrickicon.svg",width: 5.w,),
-                                        // ),
-                                        border: InputBorder
-                                            .none,
-                                        // focusedBorder: InputBorder.none,
-                                        disabledBorder:
-                                        InputBorder
-                                            .none,
-                                        focusedBorder:
-                                        OutlineInputBorder(
-                                          borderRadius:
-                                          BorderRadius
-                                              .circular(
-                                              15.0),
-                                          borderSide: BorderSide(
-                                              color: Appcolors()
-                                                  .logintextformborder),
-                                        ),
-                                        enabledBorder:
-                                        OutlineInputBorder(
-                                          borderRadius:
-                                          BorderRadius
-                                              .circular(
-                                              15.0),
-                                          borderSide: BorderSide(
-                                              color: Appcolors()
-                                                  .logintextformborder),
-                                        ),
-                                        filled: true,
-                                        isDense: true,
-                                        fillColor: Appcolors()
-                                            .messageboxbgcolor,
-                                        hintText:
-                                        StringConstants
-                                            .writesomething,
-                                        hintStyle:
-                                        TextStyle(
-                                          decoration:
-                                          TextDecoration
-                                              .none,
-                                          fontWeight:
-                                          FontWeight
-                                              .w400,
-                                          fontSize: 12.sp,
-                                          // fontFamily: 'PulpDisplay',
-                                          color: Appcolors()
-                                              .loginhintcolor,
-                                        ),
-                                      ),
-                                      onChanged: (value) {
-                                        setState(() {});
-                                      },
-                                      validator: (value) {
-                                        if (value!
-                                            .isEmpty) {
-                                          return "Please enter Message";
-                                        } else {
-                                          return null;
-                                        }
-                                      },
-                                    ),
-                                    SizedBox(
-                                      height: 2.h,
-                                    ),
-                                    Row(
+                            child:Column(
+                              children: [
+                          editedpostid != index?
+                                Text(
+                                  feedpostspojo!
+                                      .message!.post!
+                                      .elementAt(index)
+                                      .text
+                                      .toString(),
+                                  style: TextStyle(
+                                      fontSize: 12.sp,
+                                      // fontFamily: "PulpDisplay",
+                                      fontWeight:
+                                      FontWeight.w500,
+                                      color: Appcolors()
+                                          .whitecolor),
+                                  textAlign:
+                                  TextAlign.start,
+                                )
+                                    : Container(
+                                    child: Column(
                                       children: [
-                                        Container(
-                                          alignment:
-                                          Alignment
-                                              .center,
-                                          width: 30.w,
-                                          decoration: BoxDecoration(
-                                              image: DecorationImage(
-                                                  image: AssetImage(
-                                                      "assets/images/btnbackgroundgradient.png"),
-                                                  fit: BoxFit
-                                                      .fill),
+                                        TextFormField(
+                                          minLines: 3,
+                                          maxLines: 3,
+                                          cursorColor: Appcolors()
+                                              .loginhintcolor,
+                                          style: TextStyle(
+                                            color: Appcolors()
+                                                .whitecolor,
+                                            fontSize: 12.sp,
+                                          ),
+                                          controller:
+                                          postcontentcontoller,
+                                          decoration:
+                                          InputDecoration(
+                                            // prefix: Container(
+                                            //   child: SvgPicture.asset("assets/images/astrickicon.svg",width: 5.w,),
+                                            // ),
+                                            border: InputBorder
+                                                .none,
+                                            // focusedBorder: InputBorder.none,
+                                            disabledBorder:
+                                            InputBorder
+                                                .none,
+                                            focusedBorder:
+                                            OutlineInputBorder(
                                               borderRadius:
                                               BorderRadius
                                                   .circular(
-                                                  10)),
-                                          height: 5.h,
-                                          child: Text(
-                                            StringConstants
-                                                .update,
-                                            style: TextStyle(
-                                                fontSize:
-                                                12.sp,
-                                                fontFamily:
-                                                "PulpDisplay",
-                                                fontWeight:
-                                                FontWeight
-                                                    .w400,
-                                                color: Appcolors()
-                                                    .backgroundcolor),
-                                            textAlign:
-                                            TextAlign
-                                                .center,
-                                          ),
-                                        ),
-                                        GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              editedpostid =
-                                              null;
-                                            });
-                                          },
-                                          child: Container(
-                                            alignment:
-                                            Alignment
-                                                .center,
-                                            width: 40.w,
-                                            height: 5.h,
-                                            child: Text(
-                                              StringConstants
-                                                  .cancel,
-                                              style: TextStyle(
-                                                  fontSize:
-                                                  12.sp,
-                                                  fontFamily:
-                                                  "PulpDisplay",
-                                                  fontWeight:
-                                                  FontWeight
-                                                      .w400,
+                                                  15.0),
+                                              borderSide: BorderSide(
                                                   color: Appcolors()
-                                                      .whitecolor),
-                                              textAlign:
-                                              TextAlign
-                                                  .center,
+                                                      .logintextformborder),
+                                            ),
+                                            enabledBorder:
+                                            OutlineInputBorder(
+                                              borderRadius:
+                                              BorderRadius
+                                                  .circular(
+                                                  15.0),
+                                              borderSide: BorderSide(
+                                                  color: Appcolors()
+                                                      .logintextformborder),
+                                            ),
+                                            filled: true,
+                                            isDense: true,
+                                            fillColor: Appcolors()
+                                                .messageboxbgcolor,
+                                            hintText:
+                                            StringConstants
+                                                .writesomething,
+                                            hintStyle:
+                                            TextStyle(
+                                              decoration:
+                                              TextDecoration
+                                                  .none,
+                                              fontWeight:
+                                              FontWeight
+                                                  .w400,
+                                              fontSize: 12.sp,
+                                              // fontFamily: 'PulpDisplay',
+                                              color: Appcolors()
+                                                  .loginhintcolor,
                                             ),
                                           ),
+                                          onChanged: (value) {
+                                            setState(() {});
+                                          },
+                                          validator: (value) {
+                                            if (value!
+                                                .isEmpty) {
+                                              return "Please enter Message";
+                                            } else {
+                                              return null;
+                                            }
+                                          },
                                         ),
+                                        SizedBox(
+                                          height: 2.h,
+                                        ),
+                                        Row(
+                                          children: [
+                                            Container(
+                                              alignment:
+                                              Alignment
+                                                  .center,
+                                              width: 30.w,
+                                              decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                      image: AssetImage(
+                                                          "assets/images/btnbackgroundgradient.png"),
+                                                      fit: BoxFit
+                                                          .fill),
+                                                  borderRadius:
+                                                  BorderRadius
+                                                      .circular(
+                                                      10)),
+                                              height: 5.h,
+                                              child: Text(
+                                                StringConstants
+                                                    .update,
+                                                style: TextStyle(
+                                                    fontSize:
+                                                    12.sp,
+                                                    fontFamily:
+                                                    "PulpDisplay",
+                                                    fontWeight:
+                                                    FontWeight
+                                                        .w400,
+                                                    color: Appcolors()
+                                                        .backgroundcolor),
+                                                textAlign:
+                                                TextAlign
+                                                    .center,
+                                              ),
+                                            ),
+                                            GestureDetector(
+                                              onTap: () {
+                                                setState(() {
+                                                  editedpostid =
+                                                  null;
+                                                });
+                                              },
+                                              child: Container(
+                                                alignment:
+                                                Alignment
+                                                    .center,
+                                                width: 40.w,
+                                                height: 5.h,
+                                                child: Text(
+                                                  StringConstants
+                                                      .cancel,
+                                                  style: TextStyle(
+                                                      fontSize:
+                                                      12.sp,
+                                                      fontFamily:
+                                                      "PulpDisplay",
+                                                      fontWeight:
+                                                      FontWeight
+                                                          .w400,
+                                                      color: Appcolors()
+                                                          .whitecolor),
+                                                  textAlign:
+                                                  TextAlign
+                                                      .center,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        )
                                       ],
-                                    )
-                                  ],
-                                )),
-                          ),
-                          SizedBox(
-                            height: 2.h,
+                                    )),
+                                SizedBox(
+                                  height: 2.h,
+                                ),
+                              ],
+                            )
                           ),
                           Container(
                             width: 75.w,
@@ -2037,8 +2040,7 @@ class FeedScreenState extends State<FeedScreen> {
                                                   .message!
                                                   .schedule!
                                                   .elementAt(index)
-                                                  .text
-                                                  .toString(),
+                                                  .text,
                                               likes: feedpostspojo!
                                                   .message!
                                                   .schedule!
@@ -2151,191 +2153,196 @@ class FeedScreenState extends State<FeedScreen> {
                                 .schedule!
                                 .elementAt(index)
                                 .text==null,
-                            child: editedpostid != index
-                                ? Text(
-                              feedpostspojo!
-                                  .message!
-                                  .schedule!
-                                  .elementAt(index)
-                                  .text
-                                  .toString(),
-                              style: TextStyle(
-                                  fontSize: 12.sp,
-                                  // fontFamily: "PulpDisplay",
-                                  fontWeight:
-                                  FontWeight
-                                      .w500,
-                                  color: Appcolors()
-                                      .whitecolor),
-                              textAlign:
-                              TextAlign.start,
-                            )
-                                : Container(
-                                child: Column(
-                                  children: [
-                                    TextFormField(
-                                      minLines: 3,
-                                      maxLines: 3,
-                                      cursorColor:
-                                      Appcolors()
-                                          .loginhintcolor,
-                                      style: TextStyle(
-                                        color: Appcolors()
-                                            .whitecolor,
-                                        fontSize: 12.sp,
-                                      ),
-                                      controller:
-                                      postcontentcontoller,
-                                      decoration:
-                                      InputDecoration(
-                                        // prefix: Container(
-                                        //   child: SvgPicture.asset("assets/images/astrickicon.svg",width: 5.w,),
-                                        // ),
-                                        border:
-                                        InputBorder
-                                            .none,
-                                        // focusedBorder: InputBorder.none,
-                                        disabledBorder:
-                                        InputBorder
-                                            .none,
-                                        focusedBorder:
-                                        OutlineInputBorder(
-                                          borderRadius:
-                                          BorderRadius
-                                              .circular(
-                                              15.0),
-                                          borderSide:
-                                          BorderSide(
-                                              color:
-                                              Appcolors().logintextformborder),
-                                        ),
-                                        enabledBorder:
-                                        OutlineInputBorder(
-                                          borderRadius:
-                                          BorderRadius
-                                              .circular(
-                                              15.0),
-                                          borderSide:
-                                          BorderSide(
-                                              color:
-                                              Appcolors().logintextformborder),
-                                        ),
-                                        filled: true,
-                                        isDense: true,
-                                        fillColor:
-                                        Appcolors()
-                                            .messageboxbgcolor,
-                                        hintText:
-                                        StringConstants
-                                            .writesomething,
-                                        hintStyle:
-                                        TextStyle(
-                                          decoration:
-                                          TextDecoration
-                                              .none,
-                                          fontWeight:
-                                          FontWeight
-                                              .w400,
-                                          fontSize:
-                                          12.sp,
-                                          // fontFamily: 'PulpDisplay',
-                                          color: Appcolors()
-                                              .loginhintcolor,
-                                        ),
-                                      ),
-                                      onChanged:
-                                          (value) {
-                                        setState(() {});
-                                      },
-                                      validator:
-                                          (value) {
-                                        if (value!
-                                            .isEmpty) {
-                                          return "Please enter Message";
-                                        } else {
-                                          return null;
-                                        }
-                                      },
-                                    ),
-                                    SizedBox(
-                                      height: 2.h,
-                                    ),
-                                    Row(
+                            child: Column(
+                              children: [
+                                editedpostid != index
+                                    ? Text(
+                                  feedpostspojo!
+                                      .message!
+                                      .schedule!
+                                      .elementAt(index)
+                                      .text
+                                      .toString(),
+                                  style: TextStyle(
+                                      fontSize: 12.sp,
+                                      // fontFamily: "PulpDisplay",
+                                      fontWeight:
+                                      FontWeight
+                                          .w500,
+                                      color: Appcolors()
+                                          .whitecolor),
+                                  textAlign:
+                                  TextAlign.start,
+                                )
+                                    : Container(
+                                    child: Column(
                                       children: [
-                                        Container(
-                                          alignment:
-                                          Alignment
-                                              .center,
-                                          width: 30.w,
-                                          decoration: BoxDecoration(
-                                              image: DecorationImage(
-                                                  image: AssetImage(
-                                                      "assets/images/btnbackgroundgradient.png"),
-                                                  fit: BoxFit
-                                                      .fill),
-                                              borderRadius:
-                                              BorderRadius.circular(
-                                                  10)),
-                                          height: 5.h,
-                                          child: Text(
-                                            StringConstants
-                                                .update,
-                                            style: TextStyle(
-                                                fontSize: 12
-                                                    .sp,
-                                                fontFamily:
-                                                "PulpDisplay",
-                                                fontWeight:
-                                                FontWeight
-                                                    .w400,
-                                                color: Appcolors()
-                                                    .backgroundcolor),
-                                            textAlign:
-                                            TextAlign
-                                                .center,
+                                        TextFormField(
+                                          minLines: 3,
+                                          maxLines: 3,
+                                          cursorColor:
+                                          Appcolors()
+                                              .loginhintcolor,
+                                          style: TextStyle(
+                                            color: Appcolors()
+                                                .whitecolor,
+                                            fontSize: 12.sp,
                                           ),
-                                        ),
-                                        GestureDetector(
-                                          onTap: () {
-                                            setState(
-                                                    () {
-                                                  editedpostid =
-                                                  null;
-                                                });
-                                          },
-                                          child:
-                                          Container(
-                                            alignment:
-                                            Alignment
-                                                .center,
-                                            width: 40.w,
-                                            height: 5.h,
-                                            child: Text(
-                                              StringConstants
-                                                  .cancel,
-                                              style: TextStyle(
-                                                  fontSize: 12
-                                                      .sp,
-                                                  fontFamily:
-                                                  "PulpDisplay",
-                                                  fontWeight: FontWeight
-                                                      .w400,
+                                          controller:
+                                          postcontentcontoller,
+                                          decoration:
+                                          InputDecoration(
+                                            // prefix: Container(
+                                            //   child: SvgPicture.asset("assets/images/astrickicon.svg",width: 5.w,),
+                                            // ),
+                                            border:
+                                            InputBorder
+                                                .none,
+                                            // focusedBorder: InputBorder.none,
+                                            disabledBorder:
+                                            InputBorder
+                                                .none,
+                                            focusedBorder:
+                                            OutlineInputBorder(
+                                              borderRadius:
+                                              BorderRadius
+                                                  .circular(
+                                                  15.0),
+                                              borderSide:
+                                              BorderSide(
                                                   color:
-                                                  Appcolors().whitecolor),
-                                              textAlign:
-                                              TextAlign
-                                                  .center,
+                                                  Appcolors().logintextformborder),
+                                            ),
+                                            enabledBorder:
+                                            OutlineInputBorder(
+                                              borderRadius:
+                                              BorderRadius
+                                                  .circular(
+                                                  15.0),
+                                              borderSide:
+                                              BorderSide(
+                                                  color:
+                                                  Appcolors().logintextformborder),
+                                            ),
+                                            filled: true,
+                                            isDense: true,
+                                            fillColor:
+                                            Appcolors()
+                                                .messageboxbgcolor,
+                                            hintText:
+                                            StringConstants
+                                                .writesomething,
+                                            hintStyle:
+                                            TextStyle(
+                                              decoration:
+                                              TextDecoration
+                                                  .none,
+                                              fontWeight:
+                                              FontWeight
+                                                  .w400,
+                                              fontSize:
+                                              12.sp,
+                                              // fontFamily: 'PulpDisplay',
+                                              color: Appcolors()
+                                                  .loginhintcolor,
                                             ),
                                           ),
+                                          onChanged:
+                                              (value) {
+                                            setState(() {});
+                                          },
+                                          validator:
+                                              (value) {
+                                            if (value!
+                                                .isEmpty) {
+                                              return "Please enter Message";
+                                            } else {
+                                              return null;
+                                            }
+                                          },
                                         ),
+                                        SizedBox(
+                                          height: 2.h,
+                                        ),
+                                        Row(
+                                          children: [
+                                            Container(
+                                              alignment:
+                                              Alignment
+                                                  .center,
+                                              width: 30.w,
+                                              decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                      image: AssetImage(
+                                                          "assets/images/btnbackgroundgradient.png"),
+                                                      fit: BoxFit
+                                                          .fill),
+                                                  borderRadius:
+                                                  BorderRadius.circular(
+                                                      10)),
+                                              height: 5.h,
+                                              child: Text(
+                                                StringConstants
+                                                    .update,
+                                                style: TextStyle(
+                                                    fontSize: 12
+                                                        .sp,
+                                                    fontFamily:
+                                                    "PulpDisplay",
+                                                    fontWeight:
+                                                    FontWeight
+                                                        .w400,
+                                                    color: Appcolors()
+                                                        .backgroundcolor),
+                                                textAlign:
+                                                TextAlign
+                                                    .center,
+                                              ),
+                                            ),
+                                            GestureDetector(
+                                              onTap: () {
+                                                setState(
+                                                        () {
+                                                      editedpostid =
+                                                      null;
+                                                    });
+                                              },
+                                              child:
+                                              Container(
+                                                alignment:
+                                                Alignment
+                                                    .center,
+                                                width: 40.w,
+                                                height: 5.h,
+                                                child: Text(
+                                                  StringConstants
+                                                      .cancel,
+                                                  style: TextStyle(
+                                                      fontSize: 12
+                                                          .sp,
+                                                      fontFamily:
+                                                      "PulpDisplay",
+                                                      fontWeight: FontWeight
+                                                          .w400,
+                                                      color:
+                                                      Appcolors().whitecolor),
+                                                  textAlign:
+                                                  TextAlign
+                                                      .center,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        )
                                       ],
-                                    )
-                                  ],
-                                )),
+                                    )),
+                                SizedBox(
+                                  height: 2.h,
+                                ),
+                              ],
+                            )
                           ),
-                          SizedBox(
-                            height: 2.h,
-                          ),
+
                           Container(
                             width: 75.w,
                             child: Row(
@@ -2472,6 +2479,8 @@ class FeedScreenState extends State<FeedScreen> {
               verticalOffset: 50.0,
               child: FadeInAnimation(
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Container(
                       padding: EdgeInsets.all(1.5.h),
@@ -2489,11 +2498,14 @@ class FeedScreenState extends State<FeedScreen> {
                         MainAxisAlignment.start,
                         children: [
                           Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment:
                             MainAxisAlignment
                                 .spaceBetween,
                             children: [
                               Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Container(
                                     height: 4.5.h,
@@ -2742,8 +2754,7 @@ class FeedScreenState extends State<FeedScreen> {
                                                   .message!
                                                   .saveDraft!
                                                   .elementAt(index)
-                                                  .text
-                                                  .toString(),
+                                                  .text,
                                               likes: feedpostspojo!
                                                   .message!
                                                   .saveDraft!
