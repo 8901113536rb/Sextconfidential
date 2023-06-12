@@ -13,6 +13,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:sextconfidential/Bottomnavigation.dart';
 import 'package:sextconfidential/Videoscreen.dart';
 import 'package:sextconfidential/main.dart';
+import 'package:sextconfidential/pojo/Getgrouppojo.dart';
+import 'package:sextconfidential/pojo/Searchuserpojo.dart';
 import 'package:sextconfidential/pojo/massmassagespojo.dart';
 import 'package:sextconfidential/utils/Appcolors.dart';
 import 'package:sextconfidential/utils/CustomDropdownButton2.dart';
@@ -37,11 +39,11 @@ class MassmessageScreen extends StatefulWidget {
 
 class MassmessageScreenState extends State<MassmessageScreen> {
   List<String> massmessagetype = [
-    "All Available",
-    "Favourites",
-    "Create New group"
+    StringConstants.allavailable,
+    StringConstants.favourites,
+    StringConstants.createnewgroup
   ];
-  String dropdownvalue = "All Available";
+  String dropdownvalue = StringConstants.allavailable;
   List<String> messagehistorytype = [
     StringConstants.mostrecent,
     StringConstants.mostsends,
@@ -51,6 +53,7 @@ class MassmessageScreenState extends State<MassmessageScreen> {
     StringConstants.mostearnings,
   ];
   Massmassagespojo? massmassagespojo;
+  Searchuserpojo? searchuserpojo;
   String? token;
   String messagehistoryvalue = "Most Recent";
   TextEditingController messagecontroller = TextEditingController();
@@ -64,15 +67,21 @@ class MassmessageScreenState extends State<MassmessageScreen> {
   File? imageFile;
   bool videostatus = false;
   Uint8List? thumbnail;
-  List<int> groupusers = [];
+  List<String> groupusers = [];
   GlobalKey<State> key = GlobalKey();
   GlobalKey<FormState> formkey = GlobalKey();
+  GlobalKey<FormState> dialogformkey = GlobalKey();
   bool responsestatus = false;
+  late StateSetter _setState;
+  String? selectedusers;
+  Getgrouppojo? getgrouppojo;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     getsharedpreference();
+
     // startvideo();
   }
 
@@ -137,8 +146,10 @@ class MassmessageScreenState extends State<MassmessageScreen> {
                               buttonWidth: 27.w,
                               onChanged: (value) {
                                 setState(() {
-                                  if (value == "Create New group") {
+                                  if (value == StringConstants.createnewgroup) {
                                     createnewgroup(context);
+                                  }else if(value == StringConstants.managecustomgroup){
+                                    managecustomrgoups(context);
                                   }
                                   dropdownvalue = value!;
                                 });
@@ -408,7 +419,7 @@ class MassmessageScreenState extends State<MassmessageScreen> {
                       GestureDetector(
                         onTap: () {
                           // if (formkey.currentState!.validate()) {
-                            massmessages();
+                          massmessages();
                           // }
                         },
                         child: Container(
@@ -455,139 +466,142 @@ class MassmessageScreenState extends State<MassmessageScreen> {
                         height: 1.5.h,
                       ),
                       responsestatus
-                          ? AnimationLimiter(
-                              child: ListView.builder(
-                                shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
-                                itemCount: massmassagespojo!.data!.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return AnimationConfiguration.staggeredList(
-                                    position: index,
-                                    duration: const Duration(milliseconds: 300),
-                                    child: SlideAnimation(
-                                      verticalOffset: 50.0,
-                                      child: FadeInAnimation(
-                                        child: Column(
-                                          children: [
-                                            Container(
-                                                padding: EdgeInsets.all(2.h),
-                                                decoration: BoxDecoration(
-                                                    border: Border.all(
-                                                        color: Appcolors()
-                                                            .chatuserborder),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            2.h)),
-                                                width: double.infinity,
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    massmassagespojo!.data!
-                                                                .elementAt(
-                                                                    index)
-                                                                .messageType ==
-                                                            "jpg"
-                                                        ? Column(
-                                                            children: [
-                                                              Container(
-                                                                width: 40.w,
-                                                                height: 20.h,
-                                                                child:
-                                                                    CachedNetworkImage(
-                                                                  imageUrl: massmassagespojo!
-                                                                      .data!
-                                                                      .elementAt(
-                                                                          index)
-                                                                      .message
-                                                                      .toString(),
-                                                                  imageBuilder:
-                                                                      (context,
-                                                                              imageProvider) =>
-                                                                          Container(
-                                                                    width: 15.w,
-                                                                    alignment:
-                                                                        Alignment
-                                                                            .centerLeft,
-                                                                    height:
-                                                                        4.5.h,
-                                                                    decoration:
-                                                                        BoxDecoration(
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              15),
-                                                                      shape: BoxShape
-                                                                          .rectangle,
-                                                                      image:
-                                                                          DecorationImage(
-                                                                        image:
-                                                                            imageProvider,
-                                                                        fit: BoxFit
-                                                                            .cover,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                  placeholder: (context,
-                                                                          url) =>
-                                                                      Container(
-                                                                    child:
-                                                                        Center(
-                                                                      child:
-                                                                          CircularProgressIndicator(
-                                                                        strokeWidth:
-                                                                            2,
-                                                                        color: Appcolors()
-                                                                            .backgroundcolor,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                  // errorWidget: (context, url, error) => errorWidget,
-                                                                ),
-                                                              ),
-                                                              SizedBox(
-                                                                height: 2.h,
-                                                              ),
-                                                            ],
-                                                          )
-                                                        : massmassagespojo!
-                                                                    .data!
+                          ? massmassagespojo!.data!.isNotEmpty
+                              ? AnimationLimiter(
+                                  child: ListView.builder(
+                                    shrinkWrap: true,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    itemCount: massmassagespojo!.data!.length,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return AnimationConfiguration
+                                          .staggeredList(
+                                        position: index,
+                                        duration:
+                                            const Duration(milliseconds: 300),
+                                        child: SlideAnimation(
+                                          verticalOffset: 50.0,
+                                          child: FadeInAnimation(
+                                            child: Column(
+                                              children: [
+                                                Container(
+                                                    padding:
+                                                        EdgeInsets.all(2.h),
+                                                    decoration: BoxDecoration(
+                                                        border: Border.all(
+                                                            color: Appcolors()
+                                                                .chatuserborder),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(2.h)),
+                                                    width: double.infinity,
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        massmassagespojo!.data!
                                                                     .elementAt(
                                                                         index)
                                                                     .messageType ==
-                                                                "mp4"
+                                                                "jpg"
                                                             ? Column(
                                                                 children: [
-                                                                  InkWell(
-                                                                    onTap:
-                                                                        () {
-                                                                        Navigator.push(context, MaterialPageRoute(builder: (context) => Videoscreen(videopath: massmassagespojo!
-                                                                            .data!
-                                                                            .elementAt(
-                                                                            index)
-                                                                            .message.toString(),)));
-                                                                        },
-                                                                    child: Container(
-                                                                        width: 40
-                                                                            .w,
-                                                                        height: 20
-                                                                            .h,
-                                                                        child: Image.asset(
-                                                                            "assets/images/thumbnaildefault.png")),
+                                                                  Container(
+                                                                    width: 40.w,
+                                                                    height:
+                                                                        20.h,
+                                                                    child:
+                                                                        CachedNetworkImage(
+                                                                      imageUrl: massmassagespojo!
+                                                                          .data!
+                                                                          .elementAt(
+                                                                              index)
+                                                                          .message
+                                                                          .toString(),
+                                                                      imageBuilder:
+                                                                          (context, imageProvider) =>
+                                                                              Container(
+                                                                        width:
+                                                                            15.w,
+                                                                        alignment:
+                                                                            Alignment.centerLeft,
+                                                                        height:
+                                                                            4.5.h,
+                                                                        decoration:
+                                                                            BoxDecoration(
+                                                                          borderRadius:
+                                                                              BorderRadius.circular(15),
+                                                                          shape:
+                                                                              BoxShape.rectangle,
+                                                                          image:
+                                                                              DecorationImage(
+                                                                            image:
+                                                                                imageProvider,
+                                                                            fit:
+                                                                                BoxFit.cover,
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      placeholder:
+                                                                          (context, url) =>
+                                                                              Container(
+                                                                        child:
+                                                                            Center(
+                                                                          child:
+                                                                              CircularProgressIndicator(
+                                                                            strokeWidth:
+                                                                                2,
+                                                                            color:
+                                                                                Appcolors().backgroundcolor,
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      // errorWidget: (context, url, error) => errorWidget,
+                                                                    ),
                                                                   ),
                                                                   SizedBox(
                                                                     height: 2.h,
                                                                   ),
                                                                 ],
                                                               )
-                                                            : Container(
-                                                                decoration: BoxDecoration(
-                                                                    color: Appcolors()
-                                                                        .loginhintcolor,
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            1.5.h)),
-                                                                padding: EdgeInsets
-                                                                    .only(
+                                                            : massmassagespojo!
+                                                                        .data!
+                                                                        .elementAt(
+                                                                            index)
+                                                                        .messageType ==
+                                                                    "mp4"
+                                                                ? Column(
+                                                                    children: [
+                                                                      InkWell(
+                                                                        onTap:
+                                                                            () {
+                                                                          Navigator.push(
+                                                                              context,
+                                                                              MaterialPageRoute(
+                                                                                  builder: (context) => Videoscreen(
+                                                                                        videopath: massmassagespojo!.data!.elementAt(index).message.toString(),
+                                                                                      )));
+                                                                        },
+                                                                        child: Container(
+                                                                            width:
+                                                                                40.w,
+                                                                            height: 20.h,
+                                                                            child: Image.asset("assets/images/thumbnaildefault.png")),
+                                                                      ),
+                                                                      SizedBox(
+                                                                        height:
+                                                                            2.h,
+                                                                      ),
+                                                                    ],
+                                                                  )
+                                                                : Container(
+                                                                    decoration: BoxDecoration(
+                                                                        color: Appcolors()
+                                                                            .loginhintcolor,
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(1.5.h)),
+                                                                    padding: EdgeInsets.only(
                                                                         left:
                                                                             3.w,
                                                                         right:
@@ -596,296 +610,340 @@ class MassmessageScreenState extends State<MassmessageScreen> {
                                                                             .h,
                                                                         bottom:
                                                                             1.5.h),
-                                                                child: Text(
-                                                                  massmassagespojo!
-                                                                      .data!
-                                                                      .elementAt(
-                                                                          index)
-                                                                      .message
-                                                                      .toString(),
-                                                                  style: TextStyle(
+                                                                    child: Text(
+                                                                      massmassagespojo!
+                                                                          .data!
+                                                                          .elementAt(
+                                                                              index)
+                                                                          .message
+                                                                          .toString(),
+                                                                      style: TextStyle(
+                                                                          fontSize: 12
+                                                                              .sp,
+                                                                          fontFamily:
+                                                                              "PulpDisplay",
+                                                                          fontWeight: FontWeight
+                                                                              .w400,
+                                                                          color:
+                                                                              Appcolors().backgroundcolor),
+                                                                    ),
+                                                                  ),
+                                                        SizedBox(
+                                                          height: 1.h,
+                                                        ),
+                                                        Container(
+                                                          width:
+                                                              double.infinity,
+                                                          child: Text(
+                                                            StringConstants
+                                                                    .sent +
+                                                                massmassagespojo!
+                                                                    .data!
+                                                                    .elementAt(
+                                                                        index)
+                                                                    .time
+                                                                    .toString(),
+                                                            style: TextStyle(
+                                                              fontSize: 10.sp,
+                                                              // fontFamily: "PulpDisplay",
+                                                              fontStyle:
+                                                                  FontStyle
+                                                                      .italic,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                              color: Appcolors()
+                                                                  .loginhintcolor,
+                                                            ),
+                                                            textAlign:
+                                                                TextAlign.end,
+                                                          ),
+                                                        ),
+                                                        SizedBox(
+                                                          height: 1.h,
+                                                        ),
+                                                        Divider(
+                                                            thickness: 1.2,
+                                                            height: 1.h,
+                                                            color: Appcolors()
+                                                                .dividercolor),
+                                                        SizedBox(
+                                                          height: 1.h,
+                                                        ),
+                                                        Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceAround,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                SizedBox(
+                                                                  height: 0.5.h,
+                                                                ),
+                                                                Container(
+                                                                  child:
+                                                                      GradientText(
+                                                                    massmassagespojo!
+                                                                        .data!
+                                                                        .elementAt(
+                                                                            index)
+                                                                        .total
+                                                                        .toString(),
+                                                                    style: TextStyle(
+                                                                        fontSize: 16
+                                                                            .sp,
+                                                                        fontFamily:
+                                                                            "PulpDisplay",
+                                                                        fontWeight:
+                                                                            FontWeight.w500),
+                                                                    gradientType:
+                                                                        GradientType
+                                                                            .linear,
+                                                                    gradientDirection:
+                                                                        GradientDirection
+                                                                            .ttb,
+                                                                    radius: 8,
+                                                                    colors: [
+                                                                      Appcolors()
+                                                                          .gradientcolorfirst,
+                                                                      Appcolors()
+                                                                          .gradientcolorsecond,
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                                SizedBox(
+                                                                  height: 1.h,
+                                                                ),
+                                                                Container(
+                                                                  child: Text(
+                                                                    StringConstants
+                                                                        .sent,
+                                                                    style:
+                                                                        TextStyle(
                                                                       fontSize:
-                                                                          12.sp,
+                                                                          10.sp,
                                                                       fontFamily:
                                                                           "PulpDisplay",
                                                                       fontWeight:
                                                                           FontWeight
                                                                               .w400,
                                                                       color: Appcolors()
-                                                                          .backgroundcolor),
+                                                                          .loginhintcolor,
+                                                                    ),
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .end,
+                                                                  ),
                                                                 ),
-                                                              ),
-                                                    SizedBox(
-                                                      height: 1.h,
-                                                    ),
-                                                    Container(
-                                                      width: double.infinity,
-                                                      child: Text(
-                                                        StringConstants.sent +
-                                                            massmassagespojo!
-                                                                .data!
-                                                                .elementAt(
-                                                                    index)
-                                                                .time
-                                                                .toString(),
-                                                        style: TextStyle(
-                                                          fontSize: 10.sp,
-                                                          // fontFamily: "PulpDisplay",
-                                                          fontStyle:
-                                                              FontStyle.italic,
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          color: Appcolors()
-                                                              .loginhintcolor,
-                                                        ),
-                                                        textAlign:
-                                                            TextAlign.end,
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      height: 1.h,
-                                                    ),
-                                                    Divider(
-                                                        thickness: 1.2,
-                                                        height: 1.h,
-                                                        color: Appcolors()
-                                                            .dividercolor),
-                                                    SizedBox(
-                                                      height: 1.h,
-                                                    ),
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceAround,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            SizedBox(
-                                                              height: 0.5.h,
+                                                              ],
                                                             ),
                                                             Container(
-                                                              child:
-                                                                  GradientText(
-                                                                massmassagespojo!
-                                                                    .data!
-                                                                    .elementAt(
-                                                                        index)
-                                                                    .total
-                                                                    .toString(),
-                                                                style: TextStyle(
-                                                                    fontSize:
-                                                                        16.sp,
-                                                                    fontFamily:
-                                                                        "PulpDisplay",
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w500),
-                                                                gradientType:
-                                                                    GradientType
-                                                                        .linear,
-                                                                gradientDirection:
-                                                                    GradientDirection
-                                                                        .ttb,
-                                                                radius: 8,
-                                                                colors: [
-                                                                  Appcolors()
-                                                                      .gradientcolorfirst,
-                                                                  Appcolors()
-                                                                      .gradientcolorsecond,
-                                                                ],
-                                                              ),
-                                                            ),
-                                                            SizedBox(
-                                                              height: 1.h,
-                                                            ),
-                                                            Container(
-                                                              child: Text(
-                                                                StringConstants
-                                                                    .sent,
-                                                                style:
-                                                                    TextStyle(
-                                                                  fontSize:
-                                                                      10.sp,
-                                                                  fontFamily:
-                                                                      "PulpDisplay",
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w400,
-                                                                  color: Appcolors()
-                                                                      .loginhintcolor,
+                                                                height: 6.h,
+                                                                width: 1.5,
+                                                                color: Appcolors()
+                                                                    .dividercolor),
+                                                            Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                SizedBox(
+                                                                  height: 0.5.h,
                                                                 ),
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .end,
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        Container(
-                                                            height: 6.h,
-                                                            width: 1.5,
-                                                            color: Appcolors()
-                                                                .dividercolor),
-                                                        Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            SizedBox(
-                                                              height: 0.5.h,
-                                                            ),
-                                                            Container(
-                                                              child:
-                                                                  GradientText(
-                                                                massmassagespojo!
-                                                                    .data!
-                                                                    .elementAt(
-                                                                        index)
-                                                                    .seen
-                                                                    .toString(),
-                                                                style: TextStyle(
-                                                                    fontSize:
-                                                                        16.sp,
-                                                                    fontFamily:
-                                                                        "PulpDisplay",
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w500),
-                                                                gradientType:
-                                                                    GradientType
-                                                                        .linear,
-                                                                gradientDirection:
-                                                                    GradientDirection
-                                                                        .ttb,
-                                                                radius: 6,
-                                                                colors: [
-                                                                  Appcolors()
-                                                                      .gradientcolorfirst,
-                                                                  Appcolors()
-                                                                      .gradientcolorsecond,
-                                                                ],
-                                                              ),
-                                                            ),
-                                                            SizedBox(
-                                                              height: 1.h,
-                                                            ),
-                                                            Container(
-                                                              child: Text(
-                                                                StringConstants
-                                                                    .reads,
-                                                                style:
-                                                                    TextStyle(
-                                                                  fontSize:
-                                                                      10.sp,
-                                                                  fontFamily:
-                                                                      "PulpDisplay",
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w400,
-                                                                  color: Appcolors()
-                                                                      .loginhintcolor,
-                                                                ),
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .end,
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        Container(
-                                                            height: 6.h,
-                                                            width: 1.5,
-                                                            color: Appcolors()
-                                                                .dividercolor),
-                                                        Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            SizedBox(
-                                                              height: 0.5.h,
-                                                            ),
-                                                            Container(
-                                                              child:
-                                                                  GradientText(
-                                                                massmassagespojo!
+                                                                Container(
+                                                                  child:
+                                                                      GradientText(
+                                                                    massmassagespojo!
                                                                         .data!
                                                                         .elementAt(
                                                                             index)
-                                                                        .percentage
-                                                                        .toString() +
-                                                                    "%",
-                                                                style: TextStyle(
-                                                                    fontSize:
-                                                                        16.sp,
-                                                                    fontFamily:
-                                                                        "PulpDisplay",
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w500),
-                                                                gradientType:
-                                                                    GradientType
-                                                                        .linear,
-                                                                gradientDirection:
-                                                                    GradientDirection
-                                                                        .ttb,
-                                                                radius: 6,
-                                                                colors: [
-                                                                  Appcolors()
-                                                                      .gradientcolorfirst,
-                                                                  Appcolors()
-                                                                      .gradientcolorsecond,
-                                                                ],
-                                                              ),
-                                                            ),
-                                                            SizedBox(
-                                                              height: 1.h,
+                                                                        .seen
+                                                                        .toString(),
+                                                                    style: TextStyle(
+                                                                        fontSize: 16
+                                                                            .sp,
+                                                                        fontFamily:
+                                                                            "PulpDisplay",
+                                                                        fontWeight:
+                                                                            FontWeight.w500),
+                                                                    gradientType:
+                                                                        GradientType
+                                                                            .linear,
+                                                                    gradientDirection:
+                                                                        GradientDirection
+                                                                            .ttb,
+                                                                    radius: 6,
+                                                                    colors: [
+                                                                      Appcolors()
+                                                                          .gradientcolorfirst,
+                                                                      Appcolors()
+                                                                          .gradientcolorsecond,
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                                SizedBox(
+                                                                  height: 1.h,
+                                                                ),
+                                                                Container(
+                                                                  child: Text(
+                                                                    StringConstants
+                                                                        .reads,
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          10.sp,
+                                                                      fontFamily:
+                                                                          "PulpDisplay",
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w400,
+                                                                      color: Appcolors()
+                                                                          .loginhintcolor,
+                                                                    ),
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .end,
+                                                                  ),
+                                                                ),
+                                                              ],
                                                             ),
                                                             Container(
-                                                              child: Text(
-                                                                StringConstants
-                                                                    .readrate,
-                                                                style:
-                                                                    TextStyle(
-                                                                  fontSize:
-                                                                      10.sp,
-                                                                  fontFamily:
-                                                                      "PulpDisplay",
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w400,
-                                                                  color: Appcolors()
-                                                                      .loginhintcolor,
+                                                                height: 6.h,
+                                                                width: 1.5,
+                                                                color: Appcolors()
+                                                                    .dividercolor),
+                                                            Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                SizedBox(
+                                                                  height: 0.5.h,
                                                                 ),
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .end,
-                                                              ),
+                                                                Container(
+                                                                  child:
+                                                                      GradientText(
+                                                                    massmassagespojo!
+                                                                            .data!
+                                                                            .elementAt(index)
+                                                                            .percentage
+                                                                            .toString() +
+                                                                        "%",
+                                                                    style: TextStyle(
+                                                                        fontSize: 16
+                                                                            .sp,
+                                                                        fontFamily:
+                                                                            "PulpDisplay",
+                                                                        fontWeight:
+                                                                            FontWeight.w500),
+                                                                    gradientType:
+                                                                        GradientType
+                                                                            .linear,
+                                                                    gradientDirection:
+                                                                        GradientDirection
+                                                                            .ttb,
+                                                                    radius: 6,
+                                                                    colors: [
+                                                                      Appcolors()
+                                                                          .gradientcolorfirst,
+                                                                      Appcolors()
+                                                                          .gradientcolorsecond,
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                                SizedBox(
+                                                                  height: 1.h,
+                                                                ),
+                                                                Container(
+                                                                  child: Text(
+                                                                    StringConstants
+                                                                        .readrate,
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          10.sp,
+                                                                      fontFamily:
+                                                                          "PulpDisplay",
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w400,
+                                                                      color: Appcolors()
+                                                                          .loginhintcolor,
+                                                                    ),
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .end,
+                                                                  ),
+                                                                ),
+                                                              ],
                                                             ),
                                                           ],
-                                                        ),
+                                                        )
                                                       ],
-                                                    )
-                                                  ],
-                                                )),
-                                            SizedBox(
-                                              height: 1.5.h,
+                                                    )),
+                                                SizedBox(
+                                                  height: 1.5.h,
+                                                ),
+                                              ],
                                             ),
-                                          ],
+                                          ),
                                         ),
+                                      );
+                                    },
+                                  ),
+                                )
+                              : Container(
+                                  alignment: Alignment.center,
+                                  height: 20.h,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Divider(
+                                          thickness: 1.2,
+                                          height: 1.h,
+                                          color: Appcolors()
+                                              .dividercolor),
+                                      Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Image.asset(
+                                            "assets/images/noresponse.png",
+                                            height: 5.h,
+                                          ),
+                                          SizedBox(
+                                            height: 1.h,
+                                          ),
+                                          GradientText(
+                                            StringConstants.nomessages,
+                                            style: TextStyle(
+                                                fontSize: 12.sp,
+                                                fontFamily: "PulpDisplay",
+                                                fontWeight: FontWeight.w400),
+                                            gradientType: GradientType.linear,
+                                            gradientDirection:
+                                                GradientDirection.ttb,
+                                            radius: 6,
+                                            colors: [
+                                              Appcolors().gradientcolorfirst,
+                                              Appcolors().gradientcolorsecond,
+                                            ],
+                                          ),
+                                        ],
                                       ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            )
-                          : Helpingwidgets().customloader()
+                                    ],
+                                  ),
+                                )
+                          :
+                          SizedBox()
+                      // Helpingwidgets().customloader()
                     ],
                   ),
                 ),
@@ -1112,256 +1170,682 @@ class MassmessageScreenState extends State<MassmessageScreen> {
                 borderRadius: BorderRadius.all(Radius.circular(15.0))),
             //title: Text("Image Picker"),
             content: StatefulBuilder(
-              // You need this, notice the parameters below:
               builder: (BuildContext context, StateSetter setState) {
-                return Container(
-                    width: 90.w,
-                    // margin: EdgeInsets.only(left: 2.w, right: 2.w,bottom: 1.h),
-                    alignment: Alignment.center,
-                    height: 80.h,
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                alignment: Alignment.topLeft,
-                                child: Text(
-                                  StringConstants.createagroup,
-                                  style: TextStyle(
-                                    fontSize: 15.sp,
-                                    fontFamily: "PulpDisplay",
-                                    fontWeight: FontWeight.w400,
-                                    color: Appcolors().whitecolor,
+                _setState = setState;
+                return Form(
+                  key: dialogformkey,
+                  child: Container(
+                      width: 90.w,
+                      // margin: EdgeInsets.only(left: 2.w, right: 2.w,bottom: 1.h),
+                      alignment: Alignment.center,
+                      height: 80.h,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  alignment: Alignment.topLeft,
+                                  child: Text(
+                                    StringConstants.createagroup,
+                                    style: TextStyle(
+                                      fontSize: 15.sp,
+                                      fontFamily: "PulpDisplay",
+                                      fontWeight: FontWeight.w400,
+                                      color: Appcolors().whitecolor,
+                                    ),
+                                    textAlign: TextAlign.end,
                                   ),
-                                  textAlign: TextAlign.end,
                                 ),
-                              ),
-                              // SvgPicture.asset(
-                              //   "assets/images/searchicon.svg",
-                              //   color: Colors.white,
-                              // )
-                            ],
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(top: 1.5.h),
-                            child: TextFormField(
-                              cursorColor: Appcolors().loginhintcolor,
-                              style: TextStyle(
-                                color: Appcolors().whitecolor,
-                                fontSize: 12.sp,
-                              ),
-                              controller: groupnamecontroller,
-                              decoration: InputDecoration(
-                                // prefix: Container(
-                                //   child: SvgPicture.asset("assets/images/astrickicon.svg",width: 5.w,),
-                                // ),
-                                border: InputBorder.none,
-                                // focusedBorder: InputBorder.none,
-                                disabledBorder: InputBorder.none,
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(15.0),
-                                  borderSide: BorderSide(
-                                      color: Appcolors().logintextformborder),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(15.0),
-                                  borderSide: BorderSide(
-                                      color: Appcolors().logintextformborder),
-                                ),
-                                errorBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(15.0),
-                                  borderSide: BorderSide(
-                                      color: Appcolors().logintextformborder),
-                                ),
-                                focusedErrorBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(15.0),
-                                  borderSide: BorderSide(
-                                      color: Appcolors().logintextformborder),
-                                ),
-                                isDense: true,
-                                filled: true,
-                                fillColor: Appcolors().backgroundcolor,
-                                hintText: StringConstants.enteryourgroupname,
-                                hintStyle: TextStyle(
-                                  decoration: TextDecoration.none,
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 12.sp,
-                                  // fontFamily: 'PulpDisplay',
-                                  color: Appcolors().loginhintcolor,
-                                ),
-                              ),
-                              onChanged: (value) {
-                                setState(() {});
-                              },
+                                // SvgPicture.asset(
+                                //   "assets/images/searchicon.svg",
+                                //   color: Colors.white,
+                                // )
+                              ],
                             ),
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(top: 1.5.h),
-                            // padding: EdgeInsets.only(top: 1.h,bottom: 1.h),
-                            child: TextFormField(
-                              cursorColor: Appcolors().loginhintcolor,
-                              style: TextStyle(
-                                color: Appcolors().whitecolor,
-                                fontSize: 12.sp,
-                              ),
-                              controller: searchclientcontroller,
-                              decoration: InputDecoration(
-                                // prefix: SvgPicture.asset("assets/images/searchicon.svg",color: Colors.white,width: 4.w,),
-                                isDense: true,
-                                border: InputBorder.none,
-                                // focusedBorder: InputBorder.none,
-                                disabledBorder: InputBorder.none,
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  borderSide: BorderSide(
-                                      color: Appcolors().logintextformborder),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  borderSide: BorderSide(
-                                      color: Appcolors().logintextformborder),
-                                ),
-                                filled: true,
-                                fillColor: Appcolors().backgroundcolor,
-                                hintText: StringConstants.searchclients,
-                                hintStyle: TextStyle(
-                                  decoration: TextDecoration.none,
-                                  fontWeight: FontWeight.w400,
+                            Container(
+                              margin: EdgeInsets.only(top: 1.5.h),
+                              child: TextFormField(
+                                cursorColor: Appcolors().loginhintcolor,
+                                style: TextStyle(
+                                  color: Appcolors().whitecolor,
                                   fontSize: 12.sp,
-                                  // fontFamily: 'PulpDisplay',
-                                  color: Appcolors().loginhintcolor,
                                 ),
+                                controller: groupnamecontroller,
+                                decoration: InputDecoration(
+                                  // prefix: Container(
+                                  //   child: SvgPicture.asset("assets/images/astrickicon.svg",width: 5.w,),
+                                  // ),
+                                  border: InputBorder.none,
+                                  // focusedBorder: InputBorder.none,
+                                  disabledBorder: InputBorder.none,
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                    borderSide: BorderSide(
+                                        color: Appcolors().logintextformborder),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                    borderSide: BorderSide(
+                                        color: Appcolors().logintextformborder),
+                                  ),
+                                  errorBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                    borderSide: BorderSide(
+                                        color: Appcolors().logintextformborder),
+                                  ),
+                                  focusedErrorBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                    borderSide: BorderSide(
+                                        color: Appcolors().logintextformborder),
+                                  ),
+                                  isDense: true,
+                                  filled: true,
+                                  fillColor: Appcolors().backgroundcolor,
+                                  hintText: StringConstants.enteryourgroupname,
+                                  hintStyle: TextStyle(
+                                    decoration: TextDecoration.none,
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 12.sp,
+                                    // fontFamily: 'PulpDisplay',
+                                    color: Appcolors().loginhintcolor,
+                                  ),
+                                ),
+                                onChanged: (value) {
+                                  setState(() {});
+                                },
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return "Please enter group name";
+                                  } else {
+                                    return null;
+                                  }
+                                },
                               ),
-                              onChanged: (value) {
-                                setState(() {});
-                              },
                             ),
-                          ),
-                          SizedBox(
-                            height: 2.h,
-                          ),
-                          Container(
-                            width: double.infinity,
-                            height: 47.h,
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              // physics: NeverScrollableScrollPhysics(),
-                              itemCount: 10,
-                              itemBuilder: (BuildContext context, int index) {
-                                return Column(
-                                  children: [
-                                    Container(
-                                        alignment: Alignment.center,
-                                        height: 5.h,
-                                        padding: EdgeInsets.only(
-                                            left: 2.w, right: 2.w),
-                                        decoration: BoxDecoration(
-                                            color: groupusers.contains(index)
-                                                ? Appcolors().selectedusercolor
-                                                : Colors.transparent,
-                                            border: Border.all(
-                                                color:
-                                                    Appcolors().chatuserborder),
-                                            borderRadius:
-                                                BorderRadius.circular(1.5.h)),
-                                        width: double.infinity,
-                                        child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              "Rohit",
-                                              style: TextStyle(
-                                                  fontSize: 12.sp,
-                                                  fontFamily: "PulpDisplay",
-                                                  fontWeight: FontWeight.w400,
-                                                  color: groupusers
-                                                          .contains(index)
-                                                      ? Appcolors()
-                                                          .bottomnavbgcolor
-                                                      : Appcolors().whitecolor),
-                                              textAlign: TextAlign.center,
-                                            ),
-                                            GestureDetector(
-                                                onTap: () {
-                                                  setState(() {
-                                                    if (groupusers
-                                                        .contains(index)) {
-                                                      groupusers.remove(index);
-                                                    } else {
-                                                      groupusers.add(index);
-                                                    }
-                                                  });
-                                                },
-                                                child: Icon(
-                                                  groupusers.contains(index)
-                                                      ? Icons.close_sharp
-                                                      : Icons.add,
+                            Container(
+                              margin: EdgeInsets.only(top: 1.5.h),
+                              // padding: EdgeInsets.only(top: 1.h,bottom: 1.h),
+                              child: TextFormField(
+                                cursorColor: Appcolors().loginhintcolor,
+                                style: TextStyle(
+                                  color: Appcolors().whitecolor,
+                                  fontSize: 12.sp,
+                                ),
+                                controller: searchclientcontroller,
+                                decoration: InputDecoration(
+                                  // prefix: SvgPicture.asset("assets/images/searchicon.svg",color: Colors.white,width: 4.w,),
+                                  isDense: true,
+                                  border: InputBorder.none,
+                                  // focusedBorder: InputBorder.none,
+                                  disabledBorder: InputBorder.none,
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    borderSide: BorderSide(
+                                        color: Appcolors().logintextformborder),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    borderSide: BorderSide(
+                                        color: Appcolors().logintextformborder),
+                                  ),
+                                  filled: true,
+                                  fillColor: Appcolors().backgroundcolor,
+                                  hintText: StringConstants.searchclients,
+                                  hintStyle: TextStyle(
+                                    decoration: TextDecoration.none,
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 12.sp,
+                                    // fontFamily: 'PulpDisplay',
+                                    color: Appcolors().loginhintcolor,
+                                  ),
+                                ),
+                                onChanged: (value) {
+                                  _setState(() {
+                                    searchuser(value.toString());
+                                  });
+                                },
+                              ),
+                            ),
+                            SizedBox(
+                              height: 2.h,
+                            ),
+                            Container(
+                              width: double.infinity,
+                              height: 47.h,
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                // physics: NeverScrollableScrollPhysics(),
+                                itemCount: searchuserpojo!.message!.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return Column(
+                                    children: [
+                                      Container(
+                                          alignment: Alignment.center,
+                                          height: 5.h,
+                                          padding: EdgeInsets.only(
+                                              left: 2.w, right: 2.w),
+                                          decoration: BoxDecoration(
+                                              color: groupusers.contains(
+                                                      searchuserpojo!.message!
+                                                          .elementAt(index)
+                                                          .id
+                                                          .toString())
+                                                  ? Appcolors().selectedusercolor
+                                                  : Colors.transparent,
+                                              border: Border.all(
                                                   color:
-                                                      groupusers.contains(index)
+                                                      Appcolors().chatuserborder),
+                                              borderRadius:
+                                                  BorderRadius.circular(1.5.h)),
+                                          width: double.infinity,
+                                          child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Container(
+                                                alignment: Alignment.centerLeft,
+                                                width: 50.w,
+                                                child: Text(
+                                                  searchuserpojo!.message!
+                                                      .elementAt(index)
+                                                      .dname
+                                                      .toString(),
+                                                  style: TextStyle(
+                                                      fontSize: 12.sp,
+                                                      fontFamily: "PulpDisplay",
+                                                      fontWeight: FontWeight.w400,
+                                                      color: groupusers
+                                                              .contains(index)
                                                           ? Appcolors()
                                                               .bottomnavbgcolor
-                                                          : Colors.white,
-                                                ))
-                                          ],
-                                        )),
-                                    SizedBox(
-                                      height: 1.5.h,
-                                    ),
-                                  ],
-                                );
-                              },
-                            ),
-                          ),
-                          SizedBox(
-                            height: 2.h,
-                          ),
-                          Container(
-                            alignment: Alignment.center,
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                                image: DecorationImage(
-                                    image: AssetImage(
-                                        "assets/images/btnbackgroundgradient.png"),
-                                    fit: BoxFit.fill),
-                                borderRadius: BorderRadius.circular(10)),
-                            height: 5.h,
-                            child: Text(
-                              StringConstants.creategroup,
-                              style: TextStyle(
-                                  fontSize: 12.sp,
-                                  fontFamily: "PulpDisplay",
-                                  fontWeight: FontWeight.w400,
-                                  color: Appcolors().backgroundcolor),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
-                            child: Container(
-                              alignment: Alignment.center,
-                              width: double.infinity,
-                              height: 5.h,
-                              child: Text(
-                                StringConstants.close,
-                                style: TextStyle(
-                                    fontSize: 12.sp,
-                                    fontFamily: "PulpDisplay",
-                                    fontWeight: FontWeight.w400,
-                                    color: Appcolors().whitecolor),
-                                textAlign: TextAlign.center,
+                                                          : Appcolors()
+                                                              .whitecolor),
+                                                  overflow: TextOverflow.ellipsis,
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),
+                                              GestureDetector(
+                                                  onTap: () {
+                                                    setState(() {
+                                                      if (groupusers.contains(
+                                                          searchuserpojo!.message!
+                                                              .elementAt(index)
+                                                              .id
+                                                              .toString())) {
+                                                        groupusers.remove(
+                                                            searchuserpojo!
+                                                                .message!
+                                                                .elementAt(index)
+                                                                .id
+                                                                .toString());
+                                                      } else {
+                                                        groupusers.add(
+                                                            searchuserpojo!
+                                                                .message!
+                                                                .elementAt(index)
+                                                                .id
+                                                                .toString());
+                                                      }
+                                                    });
+                                                  },
+                                                  child: Icon(
+                                                    groupusers.contains(
+                                                            searchuserpojo!
+                                                                .message!
+                                                                .elementAt(index)
+                                                                .id
+                                                                .toString())
+                                                        ? Icons.close_sharp
+                                                        : Icons.add,
+                                                    color: groupusers.contains(
+                                                            searchuserpojo!
+                                                                .message!
+                                                                .elementAt(index)
+                                                                .id
+                                                                .toString())
+                                                        ? Appcolors()
+                                                            .bottomnavbgcolor
+                                                        : Colors.white,
+                                                  ))
+                                            ],
+                                          )),
+                                      SizedBox(
+                                        height: 1.5.h,
+                                      ),
+                                    ],
+                                  );
+                                },
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ));
+                            SizedBox(
+                              height: 2.h,
+                            ),
+                            InkWell(
+                              onTap: () {
+                                print("Selected users" + groupusers.toString());
+                                print(
+                                    "Selected users${groupusers.toString().substring(1, groupusers.toString().length - 1)}");
+                                if(dialogformkey.currentState!.validate()){
+                                  Navigator.pop(context);
+                                  creategroup();
+                                }
+                              },
+                              child: Container(
+                                alignment: Alignment.center,
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                        image: AssetImage(
+                                            "assets/images/btnbackgroundgradient.png"),
+                                        fit: BoxFit.fill),
+                                    borderRadius: BorderRadius.circular(10)),
+                                height: 5.h,
+                                child: Text(
+                                  StringConstants.creategroup,
+                                  style: TextStyle(
+                                      fontSize: 12.sp,
+                                      fontFamily: "PulpDisplay",
+                                      fontWeight: FontWeight.w400,
+                                      color: Appcolors().backgroundcolor),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                              child: Container(
+                                alignment: Alignment.center,
+                                width: double.infinity,
+                                height: 5.h,
+                                child: Text(
+                                  StringConstants.close,
+                                  style: TextStyle(
+                                      fontSize: 12.sp,
+                                      fontFamily: "PulpDisplay",
+                                      fontWeight: FontWeight.w400,
+                                      color: Appcolors().whitecolor),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )),
+                );
+              },
+            ),
+          );
+        });
+  }
+  Future<void> managecustomrgoups(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: Appcolors().backgroundcolor,
+            // contentPadding: EdgeInsets.zero,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(15.0))),
+            //title: Text("Image Picker"),
+            content: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                _setState = setState;
+                return Form(
+                  key: dialogformkey,
+                  child: Container(
+                      width: 90.w,
+                      // margin: EdgeInsets.only(left: 2.w, right: 2.w,bottom: 1.h),
+                      alignment: Alignment.center,
+                      height: 80.h,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  alignment: Alignment.topLeft,
+                                  child: Text(
+                                    StringConstants.managecustomgroup,
+                                    style: TextStyle(
+                                      fontSize: 15.sp,
+                                      fontFamily: "PulpDisplay",
+                                      fontWeight: FontWeight.w400,
+                                      color: Appcolors().whitecolor,
+                                    ),
+                                    textAlign: TextAlign.end,
+                                  ),
+                                ),
+                                // SvgPicture.asset(
+                                //   "assets/images/searchicon.svg",
+                                //   color: Colors.white,
+                                // )
+                              ],
+                            ),
+                            SizedBox(
+                              height: 2.h,
+                            ),
+                            Container(
+                              width: double.infinity,
+                              height: 65.h,
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                // physics: NeverScrollableScrollPhysics(),
+                                itemCount: getgrouppojo!.data!.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return Column(
+                                    children: [
+                                      Container(
+                                          alignment: Alignment.center,
+                                          height: 5.h,
+                                          padding: EdgeInsets.only(
+                                              left: 2.w, right: 2.w),
+                                          decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  color:
+                                                      Appcolors().chatuserborder),
+                                              borderRadius:
+                                                  BorderRadius.circular(1.5.h)),
+                                          width: double.infinity,
+                                          child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Container(
+                                                alignment: Alignment.centerLeft,
+                                                width: 50.w,
+                                                child: Text(
+                                                  getgrouppojo!.data!.elementAt(index).groupname.toString(),
+                                                  style: TextStyle(
+                                                      fontSize: 12.sp,
+                                                      fontFamily: "PulpDisplay",
+                                                      fontWeight: FontWeight.w400,
+                                                      color: Appcolors().whitecolor),
+                                                  overflow: TextOverflow.ellipsis,
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),
+                                              GestureDetector(
+                                                  onTap: () {
+                                                    setState(() {
+                                                      // updategroup(context);
+                                                    });
+                                                  },
+                                                  child: Icon(Icons.edit,color:Appcolors().whitecolor,size: 20,)),
+                                              GestureDetector(
+                                                  onTap: () {
+                                                    deletegroup(getgrouppojo!.data!.elementAt(index).id.toString(),getgrouppojo!.data!.elementAt(index).groupname.toString(),index);
+                                                  },
+                                                  child: Container(
+                                                      child: Icon(Icons.delete,color:Appcolors().whitecolor,size: 20,))),
+                                            ],
+                                          )),
+                                      SizedBox(
+                                        height: 1.5.h,
+                                      ),
+                                    ],
+                                  );
+                                },
+                              ),
+                            ),
+                            SizedBox(
+                              height: 2.h,
+                            ),
+                            InkWell(
+                              onTap: () {
+                                print("Selected users" + groupusers.toString());
+                                print(
+                                    "Selected users${groupusers.toString().substring(1, groupusers.toString().length - 1)}");
+                                if(dialogformkey.currentState!.validate()){
+                                  Navigator.pop(context);
+                                  creategroup();
+                                }
+                              },
+                              child: Container(
+                                alignment: Alignment.center,
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                        image: AssetImage(
+                                            "assets/images/btnbackgroundgradient.png"),
+                                        fit: BoxFit.fill),
+                                    borderRadius: BorderRadius.circular(10)),
+                                height: 5.h,
+                                child: Text(
+                                  StringConstants.createnewgroup,
+                                  style: TextStyle(
+                                      fontSize: 12.sp,
+                                      fontFamily: "PulpDisplay",
+                                      fontWeight: FontWeight.w400,
+                                      color: Appcolors().backgroundcolor),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                              child: Container(
+                                alignment: Alignment.center,
+                                width: double.infinity,
+                                height: 5.h,
+                                child: Text(
+                                  StringConstants.close,
+                                  style: TextStyle(
+                                      fontSize: 12.sp,
+                                      fontFamily: "PulpDisplay",
+                                      fontWeight: FontWeight.w400,
+                                      color: Appcolors().whitecolor),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )),
+                );
+              },
+            ),
+          );
+        });
+  }
+  Future<void> updategroup(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: Appcolors().backgroundcolor,
+            // contentPadding: EdgeInsets.zero,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(15.0))),
+            //title: Text("Image Picker"),
+            content: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                _setState = setState;
+                return Form(
+                  key: dialogformkey,
+                  child: Container(
+                      width: 90.w,
+                      // margin: EdgeInsets.only(left: 2.w, right: 2.w,bottom: 1.h),
+                      alignment: Alignment.center,
+                      height: 80.h,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  alignment: Alignment.topLeft,
+                                  child: Text(
+                                    StringConstants.managecustomgroup,
+                                    style: TextStyle(
+                                      fontSize: 15.sp,
+                                      fontFamily: "PulpDisplay",
+                                      fontWeight: FontWeight.w400,
+                                      color: Appcolors().whitecolor,
+                                    ),
+                                    textAlign: TextAlign.end,
+                                  ),
+                                ),
+                                // SvgPicture.asset(
+                                //   "assets/images/searchicon.svg",
+                                //   color: Colors.white,
+                                // )
+                              ],
+                            ),
+                            SizedBox(
+                              height: 2.h,
+                            ),
+                            Container(
+                              width: double.infinity,
+                              height: 65.h,
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                // physics: NeverScrollableScrollPhysics(),
+                                itemCount: getgrouppojo!.data!.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return Column(
+                                    children: [
+                                      Container(
+                                          alignment: Alignment.center,
+                                          height: 5.h,
+                                          padding: EdgeInsets.only(
+                                              left: 2.w, right: 2.w),
+                                          decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  color:
+                                                      Appcolors().chatuserborder),
+                                              borderRadius:
+                                                  BorderRadius.circular(1.5.h)),
+                                          width: double.infinity,
+                                          child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Container(
+                                                alignment: Alignment.centerLeft,
+                                                width: 50.w,
+                                                child: Text(
+                                                  getgrouppojo!.data!.elementAt(index).groupname.toString(),
+                                                  style: TextStyle(
+                                                      fontSize: 12.sp,
+                                                      fontFamily: "PulpDisplay",
+                                                      fontWeight: FontWeight.w400,
+                                                      color: Appcolors().whitecolor),
+                                                  overflow: TextOverflow.ellipsis,
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),
+                                              GestureDetector(
+                                                  onTap: () {
+                                                    setState(() {
+                                                      if (groupusers.contains(
+                                                          searchuserpojo!.message!
+                                                              .elementAt(index)
+                                                              .id
+                                                              .toString())) {
+                                                        groupusers.remove(
+                                                            searchuserpojo!
+                                                                .message!
+                                                                .elementAt(index)
+                                                                .id
+                                                                .toString());
+                                                      } else {
+                                                        groupusers.add(
+                                                            searchuserpojo!
+                                                                .message!
+                                                                .elementAt(index)
+                                                                .id
+                                                                .toString());
+                                                      }
+                                                    });
+                                                  },
+                                                  child: Icon(Icons.edit,color:Appcolors().whitecolor,size: 20,)),
+                                              GestureDetector(
+                                                  onTap: () {
+                                                    deletegroup(getgrouppojo!.data!.elementAt(index).id.toString(),getgrouppojo!.data!.elementAt(index).groupname.toString(),index);
+                                                  },
+                                                  child: Container(
+                                                      child: Icon(Icons.delete,color:Appcolors().whitecolor,size: 20,))),
+                                            ],
+                                          )),
+                                      SizedBox(
+                                        height: 1.5.h,
+                                      ),
+                                    ],
+                                  );
+                                },
+                              ),
+                            ),
+                            SizedBox(
+                              height: 2.h,
+                            ),
+                            InkWell(
+                              onTap: () {
+                                print("Selected users" + groupusers.toString());
+                                print(
+                                    "Selected users${groupusers.toString().substring(1, groupusers.toString().length - 1)}");
+                                if(dialogformkey.currentState!.validate()){
+                                  Navigator.pop(context);
+                                  creategroup();
+                                }
+                              },
+                              child: Container(
+                                alignment: Alignment.center,
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                        image: AssetImage(
+                                            "assets/images/btnbackgroundgradient.png"),
+                                        fit: BoxFit.fill),
+                                    borderRadius: BorderRadius.circular(10)),
+                                height: 5.h,
+                                child: Text(
+                                  StringConstants.createnewgroup,
+                                  style: TextStyle(
+                                      fontSize: 12.sp,
+                                      fontFamily: "PulpDisplay",
+                                      fontWeight: FontWeight.w400,
+                                      color: Appcolors().backgroundcolor),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                              child: Container(
+                                alignment: Alignment.center,
+                                width: double.infinity,
+                                height: 5.h,
+                                child: Text(
+                                  StringConstants.close,
+                                  style: TextStyle(
+                                      fontSize: 12.sp,
+                                      fontFamily: "PulpDisplay",
+                                      fontWeight: FontWeight.w400,
+                                      color: Appcolors().whitecolor),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )),
+                );
               },
             ),
           );
@@ -1460,6 +1944,8 @@ class MassmessageScreenState extends State<MassmessageScreen> {
     });
     print("Token value:-" + token.toString());
     massmessageslisting();
+    searchuser(searchclientcontroller.text.toString());
+    getgrouplist();
   }
 
   Future<void> massmessageslisting() async {
@@ -1485,13 +1971,161 @@ class MassmessageScreenState extends State<MassmessageScreen> {
         setState(() {
           responsestatus = true;
         });
-        print("Message:-"+jsonResponse["message"].toString());
+        print("Message:-" + jsonResponse["message"].toString());
         massmassagespojo = Massmassagespojo.fromJson(jsonResponse);
       }
     } else {
       setState(() {
         responsestatus = true;
       });
+      Helpingwidgets.failedsnackbar(
+          jsonResponse["message"].toString(), context);
+    }
+  }
+
+  Future<void> searchuser(String searchtext) async {
+    Map data = {
+      "search": searchtext,
+    };
+    print("Data:-" + data.toString());
+    var jsonResponse = null;
+    var response = await http.post(
+        Uri.parse("https://www.sextconfidential.com/api/searchuser"),
+        // Uri.parse(Networks.baseurl + Networks.searchuser),
+        body: data);
+    jsonResponse = json.decode(response.body);
+    print("Search jsonResponse:-" + jsonResponse.toString());
+    if (response.statusCode == 200) {
+      if (jsonResponse["status"] == false) {
+        Helpingwidgets.failedsnackbar(
+            jsonResponse["message"].toString(), context);
+        Navigator.pop(context);
+      } else {
+        setState(() {
+          // responsestatus = true;
+          searchuserpojo = Searchuserpojo.fromJson(jsonResponse);
+        });
+        print("Message:-" + jsonResponse["message"].toString());
+      }
+    } else {
+      setState(() {
+        // responsestatus = true;
+      });
+      Helpingwidgets.failedsnackbar(
+          jsonResponse["message"].toString(), context);
+    }
+  }
+  Future<void> creategroup() async {
+    Helpingwidgets.showLoadingDialog(context, key);
+    Map data = {
+      "token": token,
+      "users": groupusers.toString().substring(1, groupusers.toString().length - 1),
+      "name": groupnamecontroller.text.toString(),
+    };
+    print("Data:-" + data.toString());
+    var jsonResponse = null;
+    var response = await http
+        .post(Uri.parse(Networks.baseurl + Networks.creategroup), body: data);
+    jsonResponse = json.decode(response.body);
+    print("Search jsonResponse:-" + jsonResponse.toString());
+    if (response.statusCode == 200) {
+      if (jsonResponse["status"] == false) {
+        setState(() {
+          // responsestatus = true;
+        });
+        Navigator.pop(context);
+        Helpingwidgets.failedsnackbar(
+            jsonResponse["message"].toString(), context);
+        Navigator.pop(context);
+      } else {
+        Helpingwidgets.successsnackbar(
+            jsonResponse["message"].toString(), context);
+        Navigator.pop(context);
+        print("Message:-" + jsonResponse["message"].toString());
+      }
+    } else {
+      setState(() {
+        // responsestatus = true;
+      });
+      Navigator.pop(context);
+      Helpingwidgets.failedsnackbar(
+          jsonResponse["message"].toString(), context);
+    }
+  }
+  Future<void> getgrouplist() async {
+    Helpingwidgets.showLoadingDialog(context, key);
+    Map data = {
+      "token": token,
+    };
+    print("Data:-" + data.toString());
+    var jsonResponse = null;
+    var response = await http
+        .post(Uri.parse(Networks.baseurl + Networks.getgroup), body: data);
+    jsonResponse = json.decode(response.body);
+    print("Search jsonResponse:-" + jsonResponse.toString());
+    if (response.statusCode == 200) {
+      if (jsonResponse["status"] == false) {
+        Navigator.pop(context);
+        Helpingwidgets.failedsnackbar(
+            jsonResponse["message"].toString(), context);
+        Navigator.pop(context);
+      } else {
+        setState(() {
+          getgrouppojo=Getgrouppojo.fromJson(jsonResponse);
+          if(getgrouppojo!.data!.isNotEmpty){
+            massmessagetype.add(StringConstants.managecustomgroup);
+          }
+          for(int i=0;i<=getgrouppojo!.data!.length-1;i++){
+            massmessagetype.add(getgrouppojo!.data!.elementAt(i).groupname.toString());
+          }
+        });
+        // Helpingwidgets.successsnackbar(
+        //     jsonResponse["message"].toString(), context);
+        Navigator.pop(context);
+        print("Message:-" + jsonResponse["message"].toString());
+
+      }
+    } else {
+      setState(() {
+        // responsestatus = true;
+      });
+      Navigator.pop(context);
+      Helpingwidgets.failedsnackbar(
+          jsonResponse["message"].toString(), context);
+    }
+  }
+  Future<void> deletegroup(String groupid,String groupname,int index) async {
+    Helpingwidgets.showLoadingDialog(context, key);
+    Map data = {
+      "group": groupid,
+    };
+    print("Data:-" + data.toString());
+    var jsonResponse = null;
+    var response = await http
+        .post(Uri.parse(Networks.baseurl + Networks.deletegroup), body: data);
+    jsonResponse = json.decode(response.body);
+    print("Search jsonResponse:-" + jsonResponse.toString());
+    if (response.statusCode == 200) {
+      if (jsonResponse["status"] == false) {
+        Navigator.pop(context);
+        Helpingwidgets.failedsnackbar(
+            jsonResponse["message"].toString(), context);
+        Navigator.pop(context);
+      } else {
+        Helpingwidgets.successsnackbar(
+            jsonResponse["message"].toString(), context);
+        Navigator.pop(context);
+        print("Message:-" + jsonResponse["message"].toString());
+        setState(() {
+          getgrouppojo!.data!.removeAt(index);
+          groupusers.remove(groupname);
+        });
+      }
+    } else {
+      setState(() {
+        // responsestatus = true;
+      });
+      Navigator.pop(context);
       Helpingwidgets.failedsnackbar(
           jsonResponse["message"].toString(), context);
     }
@@ -1529,7 +2163,7 @@ class MassmessageScreenState extends State<MassmessageScreen> {
           Navigator.pop(context);
         } else {
           setState(() {
-            imageFile=null;
+            imageFile = null;
           });
           messagecontroller.clear();
           Helpingwidgets.successsnackbar(

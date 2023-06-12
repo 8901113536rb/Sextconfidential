@@ -96,5 +96,11 @@ class StringConstants{
   static String privacy ="Privacy";
   static String price ="Price";
   static String post ="Post";
+  static String noposts ="No Posts";
+  static String nomessages ="No Messages";
+  static String allavailable ="All Available";
+  static String favourites ="Favourites";
+  static String createnewgroup ="Create New Group";
+  static String managecustomgroup ="Manage Custom group";
 
 }

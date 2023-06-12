@@ -1,5 +1,6 @@
 class Networks{
-  static String baseurl = "https://coderzbar.info/dev/sexo/api/";
+  static String baseurl = "https://www.sextconfidential.com/api/";
+  // static String baseurl = "https://coderzbar.info/dev/sexo/api/";
   static String login = "login";
   static String changepassword = "changepassword";
   static String getprofile = "getprofile";
@@ -14,4 +15,8 @@ class Networks{
   static String newpost = "newpost";
   static String autocompletebase = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=";
   static String myposts = "myposts";
+  static String searchuser = "searchuser";
+  static String creategroup = "creategroup";
+  static String getgroup = "getgroup";
+  static String deletegroup = "deletegroup";
 }
