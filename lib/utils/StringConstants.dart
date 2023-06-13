@@ -102,5 +102,6 @@ class StringConstants{
   static String favourites ="Favourites";
   static String createnewgroup ="Create New Group";
   static String managecustomgroup ="Manage Custom group";
+  static String pinnedpost ="Pinned Post";
 
 }

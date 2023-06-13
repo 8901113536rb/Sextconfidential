@@ -42,7 +42,6 @@ class FeedScreenState extends State<FeedScreen> {
   ];
   List<String> postfilters = [
     StringConstants.mostrecent,
-    StringConstants.mostsends,
     StringConstants.mostread,
     StringConstants.readrate,
     StringConstants.mostunlocks,
@@ -73,6 +72,7 @@ class FeedScreenState extends State<FeedScreen> {
   bool responsestatus = false;
   Feedpostspojo? feedpostspojo;
   String? userprofilepic, username;
+  int? sorttype = 1;
   @override
   void initState() {
     // TODO: implement initState
@@ -261,7 +261,11 @@ class FeedScreenState extends State<FeedScreen> {
                 height: 1.5.h,
               ),
               GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  if (imageFile == null) {
+                    addmediadialog(context);
+                  }
+                },
                 child: Container(
                   width: double.infinity,
                   child: DottedBorder(
@@ -621,6 +625,7 @@ class FeedScreenState extends State<FeedScreen> {
               SizedBox(
                 height: 1.h,
               ),
+              selectedposttype==0?
               Container(
                 width: double.infinity,
                 child: Column(
@@ -639,13 +644,29 @@ class FeedScreenState extends State<FeedScreen> {
                         onChanged: (value) {
                           setState(() {
                             postfiltervalue = value!;
+                            switch (postfiltervalue) {
+                              case "Most Recent":
+                                feedlisting(1);
+                                break;
+                              case "Most read":
+                                feedlisting(2);
+                                break;
+                              case "Read Rate":
+                                feedlisting(3);
+                                break;
+                              case "Most Unlocks":
+                                feedlisting(4);
+                                break;
+                              case "Most Earnings":
+                                feedlisting(5);
+                            }
                           });
                         },
                       ),
                     ),
                   ],
                 ),
-              ),
+              ):SizedBox(),
               SizedBox(
                 height: 1.h,
               ),
@@ -655,7 +676,8 @@ class FeedScreenState extends State<FeedScreen> {
                       : selectedposttype == 1
                           ? scheduledlistview()
                           : savetodraft()
-                  : Helpingwidgets().customloader()
+                  : SizedBox()
+              // : Helpingwidgets().customloader()
             ],
           ),
         ),
@@ -663,7 +685,7 @@ class FeedScreenState extends State<FeedScreen> {
     );
   }
 
-  Future<void> showdeletealert(BuildContext context) {
+  Future<void> showdeletealert(BuildContext context, String postid,int index) {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -694,7 +716,8 @@ class FeedScreenState extends State<FeedScreen> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        // Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+                        Navigator.pop(context);
+                        deletepost(postid, index);
                       },
                       child: Center(
                         child: Container(
@@ -948,7 +971,7 @@ class FeedScreenState extends State<FeedScreen> {
     });
     print("Token value:-" + token.toString());
     print("profile value:-" + userprofilepic.toString());
-    feedlisting();
+    feedlisting(sorttype!);
   }
 
   Future<void> postfeed() async {
@@ -1007,7 +1030,7 @@ class FeedScreenState extends State<FeedScreen> {
           Helpingwidgets.successsnackbar(
               jsonData["message"].toString(), context);
           print("Response:${jsonData["message"]}");
-          feedlisting();
+          feedlisting(sorttype!);
           Navigator.pop(context);
         }
       } else {
@@ -1018,10 +1041,11 @@ class FeedScreenState extends State<FeedScreen> {
     });
   }
 
-  Future<void> feedlisting() async {
+  Future<void> feedlisting(int sorttype) async {
+    Helpingwidgets.showLoadingDialog(context, key);
     Map data = {
       "token": token,
-      // "arrattype": "2",
+      "sort": sorttype.toString(),
     };
     print("Data:-" + data.toString());
     var jsonResponse = null;
@@ -1034,6 +1058,7 @@ class FeedScreenState extends State<FeedScreen> {
         setState(() {
           responsestatus = true;
         });
+        Navigator.pop(context);
         Helpingwidgets.failedsnackbar(
             jsonResponse["message"].toString(), context);
         Navigator.pop(context);
@@ -1043,11 +1068,74 @@ class FeedScreenState extends State<FeedScreen> {
         });
         print("Message:-" + jsonResponse["message"].toString());
         feedpostspojo = Feedpostspojo.fromJson(jsonResponse);
+        Navigator.pop(context);
       }
     } else {
+      Navigator.pop(context);
       setState(() {
         responsestatus = true;
       });
+      Helpingwidgets.failedsnackbar(
+          jsonResponse["message"].toString(), context);
+    }
+  }
+
+  Future<void> deletepost(String postid, int index) async {
+    Helpingwidgets.showLoadingDialog(context, key);
+    Map data = {
+      "postid": postid.toString(),
+    };
+    print("Data:-" + data.toString());
+    var jsonResponse = null;
+    var response = await http
+        .post(Uri.parse(Networks.baseurl + Networks.deletepost), body: data);
+    jsonResponse = json.decode(response.body);
+    print("jsonResponse:-" + jsonResponse.toString());
+    if (response.statusCode == 200) {
+      if (jsonResponse["status"] == false) {
+        Navigator.pop(context);
+        Helpingwidgets.failedsnackbar(
+            jsonResponse["message"].toString(), context);
+        Navigator.pop(context);
+      } else {
+        Helpingwidgets.successsnackbar(
+            jsonResponse["message"].toString(), context);
+        print("Message:-" + jsonResponse["message"].toString());
+        feedlisting(0);
+        Navigator.pop(context);
+      }
+    } else {
+      Navigator.pop(context);
+      Helpingwidgets.failedsnackbar(
+          jsonResponse["message"].toString(), context);
+    }
+  }
+  Future<void> pinpost(String postid, int index) async {
+    Helpingwidgets.showLoadingDialog(context, key);
+    Map data = {
+      "postid": postid.toString(),
+    };
+    print("Data:-" + data.toString());
+    var jsonResponse = null;
+    var response = await http
+        .post(Uri.parse(Networks.baseurl + Networks.pinposts), body: data);
+    jsonResponse = json.decode(response.body);
+    print("jsonResponse:-" + jsonResponse.toString());
+    if (response.statusCode == 200) {
+      if (jsonResponse["status"] == false) {
+        Navigator.pop(context);
+        Helpingwidgets.failedsnackbar(
+            jsonResponse["message"].toString(), context);
+        Navigator.pop(context);
+      } else {
+        Helpingwidgets.successsnackbar(
+            jsonResponse["message"].toString(), context);
+        print("Message:-" + jsonResponse["message"].toString());
+        feedlisting(0);
+        Navigator.pop(context);
+      }
+    } else {
+      Navigator.pop(context);
       Helpingwidgets.failedsnackbar(
           jsonResponse["message"].toString(), context);
     }
@@ -1132,39 +1220,47 @@ class FeedScreenState extends State<FeedScreen> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.start,
                                       children: [
-                                        Container(
-                                          height: 4.5.h,
-                                          width: 15.w,
-                                          child: CachedNetworkImage(
-                                            imageUrl: userprofilepic.toString(),
-                                            imageBuilder:
-                                                (context, imageProvider) =>
-                                                    Container(
-                                              width: 15.w,
-                                              alignment: Alignment.centerLeft,
-                                              height: 4.5.h,
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                image: DecorationImage(
-                                                  image: imageProvider,
-                                                  fit: BoxFit.contain,
+                                        userprofilepic == null ||
+                                                userprofilepic == ""
+                                            ? Image.asset(
+                                                "assets/images/userprofile.png",
+                                                width: 15.w,
+                                                height: 4.5.h)
+                                            : Container(
+                                                height: 4.5.h,
+                                                width: 15.w,
+                                                child: CachedNetworkImage(
+                                                  imageUrl:
+                                                      userprofilepic.toString(),
+                                                  imageBuilder: (context,
+                                                          imageProvider) =>
+                                                      Container(
+                                                    width: 15.w,
+                                                    alignment:
+                                                        Alignment.centerLeft,
+                                                    height: 4.5.h,
+                                                    decoration: BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      image: DecorationImage(
+                                                        image: imageProvider,
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  placeholder: (context, url) =>
+                                                      Container(
+                                                    child: Center(
+                                                      child:
+                                                          CircularProgressIndicator(
+                                                        strokeWidth: 2,
+                                                        color: Appcolors()
+                                                            .backgroundcolor,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  // errorWidget: (context, url, error) => errorWidget,
                                                 ),
                                               ),
-                                            ),
-                                            placeholder: (context, url) =>
-                                                Container(
-                                              child: Center(
-                                                child:
-                                                    CircularProgressIndicator(
-                                                  strokeWidth: 2,
-                                                  color: Appcolors()
-                                                      .backgroundcolor,
-                                                ),
-                                              ),
-                                            ),
-                                            // errorWidget: (context, url, error) => errorWidget,
-                                          ),
-                                        ),
                                         Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
@@ -1233,7 +1329,8 @@ class FeedScreenState extends State<FeedScreen> {
                                             });
                                           } else if (value.text ==
                                               StringConstants.deletepost) {
-                                            showdeletealert(context);
+                                            showdeletealert(context,feedpostspojo!.message!.post!
+                                                .elementAt(index).id.toString(),index);
                                           }
                                         },
                                         dropdownStyleData: DropdownStyleData(
@@ -1624,7 +1721,10 @@ class FeedScreenState extends State<FeedScreen> {
                                             SvgPicture.asset(
                                                 "assets/images/unlockicon.svg"),
                                             Text(
-                                              "31",
+                                              feedpostspojo!.message!.post!
+                                                  .elementAt(index)
+                                                  .unlocked
+                                                  .toString(),
                                               style: TextStyle(
                                                   fontSize: 12.sp,
                                                   // fontFamily: "PulpDisplay",
@@ -1691,39 +1791,47 @@ class FeedScreenState extends State<FeedScreen> {
                                   children: [
                                     Row(
                                       children: [
-                                        Container(
-                                          height: 4.5.h,
-                                          width: 15.w,
-                                          child: CachedNetworkImage(
-                                            imageUrl: userprofilepic.toString(),
-                                            imageBuilder:
-                                                (context, imageProvider) =>
-                                                    Container(
-                                              width: 15.w,
-                                              alignment: Alignment.centerLeft,
-                                              height: 4.5.h,
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                image: DecorationImage(
-                                                  image: imageProvider,
-                                                  fit: BoxFit.contain,
+                                        userprofilepic == null ||
+                                                userprofilepic == ""
+                                            ? Image.asset(
+                                                "assets/images/userprofile.png",
+                                                width: 15.w,
+                                                height: 4.5.h)
+                                            : Container(
+                                                height: 4.5.h,
+                                                width: 15.w,
+                                                child: CachedNetworkImage(
+                                                  imageUrl:
+                                                      userprofilepic.toString(),
+                                                  imageBuilder: (context,
+                                                          imageProvider) =>
+                                                      Container(
+                                                    width: 15.w,
+                                                    alignment:
+                                                        Alignment.centerLeft,
+                                                    height: 4.5.h,
+                                                    decoration: BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      image: DecorationImage(
+                                                        image: imageProvider,
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  placeholder: (context, url) =>
+                                                      Container(
+                                                    child: Center(
+                                                      child:
+                                                          CircularProgressIndicator(
+                                                        strokeWidth: 2,
+                                                        color: Appcolors()
+                                                            .backgroundcolor,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  // errorWidget: (context, url, error) => errorWidget,
                                                 ),
                                               ),
-                                            ),
-                                            placeholder: (context, url) =>
-                                                Container(
-                                              child: Center(
-                                                child:
-                                                    CircularProgressIndicator(
-                                                  strokeWidth: 2,
-                                                  color: Appcolors()
-                                                      .backgroundcolor,
-                                                ),
-                                              ),
-                                            ),
-                                            // errorWidget: (context, url, error) => errorWidget,
-                                          ),
-                                        ),
                                         Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
@@ -1739,7 +1847,7 @@ class FeedScreenState extends State<FeedScreen> {
                                               textAlign: TextAlign.center,
                                             ),
                                             Text(
-                                              feedpostspojo!.message!.post!
+                                              feedpostspojo!.message!.schedule!
                                                   .elementAt(index)
                                                   .ago
                                                   .toString(),
@@ -1792,7 +1900,10 @@ class FeedScreenState extends State<FeedScreen> {
                                             });
                                           } else if (value.text ==
                                               StringConstants.deletepost) {
-                                            showdeletealert(context);
+                                            showdeletealert(context,feedpostspojo!.message!.schedule!
+                                                .elementAt(index)
+                                                .id
+                                                .toString(),index);
                                           }
                                         },
                                         dropdownStyleData: DropdownStyleData(
@@ -2118,95 +2229,95 @@ class FeedScreenState extends State<FeedScreen> {
                                         ),
                                       ],
                                     )),
-                                Container(
-                                  width: 75.w,
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        width: 20.w,
-                                        child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            SvgPicture.asset(
-                                                "assets/images/likeicon.svg"),
-                                            Text(
-                                              feedpostspojo!.message!.schedule!
-                                                  .elementAt(index)
-                                                  .likes
-                                                  .toString(),
-                                              style: TextStyle(
-                                                  fontSize: 12.sp,
-                                                  // fontFamily: "PulpDisplay",
-                                                  fontWeight: FontWeight.w600,
-                                                  color: Appcolors()
-                                                      .loginhintcolor),
-                                              textAlign: TextAlign.start,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Container(
-                                        width: 20.w,
-                                        child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.end,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            SvgPicture.asset(
-                                                "assets/images/viewsicon.svg"),
-                                            Text(
-                                              feedpostspojo!.message!.schedule!
-                                                  .elementAt(index)
-                                                  .views
-                                                  .toString(),
-                                              style: TextStyle(
-                                                  fontSize: 12.sp,
-                                                  // fontFamily: "PulpDisplay",
-                                                  fontWeight: FontWeight.w600,
-                                                  color: Appcolors()
-                                                      .loginhintcolor),
-                                              textAlign: TextAlign.start,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Container(
-                                        width: 20.w,
-                                        child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.end,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            SvgPicture.asset(
-                                                "assets/images/unlockicon.svg"),
-                                            Text(
-                                              "30",
-                                              style: TextStyle(
-                                                  fontSize: 12.sp,
-                                                  // fontFamily: "PulpDisplay",
-                                                  fontWeight: FontWeight.w600,
-                                                  color: Appcolors()
-                                                      .loginhintcolor),
-                                              textAlign: TextAlign.start,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 1.h,
-                                ),
+                                // Container(
+                                //   width: 75.w,
+                                //   child: Row(
+                                //     mainAxisAlignment:
+                                //         MainAxisAlignment.spaceBetween,
+                                //     crossAxisAlignment:
+                                //         CrossAxisAlignment.center,
+                                //     children: [
+                                //       Container(
+                                //         width: 20.w,
+                                //         child: Row(
+                                //           crossAxisAlignment:
+                                //               CrossAxisAlignment.start,
+                                //           mainAxisAlignment:
+                                //               MainAxisAlignment.spaceEvenly,
+                                //           children: [
+                                //             SvgPicture.asset(
+                                //                 "assets/images/likeicon.svg"),
+                                //             Text(
+                                //               feedpostspojo!.message!.schedule!
+                                //                   .elementAt(index)
+                                //                   .likes
+                                //                   .toString(),
+                                //               style: TextStyle(
+                                //                   fontSize: 12.sp,
+                                //                   // fontFamily: "PulpDisplay",
+                                //                   fontWeight: FontWeight.w600,
+                                //                   color: Appcolors()
+                                //                       .loginhintcolor),
+                                //               textAlign: TextAlign.start,
+                                //             ),
+                                //           ],
+                                //         ),
+                                //       ),
+                                //       Container(
+                                //         width: 20.w,
+                                //         child: Row(
+                                //           crossAxisAlignment:
+                                //               CrossAxisAlignment.end,
+                                //           mainAxisAlignment:
+                                //               MainAxisAlignment.spaceEvenly,
+                                //           children: [
+                                //             SvgPicture.asset(
+                                //                 "assets/images/viewsicon.svg"),
+                                //             Text(
+                                //               feedpostspojo!.message!.schedule!
+                                //                   .elementAt(index)
+                                //                   .views
+                                //                   .toString(),
+                                //               style: TextStyle(
+                                //                   fontSize: 12.sp,
+                                //                   // fontFamily: "PulpDisplay",
+                                //                   fontWeight: FontWeight.w600,
+                                //                   color: Appcolors()
+                                //                       .loginhintcolor),
+                                //               textAlign: TextAlign.start,
+                                //             ),
+                                //           ],
+                                //         ),
+                                //       ),
+                                //       Container(
+                                //         width: 20.w,
+                                //         child: Row(
+                                //           crossAxisAlignment:
+                                //               CrossAxisAlignment.end,
+                                //           mainAxisAlignment:
+                                //               MainAxisAlignment.spaceEvenly,
+                                //           children: [
+                                //             SvgPicture.asset(
+                                //                 "assets/images/unlockicon.svg"),
+                                //             Text(
+                                //               feedpostspojo!.message!.schedule!
+                                //                   .elementAt(index)
+                                //                   .unlocked
+                                //                   .toString(),
+                                //               style: TextStyle(
+                                //                   fontSize: 12.sp,
+                                //                   // fontFamily: "PulpDisplay",
+                                //                   fontWeight: FontWeight.w600,
+                                //                   color: Appcolors()
+                                //                       .loginhintcolor),
+                                //               textAlign: TextAlign.start,
+                                //             ),
+                                //           ],
+                                //         ),
+                                //       ),
+                                //     ],
+                                //   ),
+                                // ),
                               ],
                             ),
                           ),
@@ -2263,39 +2374,47 @@ class FeedScreenState extends State<FeedScreen> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Container(
-                                          height: 4.5.h,
-                                          width: 15.w,
-                                          child: CachedNetworkImage(
-                                            imageUrl: userprofilepic.toString(),
-                                            imageBuilder:
-                                                (context, imageProvider) =>
-                                                    Container(
-                                              width: 15.w,
-                                              alignment: Alignment.centerLeft,
-                                              height: 4.5.h,
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                image: DecorationImage(
-                                                  image: imageProvider,
-                                                  fit: BoxFit.contain,
+                                        userprofilepic == null ||
+                                                userprofilepic == ""
+                                            ? Image.asset(
+                                                "assets/images/userprofile.png",
+                                                width: 15.w,
+                                                height: 4.5.h)
+                                            : Container(
+                                                height: 4.5.h,
+                                                width: 15.w,
+                                                child: CachedNetworkImage(
+                                                  imageUrl:
+                                                      userprofilepic.toString(),
+                                                  imageBuilder: (context,
+                                                          imageProvider) =>
+                                                      Container(
+                                                    width: 15.w,
+                                                    alignment:
+                                                        Alignment.centerLeft,
+                                                    height: 4.5.h,
+                                                    decoration: BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      image: DecorationImage(
+                                                        image: imageProvider,
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  placeholder: (context, url) =>
+                                                      Container(
+                                                    child: Center(
+                                                      child:
+                                                          CircularProgressIndicator(
+                                                        strokeWidth: 2,
+                                                        color: Appcolors()
+                                                            .backgroundcolor,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  // errorWidget: (context, url, error) => errorWidget,
                                                 ),
                                               ),
-                                            ),
-                                            placeholder: (context, url) =>
-                                                Container(
-                                              child: Center(
-                                                child:
-                                                    CircularProgressIndicator(
-                                                  strokeWidth: 2,
-                                                  color: Appcolors()
-                                                      .backgroundcolor,
-                                                ),
-                                              ),
-                                            ),
-                                            // errorWidget: (context, url, error) => errorWidget,
-                                          ),
-                                        ),
                                         Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
@@ -2311,7 +2430,7 @@ class FeedScreenState extends State<FeedScreen> {
                                               textAlign: TextAlign.center,
                                             ),
                                             Text(
-                                              feedpostspojo!.message!.post!
+                                              feedpostspojo!.message!.saveDraft!
                                                   .elementAt(index)
                                                   .ago
                                                   .toString(),
@@ -2364,7 +2483,10 @@ class FeedScreenState extends State<FeedScreen> {
                                             });
                                           } else if (value.text ==
                                               StringConstants.deletepost) {
-                                            showdeletealert(context);
+                                            showdeletealert(context,feedpostspojo!.message!.saveDraft!
+                                                .elementAt(index)
+                                                .id
+                                                .toString(),index);
                                           }
                                         },
                                         dropdownStyleData: DropdownStyleData(
@@ -2690,95 +2812,92 @@ class FeedScreenState extends State<FeedScreen> {
                                     ],
                                   ),
                                 ),
-                                Container(
-                                  width: 75.w,
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        width: 20.w,
-                                        child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            SvgPicture.asset(
-                                                "assets/images/likeicon.svg"),
-                                            Text(
-                                              feedpostspojo!.message!.saveDraft!
-                                                  .elementAt(index)
-                                                  .likes
-                                                  .toString(),
-                                              style: TextStyle(
-                                                  fontSize: 12.sp,
-                                                  // fontFamily: "PulpDisplay",
-                                                  fontWeight: FontWeight.w600,
-                                                  color: Appcolors()
-                                                      .loginhintcolor),
-                                              textAlign: TextAlign.start,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Container(
-                                        width: 20.w,
-                                        child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.end,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            SvgPicture.asset(
-                                                "assets/images/viewsicon.svg"),
-                                            Text(
-                                              feedpostspojo!.message!.saveDraft!
-                                                  .elementAt(index)
-                                                  .views
-                                                  .toString(),
-                                              style: TextStyle(
-                                                  fontSize: 12.sp,
-                                                  // fontFamily: "PulpDisplay",
-                                                  fontWeight: FontWeight.w600,
-                                                  color: Appcolors()
-                                                      .loginhintcolor),
-                                              textAlign: TextAlign.start,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Container(
-                                        width: 20.w,
-                                        child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.end,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            SvgPicture.asset(
-                                                "assets/images/unlockicon.svg"),
-                                            Text(
-                                              "40",
-                                              style: TextStyle(
-                                                  fontSize: 12.sp,
-                                                  // fontFamily: "PulpDisplay",
-                                                  fontWeight: FontWeight.w600,
-                                                  color: Appcolors()
-                                                      .loginhintcolor),
-                                              textAlign: TextAlign.start,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 1.h,
-                                ),
+                                // Container(
+                                //   width: 75.w,
+                                //   child: Row(
+                                //     mainAxisAlignment:
+                                //         MainAxisAlignment.spaceBetween,
+                                //     crossAxisAlignment:
+                                //         CrossAxisAlignment.center,
+                                //     children: [
+                                //       Container(
+                                //         width: 20.w,
+                                //         child: Row(
+                                //           crossAxisAlignment:
+                                //               CrossAxisAlignment.start,
+                                //           mainAxisAlignment:
+                                //               MainAxisAlignment.spaceEvenly,
+                                //           children: [
+                                //             SvgPicture.asset(
+                                //                 "assets/images/likeicon.svg"),
+                                //             Text(
+                                //               feedpostspojo!.message!.saveDraft!
+                                //                   .elementAt(index)
+                                //                   .likes
+                                //                   .toString(),
+                                //               style: TextStyle(
+                                //                   fontSize: 12.sp,
+                                //                   // fontFamily: "PulpDisplay",
+                                //                   fontWeight: FontWeight.w600,
+                                //                   color: Appcolors()
+                                //                       .loginhintcolor),
+                                //               textAlign: TextAlign.start,
+                                //             ),
+                                //           ],
+                                //         ),
+                                //       ),
+                                //       Container(
+                                //         width: 20.w,
+                                //         child: Row(
+                                //           crossAxisAlignment:
+                                //               CrossAxisAlignment.end,
+                                //           mainAxisAlignment:
+                                //               MainAxisAlignment.spaceEvenly,
+                                //           children: [
+                                //             SvgPicture.asset(
+                                //                 "assets/images/viewsicon.svg"),
+                                //             Text(
+                                //               feedpostspojo!.message!.saveDraft!
+                                //                   .elementAt(index)
+                                //                   .views
+                                //                   .toString(),
+                                //               style: TextStyle(
+                                //                   fontSize: 12.sp,
+                                //                   // fontFamily: "PulpDisplay",
+                                //                   fontWeight: FontWeight.w600,
+                                //                   color: Appcolors()
+                                //                       .loginhintcolor),
+                                //               textAlign: TextAlign.start,
+                                //             ),
+                                //           ],
+                                //         ),
+                                //       ),
+                                //       Container(
+                                //         width: 20.w,
+                                //         child: Row(
+                                //           crossAxisAlignment:
+                                //               CrossAxisAlignment.end,
+                                //           mainAxisAlignment:
+                                //               MainAxisAlignment.spaceEvenly,
+                                //           children: [
+                                //             SvgPicture.asset(
+                                //                 "assets/images/unlockicon.svg"),
+                                //             Text(
+                                //               "40",
+                                //               style: TextStyle(
+                                //                   fontSize: 12.sp,
+                                //                   // fontFamily: "PulpDisplay",
+                                //                   fontWeight: FontWeight.w600,
+                                //                   color: Appcolors()
+                                //                       .loginhintcolor),
+                                //               textAlign: TextAlign.start,
+                                //             ),
+                                //           ],
+                                //         ),
+                                //       ),
+                                //     ],
+                                //   ),
+                                // ),
                               ],
                             ),
                           ),
@@ -2833,6 +2952,13 @@ class FeedScreenState extends State<FeedScreen> {
           ),
         ],
       ),
+    );
+  }
+  Widget pinnedpost(){
+    return Container(
+      color: Colors.white,
+      height: 3.h,
+      child: Text(StringConstants.pinnedpost),
     );
   }
 }

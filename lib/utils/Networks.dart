@@ -19,4 +19,6 @@ class Networks{
   static String creategroup = "creategroup";
   static String getgroup = "getgroup";
   static String deletegroup = "deletegroup";
+  static String pinposts = "pinposts";
+  static String deletepost = "deletepost";
 }

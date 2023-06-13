@@ -78,7 +78,10 @@ class FeeddetailedpageState extends State<Feeddetailedpage>{
                 Row(
                   children: [
                     Container(
-                      child: CachedNetworkImage(
+                      child:
+                      userprofilepic==null||userprofilepic==""?
+                      Image.asset("assets/images/userprofile.png",height: 4.5.h,width: 15.w,):
+                      CachedNetworkImage(
                         imageUrl:userprofilepic.toString(),
                         imageBuilder: (context,
                             imageProvider) =>
@@ -94,7 +97,7 @@ class FeeddetailedpageState extends State<Feeddetailedpage>{
                                 DecorationImage(
                                   image:
                                   imageProvider,
-                                  fit: BoxFit.contain,
+                                  fit: BoxFit.cover,
                                 ),
                               ),
                             ),

@@ -63,7 +63,7 @@ class MassmessageScreenState extends State<MassmessageScreen> {
   late VideoPlayerController _controller;
   late CustomVideoPlayerController _customVideoPlayerController;
   late final VideoPlayerController videoPlayerController;
-  int imagecredit = 1;
+  int imagecredit = 0;
   File? imageFile;
   bool videostatus = false;
   Uint8List? thumbnail;
@@ -75,7 +75,8 @@ class MassmessageScreenState extends State<MassmessageScreen> {
   late StateSetter _setState;
   String? selectedusers;
   Getgrouppojo? getgrouppojo;
-
+  String? sendtotype="all";
+  int sorttype=1;
   @override
   void initState() {
     // TODO: implement initState
@@ -140,7 +141,7 @@ class MassmessageScreenState extends State<MassmessageScreen> {
                             child: CustomDropdownButton2(
                               hint: "Select Item",
                               dropdownItems: massmessagetype,
-                              value: dropdownvalue,
+                              value: dropdownvalue==StringConstants.createnewgroup?StringConstants.allavailable:dropdownvalue==StringConstants.createnewgroup?StringConstants.allavailable:dropdownvalue,
                               dropdownWidth: 45.w,
                               dropdownHeight: 60.h,
                               buttonWidth: 27.w,
@@ -150,8 +151,19 @@ class MassmessageScreenState extends State<MassmessageScreen> {
                                     createnewgroup(context);
                                   }else if(value == StringConstants.managecustomgroup){
                                     managecustomrgoups(context);
+                                  }else if(value == StringConstants.allavailable){
+                                    sendtotype="all";
+                                  }else if(value==StringConstants.favourites){
+                                    sendtotype="fav";
+                                  } else{
+                                    int index=massmessagetype.indexOf(value!);
+                                    print("Element index:-"+index.toString());
+                                    setState((){
+                                      sendtotype=getgrouppojo!.data!.elementAt(index-4).id.toString();
+                                    });
+                                    print("Element id:-"+sendtotype.toString());
+                                    dropdownvalue = value!;
                                   }
-                                  dropdownvalue = value!;
                                 });
                               },
                             ),
@@ -216,7 +228,11 @@ class MassmessageScreenState extends State<MassmessageScreen> {
                         height: 1.5.h,
                       ),
                       GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          if(imageFile==null){
+                            addmediadialog(context);
+                          }
+                        },
                         child: Container(
                           width: double.infinity,
                           child: DottedBorder(
@@ -331,6 +347,8 @@ class MassmessageScreenState extends State<MassmessageScreen> {
                                                   borderRadius:
                                                       BorderRadius.circular(8)),
                                               child: Text(
+                                                  imagecredit==0?
+                                                      "Free":
                                                 imagecredit.toString(),
                                                 style: TextStyle(
                                                     fontSize: 8.sp,
@@ -343,7 +361,7 @@ class MassmessageScreenState extends State<MassmessageScreen> {
                                             GestureDetector(
                                               onTap: () {
                                                 setState(() {
-                                                  if (imagecredit > 1) {
+                                                  if (imagecredit > 0) {
                                                     imagecredit =
                                                         imagecredit - 1;
                                                   }
@@ -458,6 +476,25 @@ class MassmessageScreenState extends State<MassmessageScreen> {
                           onChanged: (value) {
                             setState(() {
                               messagehistoryvalue = value!;
+                              switch (messagehistoryvalue){
+                                case "Most Recent":
+                                  massmessageslisting(1);
+                                  break;
+                                  case "Most Sends":
+                                  massmessageslisting(2);
+                                  break;
+                                  case "Most read":
+                                  massmessageslisting(3);
+                                  break;
+                                  case "Read Rate":
+                                  massmessageslisting(4);
+                                  break;
+                                  case "Most Unlocks":
+                                  massmessageslisting(5);
+                                  break;
+                                  case "Most Earnings":
+                                  massmessageslisting(6);
+                              }
                             });
                           },
                         ),
@@ -1943,14 +1980,16 @@ class MassmessageScreenState extends State<MassmessageScreen> {
       token = sharedPreferences.getString("token");
     });
     print("Token value:-" + token.toString());
-    massmessageslisting();
+    massmessageslisting(sorttype);
     searchuser(searchclientcontroller.text.toString());
     getgrouplist();
   }
 
-  Future<void> massmessageslisting() async {
+  Future<void> massmessageslisting(int sorttype) async {
+    Helpingwidgets.showLoadingDialog(context, key);
     Map data = {
       "token": token,
+      "sort": sorttype.toString()
     };
     print("Data:-" + data.toString());
     var jsonResponse = null;
@@ -1968,6 +2007,7 @@ class MassmessageScreenState extends State<MassmessageScreen> {
             jsonResponse["message"].toString(), context);
         Navigator.pop(context);
       } else {
+        Navigator.pop(context);
         setState(() {
           responsestatus = true;
         });
@@ -1975,6 +2015,7 @@ class MassmessageScreenState extends State<MassmessageScreen> {
         massmassagespojo = Massmassagespojo.fromJson(jsonResponse);
       }
     } else {
+      Navigator.pop(context);
       setState(() {
         responsestatus = true;
       });
@@ -2053,7 +2094,7 @@ class MassmessageScreenState extends State<MassmessageScreen> {
     }
   }
   Future<void> getgrouplist() async {
-    Helpingwidgets.showLoadingDialog(context, key);
+    // Helpingwidgets.showLoadingDialog(context, key);
     Map data = {
       "token": token,
     };
@@ -2065,10 +2106,9 @@ class MassmessageScreenState extends State<MassmessageScreen> {
     print("Search jsonResponse:-" + jsonResponse.toString());
     if (response.statusCode == 200) {
       if (jsonResponse["status"] == false) {
-        Navigator.pop(context);
         Helpingwidgets.failedsnackbar(
             jsonResponse["message"].toString(), context);
-        Navigator.pop(context);
+        // Navigator.pop(context);
       } else {
         setState(() {
           getgrouppojo=Getgrouppojo.fromJson(jsonResponse);
@@ -2079,17 +2119,12 @@ class MassmessageScreenState extends State<MassmessageScreen> {
             massmessagetype.add(getgrouppojo!.data!.elementAt(i).groupname.toString());
           }
         });
-        // Helpingwidgets.successsnackbar(
-        //     jsonResponse["message"].toString(), context);
-        Navigator.pop(context);
+        // Navigator.pop(context);
         print("Message:-" + jsonResponse["message"].toString());
 
       }
     } else {
-      setState(() {
-        // responsestatus = true;
-      });
-      Navigator.pop(context);
+      // Navigator.pop(context);
       Helpingwidgets.failedsnackbar(
           jsonResponse["message"].toString(), context);
     }
@@ -2141,6 +2176,8 @@ class MassmessageScreenState extends State<MassmessageScreen> {
     request.headers["Content-Type"] = "multipart/form-data";
     request.fields["text"] = messagecontroller.text.trim();
     request.fields["token"] = token!;
+    request.fields["price"] = imagecredit!.toString();
+    request.fields["message_to"] = sendtotype.toString();
     print("token:-" + token!);
     print("Message:-" + messagecontroller.text.trim());
     print("token:-" + token.toString());
@@ -2169,7 +2206,7 @@ class MassmessageScreenState extends State<MassmessageScreen> {
           Helpingwidgets.successsnackbar(
               jsonData["message"].toString(), context);
           print("Response:${jsonData["message"]}");
-          massmessageslisting();
+          massmessageslisting(sorttype);
           Navigator.pop(context);
         }
       } else {

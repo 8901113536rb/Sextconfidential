@@ -91,6 +91,7 @@ Message copyWith({  List<Schedule>? schedule,
 
 }
 
+
 class Post {
   Post({
       String? ago, 
@@ -101,7 +102,10 @@ class Post {
       String? views, 
       String? likes, 
       String? price, 
-      String? scheduledate,}){
+      String? scheduledate, 
+      String? unlocked, 
+      String? earning, 
+      String? pinned,}){
     _ago = ago;
     _id = id;
     _url = url;
@@ -111,6 +115,9 @@ class Post {
     _likes = likes;
     _price = price;
     _scheduledate = scheduledate;
+    _unlocked = unlocked;
+    _earning = earning;
+    _pinned = pinned;
 }
 
   Post.fromJson(dynamic json) {
@@ -123,6 +130,9 @@ class Post {
     _likes = json['likes'];
     _price = json['price'];
     _scheduledate = json['scheduledate'];
+    _unlocked = json['unlocked'];
+    _earning = json['earning'];
+    _pinned = json['pinned'];
   }
   String? _ago;
   num? _id;
@@ -133,6 +143,9 @@ class Post {
   String? _likes;
   String? _price;
   String? _scheduledate;
+  String? _unlocked;
+  String? _earning;
+  String? _pinned;
 Post copyWith({  String? ago,
   num? id,
   String? url,
@@ -142,6 +155,9 @@ Post copyWith({  String? ago,
   String? likes,
   String? price,
   String? scheduledate,
+  String? unlocked,
+  String? earning,
+  String? pinned,
 }) => Post(  ago: ago ?? _ago,
   id: id ?? _id,
   url: url ?? _url,
@@ -151,6 +167,9 @@ Post copyWith({  String? ago,
   likes: likes ?? _likes,
   price: price ?? _price,
   scheduledate: scheduledate ?? _scheduledate,
+  unlocked: unlocked ?? _unlocked,
+  earning: earning ?? _earning,
+  pinned: pinned ?? _pinned,
 );
   String? get ago => _ago;
   num? get id => _id;
@@ -161,6 +180,9 @@ Post copyWith({  String? ago,
   String? get likes => _likes;
   String? get price => _price;
   String? get scheduledate => _scheduledate;
+  String? get unlocked => _unlocked;
+  String? get earning => _earning;
+  String? get pinned => _pinned;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -173,10 +195,15 @@ Post copyWith({  String? ago,
     map['likes'] = _likes;
     map['price'] = _price;
     map['scheduledate'] = _scheduledate;
+    map['unlocked'] = _unlocked;
+    map['earning'] = _earning;
+    map['pinned'] = _pinned;
     return map;
   }
 
 }
+
+
 
 class SaveDraft {
   SaveDraft({
@@ -188,7 +215,9 @@ class SaveDraft {
       String? views, 
       String? likes, 
       String? price, 
-      String? scheduledate,}){
+      String? scheduledate, 
+      String? earning, 
+      String? pinned,}){
     _ago = ago;
     _id = id;
     _url = url;
@@ -198,6 +227,8 @@ class SaveDraft {
     _likes = likes;
     _price = price;
     _scheduledate = scheduledate;
+    _earning = earning;
+    _pinned = pinned;
 }
 
   SaveDraft.fromJson(dynamic json) {
@@ -210,6 +241,8 @@ class SaveDraft {
     _likes = json['likes'];
     _price = json['price'];
     _scheduledate = json['scheduledate'];
+    _earning = json['earning'];
+    _pinned = json['pinned'];
   }
   String? _ago;
   num? _id;
@@ -220,6 +253,8 @@ class SaveDraft {
   String? _likes;
   String? _price;
   String? _scheduledate;
+  String? _earning;
+  String? _pinned;
 SaveDraft copyWith({  String? ago,
   num? id,
   String? url,
@@ -229,6 +264,8 @@ SaveDraft copyWith({  String? ago,
   String? likes,
   String? price,
   String? scheduledate,
+  String? earning,
+  String? pinned,
 }) => SaveDraft(  ago: ago ?? _ago,
   id: id ?? _id,
   url: url ?? _url,
@@ -238,6 +275,8 @@ SaveDraft copyWith({  String? ago,
   likes: likes ?? _likes,
   price: price ?? _price,
   scheduledate: scheduledate ?? _scheduledate,
+  earning: earning ?? _earning,
+  pinned: pinned ?? _pinned,
 );
   String? get ago => _ago;
   num? get id => _id;
@@ -248,6 +287,8 @@ SaveDraft copyWith({  String? ago,
   String? get likes => _likes;
   String? get price => _price;
   String? get scheduledate => _scheduledate;
+  String? get earning => _earning;
+  String? get pinned => _pinned;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -260,6 +301,8 @@ SaveDraft copyWith({  String? ago,
     map['likes'] = _likes;
     map['price'] = _price;
     map['scheduledate'] = _scheduledate;
+    map['earning'] = _earning;
+    map['pinned'] = _pinned;
     return map;
   }
 
@@ -275,7 +318,10 @@ class Schedule {
       String? views, 
       String? likes, 
       String? price, 
-      String? scheduledate,}){
+      String? scheduledate, 
+      String? unlocked, 
+      String? earning, 
+      String? pinned,}){
     _ago = ago;
     _id = id;
     _url = url;
@@ -285,6 +331,9 @@ class Schedule {
     _likes = likes;
     _price = price;
     _scheduledate = scheduledate;
+    _unlocked = unlocked;
+    _earning = earning;
+    _pinned = pinned;
 }
 
   Schedule.fromJson(dynamic json) {
@@ -297,6 +346,9 @@ class Schedule {
     _likes = json['likes'];
     _price = json['price'];
     _scheduledate = json['scheduledate'];
+    _unlocked = json['unlocked'];
+    _earning = json['earning'];
+    _pinned = json['pinned'];
   }
   String? _ago;
   num? _id;
@@ -307,6 +359,9 @@ class Schedule {
   String? _likes;
   String? _price;
   String? _scheduledate;
+  String? _unlocked;
+  String? _earning;
+  String? _pinned;
 Schedule copyWith({  String? ago,
   num? id,
   String? url,
@@ -316,6 +371,9 @@ Schedule copyWith({  String? ago,
   String? likes,
   String? price,
   String? scheduledate,
+  String? unlocked,
+  String? earning,
+  String? pinned,
 }) => Schedule(  ago: ago ?? _ago,
   id: id ?? _id,
   url: url ?? _url,
@@ -325,6 +383,9 @@ Schedule copyWith({  String? ago,
   likes: likes ?? _likes,
   price: price ?? _price,
   scheduledate: scheduledate ?? _scheduledate,
+  unlocked: unlocked ?? _unlocked,
+  earning: earning ?? _earning,
+  pinned: pinned ?? _pinned,
 );
   String? get ago => _ago;
   num? get id => _id;
@@ -335,6 +396,9 @@ Schedule copyWith({  String? ago,
   String? get likes => _likes;
   String? get price => _price;
   String? get scheduledate => _scheduledate;
+  String? get unlocked => _unlocked;
+  String? get earning => _earning;
+  String? get pinned => _pinned;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -347,6 +411,9 @@ Schedule copyWith({  String? ago,
     map['likes'] = _likes;
     map['price'] = _price;
     map['scheduledate'] = _scheduledate;
+    map['unlocked'] = _unlocked;
+    map['earning'] = _earning;
+    map['pinned'] = _pinned;
     return map;
   }
 

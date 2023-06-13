@@ -113,8 +113,9 @@ class SidedrawerState extends State<Sidedrawer> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Container(
-                        child: 
-                        profilepic!=null?
+                        child:
+                        profilepic==null ||profilepic==""?
+                        Image.asset("assets/images/userprofile.png",height: 10.h,width: 20.w,):
                         CachedNetworkImage(
                           imageUrl:profilepic.toString(),
                           imageBuilder: (context, imageProvider) => Container(
@@ -138,8 +139,7 @@ class SidedrawerState extends State<Sidedrawer> {
                             ),
                           ),
                           // errorWidget: (context, url, error) => errorWidget,
-                        ):
-                        Image.asset("assets/images/userprofile.png",height: 10.h,width: 20.w,),
+                        )
                       ),
                       SizedBox(
                         width: 5.w,
@@ -275,12 +275,14 @@ class SidedrawerState extends State<Sidedrawer> {
                                           builder: (context) =>
                                               Deactivateaccscreen()));
                                   break;
-                                case 7:
+                                case 7:{
+                                  sharedPreferences!.clear();
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
                                               LoginScreen()));
+                                }
                               }
                             });
 
@@ -363,7 +365,7 @@ class SidedrawerState extends State<Sidedrawer> {
   Future<void> getsharedpreference() async {
     sharedPreferences = await SharedPreferences.getInstance();
     setState((){
-      username=sharedPreferences!.getString("stagename")!;
+      username=sharedPreferences!.getString("stagename")!??"User Name";
       token=sharedPreferences!.getString("token")!;
       switchlist[0]=sharedPreferences!.getBool("phonecall")!;
       switchlist[1]=sharedPreferences!.getBool("videocall")!;
@@ -396,7 +398,6 @@ class SidedrawerState extends State<Sidedrawer> {
         sharedPreferences.setBool("phonecall",switchlist[0]);
         sharedPreferences.setBool("videocall",switchlist[1]);
         sharedPreferences!.setString("userstatus", onlinestatus.toString());
-        // Helpingwidgets.successsnackbar(jsonResponse["message"].toString(), context);
         print("Response:${jsonResponse["message"]}");
 
       }

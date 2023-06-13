@@ -30,6 +30,7 @@ class EditprofilescreenState extends State<Editprofilescreen> {
   String? token;
   File? imageFile;
   GlobalKey<FormState>_key=GlobalKey();
+  GlobalKey<State>key=GlobalKey();
   String? profilepic;
   @override
   void initState() {
@@ -82,7 +83,8 @@ class EditprofilescreenState extends State<Editprofilescreen> {
                         alignment: Alignment.bottomRight,
                         children: [
                           imageFile==null?
-                          profilepic!=null?
+                          profilepic==null||profilepic==""?
+                          Image.asset("assets/images/userprofile.png",height: 10.h,width: 20.w,):
                           CachedNetworkImage(
                             alignment: Alignment.topCenter,
                             imageUrl:
@@ -108,8 +110,7 @@ class EditprofilescreenState extends State<Editprofilescreen> {
                               ),
                             ),
                             // errorWidget: (context, url, error) => errorWidget,
-                          ):
-                    Image.asset("assets/images/userprofile.png",height: 10.h,width: 20.w,)
+                          )
                           :
                               CircleAvatar(
                                 radius: 7.h,
@@ -523,6 +524,7 @@ class EditprofilescreenState extends State<Editprofilescreen> {
   }
 
   Future<void> updateprofile() async {
+    Helpingwidgets.showLoadingDialog(context, key);
     var request = http.MultipartRequest('post', Uri.parse(
         Networks.baseurl+Networks.updateprofile),);
     var jsonData = null;
@@ -550,12 +552,13 @@ class EditprofilescreenState extends State<Editprofilescreen> {
         if (jsonData["status"] == false) {
           Helpingwidgets.failedsnackbar(jsonData["message"].toString(), context);
           print("Response:${jsonData["message"]}");
+          Navigator.pop(context);
         } else {
           Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
               Bottomnavigation()), (Route<dynamic> route) => false);
-          Helpingwidgets.successsnackbar(jsonData["message"].toString(), context);
+          Helpingwidgets.successsnackbar("Data Saved!", context);
           getprofilepojo=Getprofilepojo.fromJson(jsonData);
-          sharedPreferences!.setString("profilepic", jsonData["data"]["image"].toString());
+          sharedPreferences!.setString("profilepic", jsonData["data"]["image"]==null?"":jsonData["data"]["image"].toString());
           sharedPreferences!.setString("stagename", jsonData["data"]["stagename"].toString());
           sharedPreferences!.setString("bio", jsonData["data"]["bio"].toString());
           sharedPreferences!.setString("phone", jsonData["data"]["phone"].toString());
@@ -564,6 +567,7 @@ class EditprofilescreenState extends State<Editprofilescreen> {
         }
       }
       else {
+        Navigator.pop(context);
         Helpingwidgets.failedsnackbar(jsonData["message"].toString(), context);
         print("Response:${jsonData["message"]}");
       }
