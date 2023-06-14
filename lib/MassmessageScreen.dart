@@ -2077,8 +2077,8 @@ class MassmessageScreenState extends State<MassmessageScreen> {
     Navigator.pop(context);
     PickedFile? pickedFile = await ImagePicker().getImage(
       source: ImageSource.gallery,
-      maxWidth: 1800,
-      maxHeight: 1800,
+      maxWidth: 700,
+      maxHeight: 700,
     );
     if (pickedFile != null) {
       setState(() {
@@ -2091,8 +2091,8 @@ class MassmessageScreenState extends State<MassmessageScreen> {
     Navigator.pop(context);
     PickedFile? pickedFile = await ImagePicker().getImage(
       source: ImageSource.camera,
-      maxWidth: 1800,
-      maxHeight: 1800,
+      maxWidth: 700,
+      maxHeight: 700,
     );
     if (pickedFile != null) {
       setState(() {
@@ -2245,7 +2245,6 @@ class MassmessageScreenState extends State<MassmessageScreen> {
     }
   }
   Future<void> updategroupapi(String groupid) async {
-
     Helpingwidgets.showLoadingDialog(context, key);
     Map data = {
       "group": groupid,
@@ -2364,12 +2363,12 @@ class MassmessageScreenState extends State<MassmessageScreen> {
     Map data = {
       "group": groupid,
     };
-    print("Data:-" + data.toString());
+    print("Data:-$data");
     var jsonResponse = null;
     var response = await http
         .post(Uri.parse(Networks.baseurl + Networks.deletegroup), body: data);
     jsonResponse = json.decode(response.body);
-    print("Search jsonResponse:-" + jsonResponse.toString());
+    print("Search jsonResponse:-$jsonResponse");
     if (response.statusCode == 200) {
       if (jsonResponse["status"] == false) {
         Navigator.pop(context);

@@ -314,7 +314,8 @@ class LoginScreenState extends State<LoginScreen> {
         sharedPreferences.setBool("phonecall",getprofilepojo!.token!.phoneCalls=="yes"?true:false);
         sharedPreferences.setBool("videocall",getprofilepojo!.token!.videoCalls=="yes"?true:false);
         sharedPreferences.setBool("loginstatus", true);
-        Navigator.push(context, MaterialPageRoute(builder: (context) => Bottomnavigation()));
+        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+            Bottomnavigation()), (Route<dynamic> route) => false);
         Helpingwidgets.successsnackbar(jsonResponse["message"].toString(), context);
         print("Response:${jsonResponse["message"]}");
       }

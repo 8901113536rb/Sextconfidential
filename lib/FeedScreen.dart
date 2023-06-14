@@ -329,12 +329,14 @@ class FeedScreenState extends State<FeedScreen> {
                                                     imageFile!.path.length - 3,
                                                     imageFile!.path.length) ==
                                                 "mp4"
-                                            ? Image.memory(
-                                                thumbnail!,
-                                                height: 15.h,
-                                                width: 25.w,
-                                                fit: BoxFit.fill,
-                                              )
+                                            ? 
+                                            Image.asset("assets/images/thumbnaildefault.png",height: 15.h,width: 30.w,fit: BoxFit.fill,)
+                                        // Image.memory(
+                                        //         thumbnail!,
+                                        //         height: 15.h,
+                                        //         width: 25.w,
+                                        //         fit: BoxFit.fill,
+                                        //       )
                                             : Image.file(
                                                 imageFile!,
                                                 height: 15.h,
@@ -348,12 +350,15 @@ class FeedScreenState extends State<FeedScreen> {
                                             imageFile = null;
                                           });
                                         },
-                                        child: CircleAvatar(
-                                          radius: 1.h,
-                                          backgroundColor: Colors.white,
-                                          child: Image.asset(
-                                            "assets/images/crossicon.png",
-                                            height: 1.h,
+                                        child: Container(
+                                          margin: EdgeInsets.only(right: 3,top: 5),
+                                          child: CircleAvatar(
+                                            radius: 1.5.h,
+                                            backgroundColor: Colors.white,
+                                            child: Image.asset(
+                                              "assets/images/crossicon.png",
+                                              height: 1.h,
+                                            ),
                                           ),
                                         ),
                                       )
@@ -925,8 +930,8 @@ class FeedScreenState extends State<FeedScreen> {
     Navigator.pop(context);
     PickedFile? pickedFile = await ImagePicker().getImage(
       source: ImageSource.gallery,
-      maxWidth: 1800,
-      maxHeight: 1800,
+      maxWidth: 700,
+      maxHeight: 700,
     );
     if (pickedFile != null) {
       setState(() {
@@ -939,8 +944,8 @@ class FeedScreenState extends State<FeedScreen> {
     Navigator.pop(context);
     PickedFile? pickedFile = await ImagePicker().getImage(
       source: ImageSource.camera,
-      maxWidth: 1800,
-      maxHeight: 1800,
+      maxWidth: 700,
+      maxHeight: 700,
     );
     if (pickedFile != null) {
       setState(() {
@@ -1132,10 +1137,7 @@ class FeedScreenState extends State<FeedScreen> {
             jsonResponse["message"].toString(), context);
         Navigator.pop(context);
       } else {
-        // Helpingwidgets.successsnackbar(
-        //     jsonResponse["message"].toString(), context);
         print("Message:-${jsonResponse["message"]}");
-        // feedpostspojo!.message!.post!.elementAt(index).="true";
         feedlisting(0);
         Navigator.pop(context);
       }
@@ -1164,8 +1166,8 @@ class FeedScreenState extends State<FeedScreen> {
             jsonResponse["message"].toString(), context);
         Navigator.pop(context);
       } else {
-        Helpingwidgets.successsnackbar(
-            jsonResponse["message"].toString(), context);
+        // Helpingwidgets.successsnackbar(
+        //     jsonResponse["message"].toString(), context);
         print("Message:-${jsonResponse["message"]}");
         // feedpostspojo!.message!.post!.elementAt(index).="true";
         feedlisting(0);
@@ -1496,6 +1498,16 @@ class FeedScreenState extends State<FeedScreen> {
                                                         .unlocked
                                                         .toString(),
                                                     posttype: 0,
+                                                    pinstatus: feedpostspojo!
+                                                        .message!.post!
+                                                        .elementAt(index)
+                                                        .pinned
+                                                        .toString(),
+                                                    postid: feedpostspojo!
+                                                        .message!.post!
+                                                        .elementAt(index)
+                                                        .id
+                                                        .toString(),
                                                   )));
                                     },
                                     child: Container(
@@ -2181,6 +2193,12 @@ class FeedScreenState extends State<FeedScreen> {
                                                         .toString(),
                                                     unlocks: "",
                                                     posttype: 1,
+                                                    pinstatus: "",
+                                                    postid: feedpostspojo!
+                                                        .message!.schedule!
+                                                        .elementAt(index)
+                                                        .id
+                                                        .toString(),
                                                   )));
                                     },
                                     child: Container(
@@ -2770,6 +2788,12 @@ class FeedScreenState extends State<FeedScreen> {
                                                         .toString(),
                                                     unlocks: "",
                                                     posttype: 2,
+                                                    postid: feedpostspojo!
+                                                        .message!.saveDraft!
+                                                        .elementAt(index)
+                                                        .id
+                                                        .toString(),
+                                                    pinstatus: "",
                                                   )));
                                     },
                                     child: Container(

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:sextconfidential/LoginScreen.dart';
 import 'package:sextconfidential/utils/Appcolors.dart';
 import 'package:sextconfidential/utils/Helpingwidgets.dart';
 import 'package:sextconfidential/utils/Networks.dart';
@@ -342,7 +343,7 @@ class ChangepasswordState extends State<Changepassword>{
         Helpingwidgets.successsnackbar(jsonResponse["message"].toString(), context);
         print("Response:${jsonResponse["message"]}");
         Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
-            Bottomnavigation()), (Route<dynamic> route) => false);
+            LoginScreen()), (Route<dynamic> route) => false);
 
       }
     } else {
