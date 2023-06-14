@@ -58,7 +58,7 @@ class BottomnavigationState extends State<Bottomnavigation> {
               _key.currentState!.openDrawer();
             },
             child: Container(
-              padding: EdgeInsets.all(2.5.h),
+              padding: EdgeInsets.all(2.h),
                 child: Center(
                   child: SvgPicture.asset(
               "assets/images/menubtn.svg",height: 3.h,

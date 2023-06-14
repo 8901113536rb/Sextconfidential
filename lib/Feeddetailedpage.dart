@@ -12,8 +12,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 
 class Feeddetailedpage extends StatefulWidget{
-  String? type,url,ago,text,views,likes;
-  Feeddetailedpage({super.key,this.type,this.url,this.ago,this.text,this.views,this.likes});
+  String? type,url,ago,text,views,likes,unlocks;
+  int? posttype;
+  Feeddetailedpage({super.key,this.type,this.url,this.ago,this.text,this.views,this.likes,this.unlocks,this.posttype});
 
   @override
   FeeddetailedpageState createState() => FeeddetailedpageState();
@@ -383,6 +384,7 @@ class FeeddetailedpageState extends State<Feeddetailedpage>{
                 ],
               )
             ),
+            widget.posttype==0?
             Container(
               width: 75.w,
               child: Row(
@@ -435,7 +437,7 @@ class FeeddetailedpageState extends State<Feeddetailedpage>{
                       children: [
                         SvgPicture.asset("assets/images/unlockicon.svg"),
                         Text(
-                          "34",
+                          widget.unlocks.toString(),
                           style: TextStyle(
                               fontSize: 12.sp,
                               // fontFamily: "PulpDisplay",
@@ -448,7 +450,8 @@ class FeeddetailedpageState extends State<Feeddetailedpage>{
                   ),
                 ],
               ),
-            ),
+            )
+            :SizedBox(),
             SizedBox(
               height: 1.h,
             ),

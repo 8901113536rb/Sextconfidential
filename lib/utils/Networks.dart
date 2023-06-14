@@ -21,4 +21,7 @@ class Networks{
   static String deletegroup = "deletegroup";
   static String pinposts = "pinposts";
   static String deletepost = "deletepost";
+  static String updatepost = "updatepost";
+  static String editgroup = "editgroup";
+  static String updategroup = "updategroup";
 }

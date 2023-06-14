@@ -83,7 +83,6 @@ class MenuItems {
   ];
   static  const List<CustomMenuItem> firstItems = [editpost, copylink, pinpost,deletepost];
   static const List<CustomMenuItem> secondItems = [];
-
   static  const CustomMenuItem editpost = CustomMenuItem(text: "Edit Post", icon: Icons.home);
   static  const CustomMenuItem copylink = CustomMenuItem(text: "Copy Link", icon: Icons.share);
   static  const CustomMenuItem pinpost = CustomMenuItem(text: "Pin Post", icon: Icons.settings,);

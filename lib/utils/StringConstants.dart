@@ -88,6 +88,7 @@ class StringConstants{
   static String enteryourgroupname ="Enter your Group Name";
   static String creategroup ="Create Group";
   static String close ="Close";
+  static String save ="Save";
   static String selectdateandtime ="Select Date and time";
   static String scheduledpost ="Scheduled Post";
   static String saveasdraft ="Save as Draft";
