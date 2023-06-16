@@ -32,7 +32,6 @@ class LoginScreenState extends State<LoginScreen> {
     // TODO: implement initState
     super.initState();
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -311,8 +310,8 @@ class LoginScreenState extends State<LoginScreen> {
         sharedPreferences!.setString("phone", getprofilepojo!.token!.phone.toString());
         sharedPreferences!.setString("email", getprofilepojo!.token!.email.toString());
         sharedPreferences!.setString("userstatus", getprofilepojo!.token!.showOnline??"0");
-        sharedPreferences.setBool("phonecall",getprofilepojo!.token!.phoneCalls=="yes"?true:false);
-        sharedPreferences.setBool("videocall",getprofilepojo!.token!.videoCalls=="yes"?true:false);
+        sharedPreferences.setBool("phonecall",getprofilepojo!.token!.phoneCalls.toString().toLowerCase()=="yes"?true:false);
+        sharedPreferences.setBool("videocall",getprofilepojo!.token!.videoCalls.toString().toLowerCase()=="yes"?true:false);
         sharedPreferences.setBool("loginstatus", true);
         Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
             Bottomnavigation()), (Route<dynamic> route) => false);

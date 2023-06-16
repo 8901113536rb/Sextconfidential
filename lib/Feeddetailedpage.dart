@@ -309,6 +309,7 @@ class FeeddetailedpageState extends State<Feeddetailedpage> {
                                     fontSize: 12.sp,
                                   ),
                                   controller: postcontentcontoller,
+                                  textInputAction: TextInputAction.done,
                                   decoration: InputDecoration(
                                     // prefix: Container(
                                     //   child: SvgPicture.asset("assets/images/astrickicon.svg",width: 5.w,),

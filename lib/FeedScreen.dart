@@ -217,6 +217,7 @@ class FeedScreenState extends State<FeedScreen> {
                     color: Appcolors().whitecolor,
                     fontSize: 12.sp,
                   ),
+                  textInputAction: TextInputAction.done,
                   controller: messagecontroller,
                   decoration: InputDecoration(
                     // prefix: Container(
@@ -1611,6 +1612,7 @@ class FeedScreenState extends State<FeedScreen> {
                                                   TextFormField(
                                                     minLines: 3,
                                                     maxLines: 3,
+                                                    textInputAction: TextInputAction.done,
                                                     cursorColor: Appcolors()
                                                         .loginhintcolor,
                                                     style: TextStyle(

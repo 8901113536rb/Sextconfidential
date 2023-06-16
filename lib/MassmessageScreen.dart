@@ -80,6 +80,7 @@ class MassmessageScreenState extends State<MassmessageScreen> {
   String? sendtotype="all";
   int sorttype=1;
   Getgroupuserpojo? getgroupuserpojo;
+  final massmessagesfocus= FocusNode();
   @override
   void initState() {
     // TODO: implement initState
@@ -187,6 +188,8 @@ class MassmessageScreenState extends State<MassmessageScreen> {
                             color: Appcolors().whitecolor,
                             fontSize: 12.sp,
                           ),
+                          textInputAction: TextInputAction.done,
+                          focusNode: massmessagesfocus,
                           controller: messagecontroller,
                           decoration: InputDecoration(
                             // prefix: Container(

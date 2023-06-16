@@ -180,6 +180,7 @@ class DeactivateaccscreenState extends State<Deactivateaccscreen>{
                   child: TextFormField(
                     maxLines: 4,
                     minLines: 4,
+                    textInputAction: TextInputAction.done,
                     cursorColor: Appcolors().loginhintcolor,
                     style: TextStyle(color:Appcolors().whitecolor,fontSize: 12.sp,),
                     controller: notecontroller,

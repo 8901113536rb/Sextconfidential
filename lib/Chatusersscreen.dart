@@ -31,7 +31,6 @@ class ChatusersscreenState extends State<Chatusersscreen> {
   ];
   String chatselectedtype = "Most Recent";
   final GlobalKey<ScaffoldState> _key = GlobalKey(); // Create a key
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
