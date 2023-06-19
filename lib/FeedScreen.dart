@@ -1296,8 +1296,7 @@ class FeedScreenState extends State<FeedScreen> {
                                                       child:
                                                           CircularProgressIndicator(
                                                         strokeWidth: 2,
-                                                        color: Appcolors()
-                                                            .backgroundcolor,
+                                                        color: Appcolors().bottomnavbgcolor,
                                                       ),
                                                     ),
                                                   ),
@@ -2241,7 +2240,7 @@ class FeedScreenState extends State<FeedScreen> {
                                                         CircularProgressIndicator(
                                                       strokeWidth: 2,
                                                       color: Appcolors()
-                                                          .backgroundcolor,
+                                                          .bottomnavbgcolor,
                                                     ),
                                                   ),
                                                 ),

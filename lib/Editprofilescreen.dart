@@ -499,8 +499,8 @@ class EditprofilescreenState extends State<Editprofilescreen> {
   clickphotofromcamera() async {
     PickedFile? pickedFile = await ImagePicker().getImage(
       source: ImageSource.camera,
-      maxWidth: 1800,
-      maxHeight: 1800,
+      maxWidth: 500,
+      maxHeight: 500,
     );
     if (pickedFile != null) {
       setState(() {

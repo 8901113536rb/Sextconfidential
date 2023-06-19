@@ -598,7 +598,7 @@ class MassmessageScreenState extends State<MassmessageScreen> {
                                                                             strokeWidth:
                                                                                 2,
                                                                             color:
-                                                                                Appcolors().backgroundcolor,
+                                                                                Appcolors().bottomnavbgcolor,
                                                                           ),
                                                                         ),
                                                                       ),
