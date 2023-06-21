@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:simple_gradient_text/simple_gradient_text.dart';
 import 'package:sizer/sizer.dart';
 
 import 'Appcolors.dart';
@@ -49,5 +50,82 @@ class Helpingwidgets{
                     )
                   ]));
         });
+  }
+  static Widget emptydata(String message) {
+    return Container(
+      alignment: Alignment.center,
+      height: 20.h,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Divider(thickness: 1.2, height: 1.h, color: Appcolors().dividercolor),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Image.asset(
+                "assets/images/noresponse.png",
+                height: 5.h,
+              ),
+              SizedBox(
+                height: 1.h,
+              ),
+              GradientText(
+                message,
+                style: TextStyle(
+                    fontSize: 12.sp,
+                    fontFamily: "PulpDisplay",
+                    fontWeight: FontWeight.w400),
+                gradientType: GradientType.linear,
+                gradientDirection: GradientDirection.ttb,
+                radius: 6,
+                colors: [
+                  Appcolors().gradientcolorfirst,
+                  Appcolors().gradientcolorsecond,
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+  static Widget emptydatawithoutdivider(String message) {
+    return Container(
+      alignment: Alignment.center,
+      height: 20.h,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Image.asset(
+                "assets/images/noresponse.png",
+                height: 5.h,
+              ),
+              SizedBox(
+                height: 1.h,
+              ),
+              GradientText(
+                message,
+                style: TextStyle(
+                    fontSize: 12.sp,
+                    fontFamily: "PulpDisplay",
+                    fontWeight: FontWeight.w400),
+                gradientType: GradientType.linear,
+                gradientDirection: GradientDirection.ttb,
+                radius: 6,
+                colors: [
+                  Appcolors().gradientcolorfirst,
+                  Appcolors().gradientcolorsecond,
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 }

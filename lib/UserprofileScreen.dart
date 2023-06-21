@@ -1,22 +1,42 @@
+import 'dart:convert';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:favorite_button/favorite_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:sextconfidential/pojo/Chatmediapojo.dart';
 import 'package:sextconfidential/utils/Appcolors.dart';
+import 'package:sextconfidential/utils/Helpingwidgets.dart';
+import 'package:sextconfidential/utils/Networks.dart';
 import 'package:sextconfidential/utils/StringConstants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
-
+import 'package:http/http.dart' as http;
 import 'Bottomnavigation.dart';
 
 class UserprofileScreen extends StatefulWidget{
+  String userid,userimage,username;
+  UserprofileScreen({super.key,required this.userid,required this.userimage,required this.username});
+
   @override
   UserprofileScreenState createState() => UserprofileScreenState();
 
 }
 
 class UserprofileScreenState extends State<UserprofileScreen>{
+
+  GlobalKey<State> key = GlobalKey();
+  String? token;
+  bool responsestatus=false;
+  Chatmediapojo? chatmediapojo;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getsharedpreference();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,7 +98,7 @@ class UserprofileScreenState extends State<UserprofileScreen>{
                               )
                           ),
                           child: CachedNetworkImage(
-                            imageUrl:"https://c4.wallpaperflare.com/wallpaper/702/785/274/eiza-gonzalez-music-celebrities-girls-wallpaper-thumb.jpg",
+                            imageUrl:widget.userimage.toString(),
                             imageBuilder: (context,
                                 imageProvider) =>
                                 Container(
@@ -114,7 +134,12 @@ class UserprofileScreenState extends State<UserprofileScreen>{
                             child: FavoriteButton(
                               iconSize: 4.h,
                               valueChanged: (_isFavorite) {
-                                print('Is Favorite $_isFavorite)');
+                                if(_isFavorite){
+                                  favourite(1);
+                                }else{
+                                  favourite(0);
+                                }
+                                print('Is Favorite $_isFavorite');
                               },
                             ))
                       ],
@@ -123,7 +148,7 @@ class UserprofileScreenState extends State<UserprofileScreen>{
                       height: 1.h,
                     ),
                     Text(
-                      "Michael",
+                      widget.username.toString(),
                       style: TextStyle(
                           fontSize: 14.sp,
                           fontFamily: "PulpDisplay",
@@ -148,7 +173,7 @@ class UserprofileScreenState extends State<UserprofileScreen>{
                     ),
                     GestureDetector(
                       onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => Bottomnavigation()));
+                        blockuserdialog(context);
                       },
                       child: Container(
                         alignment: Alignment.center,
@@ -177,40 +202,50 @@ class UserprofileScreenState extends State<UserprofileScreen>{
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Container(
-                          alignment: Alignment.center,
-                          height: 5.h,
-                          width: 42.w,
-                          decoration: BoxDecoration(
-                              color: Appcolors().profileboxcolor,
-                              borderRadius: BorderRadius.circular(10),
-                            border: Border.all(color: Appcolors().loginhintcolor)
-                          ),
-                          child: Text(
-                            StringConstants.hide,
-                            style: TextStyle(
-                                fontSize: 12.sp,
-                                fontFamily: "PulpDisplay",
-                                fontWeight: FontWeight.w500,
-                                color: Appcolors().loginhintcolor),
+                        InkWell(
+                          onTap:(){
+                            hideuserdialog(context);
+              },
+                          child: Container(
+                            alignment: Alignment.center,
+                            height: 5.h,
+                            width: 42.w,
+                            decoration: BoxDecoration(
+                                color: Appcolors().profileboxcolor,
+                                borderRadius: BorderRadius.circular(10),
+                              border: Border.all(color: Appcolors().loginhintcolor)
+                            ),
+                            child: Text(
+                              StringConstants.hide,
+                              style: TextStyle(
+                                  fontSize: 12.sp,
+                                  fontFamily: "PulpDisplay",
+                                  fontWeight: FontWeight.w500,
+                                  color: Appcolors().loginhintcolor),
+                            ),
                           ),
                         ),
-                        Container(
-                          alignment: Alignment.center,
-                          height: 5.h,
-                          width: 42.w,
-                          decoration: BoxDecoration(
-                              color: Appcolors().profileboxcolor,
-                              borderRadius: BorderRadius.circular(10),
-                            border: Border.all(color: Appcolors().loginhintcolor)
-                          ),
-                          child: Text(
-                            StringConstants.report,
-                            style: TextStyle(
-                                fontSize: 12.sp,
-                                fontFamily: "PulpDisplay",
-                                fontWeight: FontWeight.w500,
-                                color: Appcolors().loginhintcolor),
+                        InkWell(
+                          onTap: (){
+                            reportuserdialog(context);
+                          },
+                          child: Container(
+                            alignment: Alignment.center,
+                            height: 5.h,
+                            width: 42.w,
+                            decoration: BoxDecoration(
+                                color: Appcolors().profileboxcolor,
+                                borderRadius: BorderRadius.circular(10),
+                              border: Border.all(color: Appcolors().loginhintcolor)
+                            ),
+                            child: Text(
+                              StringConstants.report,
+                              style: TextStyle(
+                                  fontSize: 12.sp,
+                                  fontFamily: "PulpDisplay",
+                                  fontWeight: FontWeight.w500,
+                                  color: Appcolors().loginhintcolor),
+                            ),
                           ),
                         ),
                       ],
@@ -236,6 +271,8 @@ class UserprofileScreenState extends State<UserprofileScreen>{
               SizedBox(
                 height: 2.h,
               ),
+              responsestatus?
+              chatmediapojo!.data!.isNotEmpty?
               GridView.builder(
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
@@ -245,7 +282,7 @@ class UserprofileScreenState extends State<UserprofileScreen>{
                       childAspectRatio: 1 / 1,
                       crossAxisSpacing: 7,
                       mainAxisSpacing: 7, crossAxisCount: 3),
-                  itemCount: 20,
+                  itemCount: chatmediapojo!.data!.length,
                   itemBuilder: (BuildContext ctx, index) {
                     return
                       AnimationConfiguration.staggeredGrid(
@@ -261,8 +298,7 @@ class UserprofileScreenState extends State<UserprofileScreen>{
                               },
                               child: Container(
                                 child: CachedNetworkImage(
-                                  imageUrl:index%2==0?"https://c4.wallpaperflare.com/wallpaper/1019/82/568/beauties-fatal-girl-lingerie-wallpaper-preview.jpg"
-                                      :"https://c4.wallpaperflare.com/wallpaper/409/240/922/beauties-fatal-girl-lingerie-wallpaper-preview.jpg",
+                                  imageUrl:chatmediapojo!.data!.elementAt(index).message.toString(),
                                   imageBuilder: (context, imageProvider) => Container(
                                     width: 25.w,
                                     alignment: Alignment.centerLeft,
@@ -286,11 +322,426 @@ class UserprofileScreenState extends State<UserprofileScreen>{
                         ),
                       );
                   })
+              :
+                  Helpingwidgets.emptydatawithoutdivider("No Media!")
+                  :
+                  SizedBox()
             ],
           ),
         )
       ),
 
     );
+  }
+  Future blockuserdialog(BuildContext context){
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10.0))),
+              backgroundColor: Appcolors().dialogbgcolor,
+              //title: Text("Image Picker"),
+              content: Container(
+                alignment: Alignment.center,
+                height: 20.h,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      StringConstants.blockdialogmessage,
+                      style: TextStyle(
+                          fontSize: 14.sp,
+                          height: 0.2.h,
+                          // fontFamily: "PulpDisplay",
+                          fontWeight: FontWeight.w500,
+                          color: Appcolors().loginhintcolor),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(
+                      height: 2.h,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                        blockuser();
+                      },
+                      child: Center(
+                        child: Container(
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              color: Appcolors().deactivatecolor,
+                              borderRadius: BorderRadius.circular(10)),
+                          width: 40.w,
+                          height: 5.h,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                width: 2.w,
+                              ),
+                              Text(
+                                StringConstants.blockuser,
+                                style: TextStyle(
+                                    fontSize: 12.sp,
+                                    fontFamily: "PulpDisplay",
+                                    fontWeight: FontWeight.w500,
+                                    color: Appcolors().whitecolor),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 1.h,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        StringConstants.cancel,
+                        style: TextStyle(
+                            fontSize: 14.sp,
+                            height: 0.2.h,
+                            // fontFamily: "PulpDisplay",
+                            fontWeight: FontWeight.w500,
+                            color: Appcolors().whitecolor),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ],
+                ),
+              ));
+        });
+  }
+  Future hideuserdialog(BuildContext context){
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10.0))),
+              backgroundColor: Appcolors().dialogbgcolor,
+              //title: Text("Image Picker"),
+              content: Container(
+                alignment: Alignment.center,
+                height: 20.h,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      StringConstants.hidedialogmessage,
+                      style: TextStyle(
+                          fontSize: 14.sp,
+                          height: 0.2.h,
+                          // fontFamily: "PulpDisplay",
+                          fontWeight: FontWeight.w500,
+                          color: Appcolors().loginhintcolor),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(
+                      height: 2.h,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                        hideuser();
+                      },
+                      child: Center(
+                        child: Container(
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              color: Appcolors().deactivatecolor,
+                              borderRadius: BorderRadius.circular(10)),
+                          width: 40.w,
+                          height: 5.h,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                width: 2.w,
+                              ),
+                              Text(
+                                StringConstants.hideuser,
+                                style: TextStyle(
+                                    fontSize: 12.sp,
+                                    fontFamily: "PulpDisplay",
+                                    fontWeight: FontWeight.w500,
+                                    color: Appcolors().whitecolor),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 1.h,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        StringConstants.cancel,
+                        style: TextStyle(
+                            fontSize: 14.sp,
+                            height: 0.2.h,
+                            // fontFamily: "PulpDisplay",
+                            fontWeight: FontWeight.w500,
+                            color: Appcolors().whitecolor),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ],
+                ),
+              ));
+        });
+  }
+  Future reportuserdialog(BuildContext context){
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10.0))),
+              backgroundColor: Appcolors().dialogbgcolor,
+              //title: Text("Image Picker"),
+              content: Container(
+                alignment: Alignment.center,
+                height: 20.h,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      StringConstants.resportdialogmessage,
+                      style: TextStyle(
+                          fontSize: 14.sp,
+                          height: 0.2.h,
+                          // fontFamily: "PulpDisplay",
+                          fontWeight: FontWeight.w500,
+                          color: Appcolors().loginhintcolor),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(
+                      height: 2.h,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                        reportuser();
+                      },
+                      child: Center(
+                        child: Container(
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              color: Appcolors().deactivatecolor,
+                              borderRadius: BorderRadius.circular(10)),
+                          width: 40.w,
+                          height: 5.h,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                width: 2.w,
+                              ),
+                              Text(
+                                StringConstants.reportuser,
+                                style: TextStyle(
+                                    fontSize: 12.sp,
+                                    fontFamily: "PulpDisplay",
+                                    fontWeight: FontWeight.w500,
+                                    color: Appcolors().whitecolor),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 1.h,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        StringConstants.cancel,
+                        style: TextStyle(
+                            fontSize: 14.sp,
+                            height: 0.2.h,
+                            // fontFamily: "PulpDisplay",
+                            fontWeight: FontWeight.w500,
+                            color: Appcolors().whitecolor),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ],
+                ),
+              ));
+        });
+  }
+
+  Future<void> getsharedpreference() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    setState(() {
+      token = sharedPreferences.getString("token")!;
+    });
+    print("Token value:-" + token.toString());
+    usermedialisting();
+  }
+
+  Future<void> favourite(int status) async {
+    Helpingwidgets.showLoadingDialog(context, key);
+    Map data = {
+      "token": token,
+      "userid": widget.userid.toString(),
+      "status": status.toString(),
+    };
+    print("Data:-" + data.toString());
+    var jsonResponse = null;
+    var response = await http.post(Uri.parse(Networks.baseurl + Networks.favorite), body: data);
+    jsonResponse = json.decode(response.body);
+    print("jsonResponse:-" + jsonResponse.toString());
+    if (response.statusCode == 200) {
+      if (jsonResponse["status"] == false) {
+        Navigator.pop(context);
+        Helpingwidgets.failedsnackbar(
+            jsonResponse["message"].toString(), context);
+        Navigator.pop(context);
+      } else {
+        print("Message:-" + jsonResponse["message"].toString());
+        Navigator.pop(context);
+      }
+    } else {
+      Navigator.pop(context);
+      Helpingwidgets.failedsnackbar(
+          jsonResponse["message"].toString(), context);
+    }
+  }
+  Future<void> hideuser() async {
+    Helpingwidgets.showLoadingDialog(context, key);
+    Map data = {
+      "token": token,
+      "profileid": widget.userid.toString(),
+    };
+    print("Data:-" + data.toString());
+    var jsonResponse = null;
+    var response = await http.post(Uri.parse(Networks.baseurl + Networks.chathide), body: data);
+    jsonResponse = json.decode(response.body);
+    print("jsonResponse:-" + jsonResponse.toString());
+    if (response.statusCode == 200) {
+      if (jsonResponse["status"] == false) {
+        Navigator.pop(context);
+        Helpingwidgets.failedsnackbar(
+            jsonResponse["message"].toString(), context);
+        Navigator.pop(context);
+      } else {
+        print("Message:-" + jsonResponse["message"].toString());
+        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+            Bottomnavigation()), (Route<dynamic> route) => false);
+      }
+    } else {
+      Navigator.pop(context);
+      Helpingwidgets.failedsnackbar(
+          jsonResponse["message"].toString(), context);
+    }
+  }
+  Future<void> blockuser() async {
+    Helpingwidgets.showLoadingDialog(context, key);
+    Map data = {
+      "token": token,
+      "profileid": widget.userid.toString(),
+    };
+    print("Data:-" + data.toString());
+    var jsonResponse = null;
+    var response = await http.post(Uri.parse(Networks.baseurl + Networks.chatblock), body: data);
+    jsonResponse = json.decode(response.body);
+    print("jsonResponse:-" + jsonResponse.toString());
+    if (response.statusCode == 200) {
+      if (jsonResponse["status"] == false) {
+        Navigator.pop(context);
+        Helpingwidgets.failedsnackbar(
+            jsonResponse["message"].toString(), context);
+        Navigator.pop(context);
+      } else {
+        print("Message:-" + jsonResponse["message"].toString());
+        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+            Bottomnavigation()), (Route<dynamic> route) => false);
+      }
+    } else {
+      Navigator.pop(context);
+      Helpingwidgets.failedsnackbar(
+          jsonResponse["message"].toString(), context);
+    }
+  }
+  Future<void> reportuser() async {
+    Helpingwidgets.showLoadingDialog(context, key);
+    Map data = {
+      "token": token,
+      "profileid": widget.userid.toString(),
+    };
+    print("Data:-" + data.toString());
+    var jsonResponse = null;
+    var response = await http.post(Uri.parse(Networks.baseurl + Networks.chatreport), body: data);
+    jsonResponse = json.decode(response.body);
+    print("jsonResponse:-" + jsonResponse.toString());
+    if (response.statusCode == 200) {
+      if (jsonResponse["status"] == false) {
+        Navigator.pop(context);
+        Helpingwidgets.failedsnackbar(
+            jsonResponse["message"].toString(), context);
+        Navigator.pop(context);
+      } else {
+        print("Message:-" + jsonResponse["message"].toString());
+        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+            Bottomnavigation()), (Route<dynamic> route) => false);
+      }
+    } else {
+      Navigator.pop(context);
+      Helpingwidgets.failedsnackbar(
+          jsonResponse["message"].toString(), context);
+    }
+  }
+  Future<void> usermedialisting() async {
+    Helpingwidgets.showLoadingDialog(context, key);
+    Map data = {
+      "token": token,
+      "toid": widget.userid.toString(),
+    };
+    print("Data:-" + data.toString());
+    var jsonResponse = null;
+    var response = await http.post(Uri.parse(Networks.baseurl + Networks.chatmedia), body: data);
+    jsonResponse = json.decode(response.body);
+    print("jsonResponse:-" + jsonResponse.toString());
+    if (response.statusCode == 200) {
+      if (jsonResponse["status"] == false) {
+        setState(() {
+          responsestatus = true;
+        });
+        Navigator.pop(context);
+        Helpingwidgets.failedsnackbar(
+            jsonResponse["message"].toString(), context);
+        Navigator.pop(context);
+      } else {
+        setState(() {
+          responsestatus = true;
+        });
+        print("Message:-" + jsonResponse["message"].toString());
+        chatmediapojo = Chatmediapojo.fromJson(jsonResponse);
+        Navigator.pop(context);
+      }
+    } else {
+      Navigator.pop(context);
+      setState(() {
+        responsestatus = true;
+      });
+      Helpingwidgets.failedsnackbar(
+          jsonResponse["message"].toString(), context);
+    }
   }
 }

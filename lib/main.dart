@@ -1,4 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_switch/flutter_switch.dart';
@@ -7,7 +9,6 @@ import 'package:sextconfidential/utils/Appcolors.dart';
 import 'package:sextconfidential/utils/StringConstants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
-
 import 'Bottomnavigation.dart';
 import 'CallsScreen.dart';
 import 'Changepassword.dart';
@@ -21,8 +22,15 @@ import 'MassmessageScreen.dart';
 import 'PayoutInfoScreen.dart';
 import 'TimezoneScreen.dart';
 import 'UserprofileScreen.dart';
+import 'package:firebase_core/firebase_core.dart'; //
+import 'firebase_options.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
@@ -63,7 +71,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
+  FirebaseDynamicLinks dynamicLinks = FirebaseDynamicLinks.instance;
   String? token;
   bool? loginstatus=false;
 
@@ -71,6 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    initDynamicLinks();
     getsharedpreference();
     Future.delayed(Duration(seconds: 3), () {
       if(loginstatus==false){
@@ -99,5 +108,15 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<void> getsharedpreference() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     loginstatus=sharedPreferences.getBool("loginstatus")??false;
+  }
+
+  Future<void> initDynamicLinks() async {
+    dynamicLinks.onLink.listen((dynamicLinkData) {
+      // Navigator.pushNamed(context, dynamicLinkData.link.path);
+      print("Dynamic link:-"+dynamicLinkData.link.path.toString());
+    }).onError((error) {
+      print('onLink error');
+      print(error.message);
+    });
   }
 }

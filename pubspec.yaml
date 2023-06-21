@@ -62,6 +62,8 @@ dependencies:
   flutter_typeahead: ^3.2.0
   intl: ^0.17.0
   flutter_launcher_icons: ^0.10.0
+  firebase_core: ^2.14.0
+  firebase_core_dart: ^1.0.1
   firebase_dynamic_links: ^5.3.3
 #  flutter_sound: ^9.2.13
 #  record_mp3: ^3.0.0

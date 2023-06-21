@@ -75,9 +75,9 @@ class CustomDropdownButton2 extends StatelessWidget {
             hint,
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 14,
-              color: Theme.of(context).hintColor,
+              color: Colors.white,
             ),
           ),
         ),
@@ -91,7 +91,8 @@ class CustomDropdownButton2 extends StatelessWidget {
               item,
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
-              style: const TextStyle(
+              style: TextStyle(
+                color: Appcolors().whitecolor,
                 fontSize: 14,
               ),
             ),

@@ -1,15 +1,22 @@
+import 'dart:convert';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:sextconfidential/ConvertsationScreen.dart';
+import 'package:sextconfidential/pojo/Chatuserpojo.dart';
 import 'package:sextconfidential/utils/Appcolors.dart';
 import 'package:sextconfidential/utils/CustomDropdownButton2.dart';
+import 'package:sextconfidential/utils/Helpingwidgets.dart';
+import 'package:sextconfidential/utils/Networks.dart';
 import 'package:sextconfidential/utils/Sidedrawer.dart';
 import 'package:sextconfidential/utils/StringConstants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 import 'package:sizer/sizer.dart';
+import 'package:http/http.dart' as http;
 
 class Chatusersscreen extends StatefulWidget {
   @override
@@ -19,18 +26,29 @@ class Chatusersscreen extends StatefulWidget {
 class ChatusersscreenState extends State<Chatusersscreen> {
   TextEditingController searchcontroller = TextEditingController();
   List<String> chattype = [
-    "Most Recent",
-    "Unread",
-    "Recently Active",
-    "New Clients",
-    "Favourite",
-    "Credits",
-    "Top Spenders",
-    "Hidden",
-    "Unanswered"
+    StringConstants.mostrecent,
+    StringConstants.unread,
+    StringConstants.recentlyactive,
+    StringConstants.newclients,
+    StringConstants.favourite,
+    StringConstants.credits,
+    StringConstants.topspenders,
+    StringConstants.hidden,
+    StringConstants.unanswered,
   ];
-  String chatselectedtype = "Most Recent";
+  Chatuserpojo? chatuserpojo;
+  String chatselectedtype = StringConstants.mostrecent;
   final GlobalKey<ScaffoldState> _key = GlobalKey(); // Create a key
+  late String token;
+  GlobalKey<State> key = GlobalKey();
+  bool? responsestatus=false;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getsharedpreference();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -137,10 +155,12 @@ class ChatusersscreenState extends State<Chatusersscreen> {
             SizedBox(
               height: 1.5.h,
             ),
+            responsestatus!?
+            chatuserpojo!.data!.isNotEmpty?
             Expanded(
                 child: AnimationLimiter(
               child: ListView.builder(
-                itemCount: 10,
+                itemCount: chatuserpojo!.data!.length,
                 itemBuilder: (BuildContext context, int index) {
                   return AnimationConfiguration.staggeredList(
                     position: index,
@@ -162,7 +182,7 @@ class ChatusersscreenState extends State<Chatusersscreen> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              ConvertsationScreen()));
+                                              ConvertsationScreen(userid: chatuserpojo!.data!.elementAt(index).userid.toString(),userimage: chatuserpojo!.data!.elementAt(index).useriimage.toString(),username: chatuserpojo!.data!.elementAt(index).useriname.toString(),)));
                                 },
                                 child: Container(
                                   padding: EdgeInsets.all(1.h),
@@ -178,9 +198,7 @@ class ChatusersscreenState extends State<Chatusersscreen> {
                                         width: 14.w,
                                         height: 7.h,
                                         child: CachedNetworkImage(
-                                          imageUrl: index % 2 == 0
-                                              ? "https://c4.wallpaperflare.com/wallpaper/702/785/274/eiza-gonzalez-music-celebrities-girls-wallpaper-thumb.jpg"
-                                              : "https://www.flickonclick.com/wp-content/uploads/2022/09/Esha-Gupta-Hot-and-Sexy.jpg",
+                                          imageUrl: chatuserpojo!.data!.elementAt(index).useriimage.toString(),
                                           imageBuilder:
                                               (context, imageProvider) =>
                                               Container(
@@ -229,9 +247,7 @@ class ChatusersscreenState extends State<Chatusersscreen> {
                                                 Container(
                                                   width: 30.w,
                                                   child: Text(
-                                                    index % 2 == 0
-                                                        ? "Michael"
-                                                        : "Gabriel Greene",
+                                                    chatuserpojo!.data!.elementAt(index).useriname.toString(),
                                                     style: TextStyle(
                                                         fontSize: 12.sp,
                                                         fontFamily: "PulpDisplay",
@@ -244,7 +260,7 @@ class ChatusersscreenState extends State<Chatusersscreen> {
                                                   ),
                                                 ),
                                                 GradientText(
-                                                  "01:01 PM",
+                                                  chatuserpojo!.data!.elementAt(index).lastmessagetime.toString().substring(13,22),
                                                   style: TextStyle(
                                                       fontSize: 10.sp,
                                                       fontFamily: "PulpDisplay",
@@ -271,9 +287,8 @@ class ChatusersscreenState extends State<Chatusersscreen> {
                                                 Container(
                                                   width: 60.w,
                                                   child: Text(
-                                                    index % 2 == 0
-                                                        ? "Hello..."
-                                                        : "What have you been up to",
+                                                      chatuserpojo!.data!.elementAt(index).lastmessage.toString(),
+                                                    // chatuserpojo!.data!.elementAt(index).lastmessage.toString().substring(chatuserpojo!.data!.elementAt(index).lastmessage.toString().length-3,chatuserpojo!.data!.elementAt(index).lastmessage.toString().length)=="jpg"?"Image":chatuserpojo!.data!.elementAt(index).lastmessage.toString().substring(chatuserpojo!.data!.elementAt(index).lastmessage.toString().length-3,chatuserpojo!.data!.elementAt(index).lastmessage.toString().length)=="mp4"?"Video":chatuserpojo!.data!.elementAt(index).lastmessage.toString(),
                                                     style: TextStyle(
                                                         fontSize: 12.sp,
                                                         // fontFamily: "PulpDisplay",
@@ -285,6 +300,7 @@ class ChatusersscreenState extends State<Chatusersscreen> {
                                                             .loginhintcolor),
                                                   ),
                                                 ),
+                                                chatuserpojo!.data!.elementAt(index).messagecount.toString()!="0"?
                                                 Container(
                                                   padding: EdgeInsets.all(1.h),
                                                   decoration: BoxDecoration(
@@ -304,7 +320,7 @@ class ChatusersscreenState extends State<Chatusersscreen> {
                                                         tileMode: TileMode.clamp),
                                                   ),
                                                   child: Text(
-                                                    "2",
+                                                    chatuserpojo!.data!.elementAt(index).messagecount.toString(),
                                                     style: TextStyle(
                                                         fontSize: 10.sp,
                                                         fontFamily: "PulpDisplay",
@@ -313,7 +329,7 @@ class ChatusersscreenState extends State<Chatusersscreen> {
                                                         color: Appcolors()
                                                             .blackcolor),
                                                   ),
-                                                )
+                                                ):SizedBox()
                                               ],
                                             ),
                                           ],
@@ -335,9 +351,60 @@ class ChatusersscreenState extends State<Chatusersscreen> {
                 },
               ),
             ))
+            :
+                Helpingwidgets.emptydatawithoutdivider("No Chat!")
+                :
+            SizedBox()
           ],
         ),
       ),
     );
   }
+  Future<void> getsharedpreference() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    setState(() {
+      token = sharedPreferences.getString("token")!;
+    });
+    print("Token value:-" + token.toString());
+    chatuserlisting(0);
+  }
+
+  Future<void> chatuserlisting(int sorttype) async {
+    Helpingwidgets.showLoadingDialog(context, key);
+    Map data = {
+      "token": token,
+      // "sort": sorttype.toString(),
+    };
+    print("Data:-" + data.toString());
+    var jsonResponse = null;
+    var response = await http.post(Uri.parse(Networks.baseurl + Networks.chatlist), body: data);
+    jsonResponse = json.decode(response.body);
+    print("jsonResponse:-" + jsonResponse.toString());
+    if (response.statusCode == 200) {
+      if (jsonResponse["status"] == false) {
+        setState(() {
+          responsestatus = true;
+        });
+        Navigator.pop(context);
+        Helpingwidgets.failedsnackbar(
+            jsonResponse["message"].toString(), context);
+        Navigator.pop(context);
+      } else {
+        setState(() {
+          responsestatus = true;
+        });
+        print("Message:-" + jsonResponse["message"].toString());
+        chatuserpojo = Chatuserpojo.fromJson(jsonResponse);
+        Navigator.pop(context);
+      }
+    } else {
+      Navigator.pop(context);
+      setState(() {
+        responsestatus = true;
+      });
+      Helpingwidgets.failedsnackbar(
+          jsonResponse["message"].toString(), context);
+    }
+  }
+
 }

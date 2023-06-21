@@ -5,6 +5,8 @@ import 'dart:typed_data';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -26,6 +28,14 @@ import 'package:simple_gradient_text/simple_gradient_text.dart';
 import 'package:sizer/sizer.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 import 'package:http/http.dart' as http;
+import 'firebase_options.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(FeedScreen());
+}
+
 
 class FeedScreen extends StatefulWidget {
   @override
@@ -74,11 +84,17 @@ class FeedScreenState extends State<FeedScreen> {
   Feedpostspojo? feedpostspojo;
   String? userprofilepic, username;
   int? sorttype = 1;
+  //Dynamic Linking
+  FirebaseDynamicLinks dynamicLinks = FirebaseDynamicLinks.instance;
+  final String DynamicLink = 'https://sextconfidential.page.link';
+
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     getsharedpreference();
+    _createDynamicLink(true);
   }
 
   @override
@@ -3196,5 +3212,33 @@ class FeedScreenState extends State<FeedScreen> {
         )
         // Text(StringConstants.pinnedpost,style: TextStyle(color: Appcolors().whitecolor),),
         );
+  }
+
+  Future<void> _createDynamicLink(bool short) async {
+    final DynamicLinkParameters parameters = DynamicLinkParameters(
+      uriPrefix: DynamicLink,
+      longDynamicLink: Uri.parse(
+        'https://sextconfidential.page.link/?link=https://sextconfidential.com&isi=6450113311&ibi=com.coderzbar.sextconfidential.sextconfidential&efr=1'+"10",
+      ),
+      link: Uri.parse(DynamicLink),
+      // androidParameters: const AndroidParameters(
+      //   packageName: 'io.flutter.plugins.firebase.dynamiclinksexample',
+      //   minimumVersion: 0,
+      // ),
+      // iosParameters: const IOSParameters(
+      //   bundleId: 'io.flutter.plugins.firebase.dynamiclinksexample',
+      //   minimumVersion: '0',
+      // ),
+    );
+
+    Uri url;
+    if (short) {
+      final ShortDynamicLink shortLink =
+      await dynamicLinks.buildShortLink(parameters);
+      url = shortLink.shortUrl;
+    } else {
+      url = await dynamicLinks.buildLink(parameters);
+    }
+    print("Url:-"+url.toString());
   }
 }

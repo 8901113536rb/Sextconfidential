@@ -18,9 +18,9 @@ class CallsScreen extends StatefulWidget {
 
 class CallsScreenState extends State<CallsScreen> {
   late StateSetter setstate;
-  List<String>items=["All Calls","Phone Calls","Video Calls"];
+  List<String>items=[StringConstants.allcalls,StringConstants.phonecalls,StringConstants.videocalls];
   List<String>datesvalue=["2023","2022","2020","2019","2018","2017","2016","2015"];
-  String dropdownvalue="All Calls";
+  String dropdownvalue=StringConstants.allcalls;
   String secondfdropdownvalue="2023";
   final GlobalKey<ScaffoldState> _key = GlobalKey(); // Create a key
 

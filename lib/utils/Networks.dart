@@ -24,4 +24,12 @@ class Networks{
   static String updatepost = "updatepost";
   static String editgroup = "editgroup";
   static String updategroup = "updategroup";
+  static String chatlist = "chat-list";
+  static String chatmessage = "chat-message";
+  static String chatmessagesend = "chat-message-send";
+  static String favorite = "favorite";
+  static String chatmedia = "chat-media";
+  static String chathide = "chat-hide";
+  static String chatblock = "chat-block";
+  static String chatreport = "chat-report";
 }

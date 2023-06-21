@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -11,8 +12,12 @@ import 'package:image_picker/image_picker.dart';
 import 'package:record/record.dart';
 // import 'package:record_mp3/record_mp3.dart';
 import 'package:sextconfidential/UserprofileScreen.dart';
+import 'package:sextconfidential/pojo/Chatmessagespojo.dart';
 import 'package:sextconfidential/utils/Appcolors.dart';
+import 'package:sextconfidential/utils/Helpingwidgets.dart';
+import 'package:sextconfidential/utils/Networks.dart';
 import 'package:sextconfidential/utils/StringConstants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:flutter/foundation.dart' as foundation;
 import 'package:social_media_recorder/audio_encoder_type.dart';
@@ -22,8 +27,12 @@ import 'package:voice_message_package/voice_message_package.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:http/http.dart' as http;
 
 class ConvertsationScreen extends StatefulWidget {
+  String userid,userimage,username;
+   ConvertsationScreen({super.key,required this.userid,required this.userimage,required this.username});
+
   @override
   ConvertsationScreenState createState() => ConvertsationScreenState();
 }
@@ -39,10 +48,16 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
   bool isComplete = false;
   String recordingTime = '0:0'; // to store value
   bool isRecording = false;
+  String? token,userprofilepic,username;
+  bool responsestatus=false;
+  Chatmessagespojo? chatmessagespojo;
+  GlobalKey<State> key = GlobalKey();
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    getsharedpreference();
   }
 
   @override
@@ -78,7 +93,7 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
           title: GestureDetector(
             onTap: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => UserprofileScreen()));
+                  MaterialPageRoute(builder: (context) => UserprofileScreen(username: widget.username.toString(),userimage: widget.userimage.toString(),userid: widget.userid.toString(),)));
             },
             child: Container(
               child: Column(
@@ -94,7 +109,7 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
                         width: 16.w,
                         child: CachedNetworkImage(
                           imageUrl:
-                              "https://c4.wallpaperflare.com/wallpaper/702/785/274/eiza-gonzalez-music-celebrities-girls-wallpaper-thumb.jpg",
+                              widget.userimage.toString(),
                           imageBuilder: (context, imageProvider) => Container(
                             width: 16.w,
                             alignment: Alignment.centerLeft,
@@ -123,7 +138,7 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "Elexa Steele",
+                            widget.username.toString(),
                             style: TextStyle(
                                 fontSize: 12.sp,
                                 // fontFamily: "PulpDisplay",
@@ -151,21 +166,25 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
         ),
         body: SafeArea(
           child: Container(
+            alignment: Alignment.center,
             // padding: EdgeInsets.only(left: 2.w, right: 2.w),
             color: Appcolors().backgroundcolor,
             child: Stack(
-              alignment: Alignment.bottomCenter,
+              alignment: Alignment.center,
               children: [
                 SingleChildScrollView(
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+                      responsestatus?
+                      chatmessagespojo!.data!.isNotEmpty?
                       AnimationLimiter(
                         child: ListView.builder(
-                          reverse: true,
+                          // reverse: true,
                           scrollDirection: Axis.vertical,
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
-                          itemCount: 10,
+                          itemCount: chatmessagespojo!.data!.length,
                           itemBuilder: (BuildContext context, int index) {
                             return AnimationConfiguration.staggeredList(
                               position: index,
@@ -193,10 +212,12 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.start,
                                             children: [
-                                              daydivider(),
-                                              sendermessage(index),
+                                              chatmessagespojo!.data!.elementAt(index)!.fromId.toString()==token?
+                                              sendermessage(index)
+                                                  :
                                               receivermessage(index),
-                                              voicemessage()
+                                              // daydivider(),
+                                              // voicemessage()
                                             ],
                                           ),
                                         ),
@@ -211,7 +232,11 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
                             );
                           },
                         ),
-                      ),
+                      )
+                      :
+                          Center(child: Helpingwidgets.emptydatawithoutdivider("No Message!"))
+                      :
+                      SizedBox(),
                       SizedBox(
                         height: 10.h,
                       )
@@ -413,6 +438,7 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
                                   : GestureDetector(
                                     onTap: () async {
                                       setState(() {
+                                        sendmessage();
                                         recordingTime="0:0";
                                         micstatus = false;
                                         // stopRecord();
@@ -590,12 +616,52 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
     );
   }
 
-  Widget sendermessage(int index) {
+  Widget receivermessage(int index) {
     return Column(
       children: [
-        // SizedBox(
-        //   height: 2.h,
-        // ),
+        chatmessagespojo!.data!.elementAt(index).messageType.toString()=="text"?
+        Container(
+          margin: EdgeInsets.only(left: 2.w, right: 2.w),
+          alignment: Alignment.centerRight,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Container(
+                padding: EdgeInsets.all(1.5.h),
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage(
+                          "assets/images/btnbackgroundgradient.png",
+                        ),
+                        fit: BoxFit.fill),
+                    borderRadius: BorderRadius.circular(15)),
+                child: Text(
+                  chatmessagespojo!.data!.elementAt(index).message.toString(),
+                  style: TextStyle(
+                      fontSize: 11.sp,
+                      // fontFamily: "PulpDisplay",
+                      fontWeight: FontWeight.w500,
+                      color: Appcolors().blackcolor),
+                ),
+              ),
+              SizedBox(
+                height: 0.5.h,
+              ),
+              Text(
+                "Sent "+chatmessagespojo!.data!.elementAt(index).createdAt!.substring(14,22),
+                style: TextStyle(
+                    fontSize: 11.sp,
+                    // fontFamily: "PulpDisplay",
+                    fontWeight: FontWeight.w400,
+                    fontStyle: FontStyle.italic,
+                    color: Appcolors().loginhintcolor),
+              ),
+              SizedBox(
+                height: 1.h,
+              ),
+            ],
+          ),
+        ):
         Container(
           margin: EdgeInsets.only(left: 2.w, right: 2.w),
           width: double.infinity,
@@ -608,8 +674,7 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
                 height: 15.h,
                 width: 40.w,
                 child: CachedNetworkImage(
-                  imageUrl:
-                      "https://images.squarespace-cdn.com/content/v1/53cc306ee4b04fd213249899/1657760960280-QKY0G0PHGZBAW4T3K5T9/Boudoir+Photo+Shoot+Salem+Oregon+Boudoir+Photographer.jpg",
+                  imageUrl:chatmessagespojo!.data!.elementAt(index).message.toString(),
                   imageBuilder: (context, imageProvider) => Container(
                     height: 15.h,
                     width: 40.w,
@@ -637,11 +702,11 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
               SizedBox(
                 height: 0.5.h,
               ),
-              Text(
-                "Sent for \$10.00 at 03:08AM",
+              Text("",
+                // "Send for ${chatmessagespojo!.data!.elementAt(index).type}"=="free"?+chatmessagespojo!.data!.elementAt(index).createdAt.toString().substring(0,10),
                 style: TextStyle(
-                    fontSize: 8.sp,
-                    fontFamily: "PulpDisplay",
+                    fontSize: 10.sp,
+                    // fontFamily: "PulpDisplay",
                     fontWeight: FontWeight.w400,
                     fontStyle: FontStyle.italic,
                     color: Appcolors().loginhintcolor),
@@ -653,53 +718,11 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
             ],
           ),
         ),
-        Container(
-          margin: EdgeInsets.only(left: 2.w, right: 2.w),
-          alignment: Alignment.centerRight,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Container(
-                padding: EdgeInsets.all(1.5.h),
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: AssetImage(
-                          "assets/images/btnbackgroundgradient.png",
-                        ),
-                        fit: BoxFit.fill),
-                    borderRadius: BorderRadius.circular(15)),
-                child: Text(
-                  index % 2 == 0 ? "I’m on the highway" : "OK",
-                  style: TextStyle(
-                      fontSize: 11.sp,
-                      // fontFamily: "PulpDisplay",
-                      fontWeight: FontWeight.w500,
-                      color: Appcolors().blackcolor),
-                ),
-              ),
-              SizedBox(
-                height: 0.5.h,
-              ),
-              Text(
-                "Sent 01:30 am",
-                style: TextStyle(
-                    fontSize: 11.sp,
-                    // fontFamily: "PulpDisplay",
-                    fontWeight: FontWeight.w400,
-                    fontStyle: FontStyle.italic,
-                    color: Appcolors().loginhintcolor),
-              ),
-              SizedBox(
-                height: 1.h,
-              ),
-            ],
-          ),
-        ),
       ],
     );
   }
 
-  Widget receivermessage(int index) {
+  Widget sendermessage(int index) {
     return Column(
       children: [
         Container(
@@ -707,6 +730,7 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
           child: Stack(
             alignment: Alignment.centerLeft,
             children: [
+              chatmessagespojo!.data!.elementAt(index).messageType.toString()=="text"?
               Container(
                 // alignment: Alignment.centerLeft,
                 margin: EdgeInsets.only(left: 6.w),
@@ -720,9 +744,7 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
                 // height: 7.h,
                 // width: 80.w,
                 child: Text(
-                  index % 2 == 0
-                      ? "Let me know when you are available baby"
-                      : "We should video chat now baby",
+                  chatmessagespojo!.data!.elementAt(index).message.toString(),
                   style: TextStyle(
                       fontSize: 11.sp,
                       // fontFamily: "PulpDisplay",
@@ -730,7 +752,43 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
                       // fontStyle: FontStyle.italic,
                       color: Appcolors().whitecolor),
                 ),
+              ): Container(
+                margin: EdgeInsets.only(left: 6.w),
+                padding: EdgeInsets.only(
+                    right: 4.w, left: 8.w, top: 2.h, bottom: 2.h),
+                decoration: BoxDecoration(
+                  color: Appcolors().profileboxcolor,
+                  borderRadius: BorderRadius.circular(20),
+                  shape: BoxShape.rectangle,
+                ),
+            height: 15.h,
+            width: 40.w,
+            child: CachedNetworkImage(
+              imageUrl:chatmessagespojo!.data!.elementAt(index).message.toString(),
+              imageBuilder: (context, imageProvider) => Container(
+                height: 15.h,
+                width: 40.w,
+                alignment: Alignment.centerLeft,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  shape: BoxShape.rectangle,
+                  image: DecorationImage(
+                    image: imageProvider,
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ),
+              placeholder: (context, url) => Container(
+                child: Center(
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: Appcolors().backgroundcolor,
+                  ),
+                ),
+              ),
+              // errorWidget: (context, url, error) => errorWidget,
+            ),
+          ),
               Container(
                 height: 6.h,
                 width: 11.w,
@@ -739,7 +797,7 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
                     shape: BoxShape.circle, color: Appcolors().backgroundcolor),
                 child: CachedNetworkImage(
                   imageUrl:
-                      "https://c4.wallpaperflare.com/wallpaper/702/785/274/eiza-gonzalez-music-celebrities-girls-wallpaper-thumb.jpg",
+                      widget.userimage.toString(),
                   imageBuilder: (context, imageProvider) => Container(
                     width: 10.w,
                     alignment: Alignment.centerLeft,
@@ -771,7 +829,7 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
           width: double.infinity,
           // alignment: Alignment.centerLeft,
           child: Text(
-            "Sent 01:30 am",
+            "Sent "+chatmessagespojo!.data!.elementAt(index).createdAt.toString().substring(14,22),
             style: TextStyle(
                 fontSize: 11.sp,
                 // fontFamily: "PulpDisplay",
@@ -990,5 +1048,103 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
       }
     });
     // });
+  }
+
+  Future<void> getsharedpreference() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    setState(() {
+      token = sharedPreferences.getString("token")!;
+      userprofilepic = sharedPreferences.getString("profilepic");
+      username = sharedPreferences.getString("stagename");
+    });
+    print("Token value:-" + token.toString());
+    chatconversationlisting();
+  }
+
+  Future<void> chatconversationlisting() async {
+    Helpingwidgets.showLoadingDialog(context, key);
+    Map data = {
+      "token": token,
+      "toid": widget.userid.toString(),
+    };
+    print("Data:-" + data.toString());
+    var jsonResponse = null;
+    var response = await http.post(Uri.parse(Networks.baseurl + Networks.chatmessage), body: data);
+    jsonResponse = json.decode(response.body);
+    print("jsonResponse:-" + jsonResponse.toString());
+    if (response.statusCode == 200) {
+      if (jsonResponse["status"] == false) {
+        setState(() {
+          responsestatus = true;
+        });
+        Navigator.pop(context);
+        Helpingwidgets.failedsnackbar(
+            jsonResponse["message"].toString(), context);
+        Navigator.pop(context);
+      } else {
+        setState(() {
+          responsestatus = true;
+        });
+        print("Message:-" + jsonResponse["message"].toString());
+        chatmessagespojo = Chatmessagespojo.fromJson(jsonResponse);
+        Navigator.pop(context);
+      }
+    } else {
+      Navigator.pop(context);
+      setState(() {
+        responsestatus = true;
+      });
+      Helpingwidgets.failedsnackbar(
+          jsonResponse["message"].toString(), context);
+    }
+  }
+  Future<void> sendmessage() async {
+    Helpingwidgets.showLoadingDialog(context, key);
+    var request = http.MultipartRequest(
+      'post',
+      Uri.parse(Networks.baseurl + Networks.chatmessagesend),
+    );
+    var jsonData = null;
+    request.headers["Content-Type"] = "multipart/form-data";
+    request.fields["toid"] = widget.userid.toString();
+    request.fields["token"] = token!;
+    print("token:-" + token!.toString());
+    print("Message:-" + messagecontroller.text.trim());
+    if (imageFile != null) {
+      print("Image message send");
+      request.files.add(
+        await http.MultipartFile.fromPath("file", imageFile!.path,
+            filename: imageFile!.path),
+      );
+    }else{
+      print("Simple message send");
+      request.fields["file"] = messagecontroller.text!;
+    }
+    var response = await request.send();
+    response.stream.transform(utf8.decoder).listen((value) {
+      jsonData = json.decode(value);
+      print("Json:-" + jsonData.toString());
+      if (response.statusCode == 200) {
+        if (jsonData["status"] == false) {
+          Helpingwidgets.failedsnackbar(
+              jsonData["message"].toString(), context);
+          print("Response:${jsonData["message"]}");
+          Navigator.pop(context);
+        } else {
+          setState(() {
+            imageFile = null;
+          });
+          messagecontroller.clear();
+          Helpingwidgets.successsnackbar(
+              jsonData["message"].toString(), context);
+          print("Response:${jsonData["message"]}");
+          Navigator.pop(context);
+        }
+      } else {
+        Helpingwidgets.failedsnackbar(jsonData["message"].toString(), context);
+        print("Response:${jsonData["message"]}");
+        Navigator.pop(context);
+      }
+    });
   }
 }
