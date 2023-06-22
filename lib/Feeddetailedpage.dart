@@ -129,7 +129,19 @@ class FeeddetailedpageState extends State<Feeddetailedpage> {
                                     ),
                                   ),
                                 ),
-                                // errorWidget: (context, url, error) => errorWidget,
+                          errorWidget: (context, url, error) => Container(
+                            width: 15.w,
+                            height: 4.5.h,
+                            decoration: BoxDecoration(
+                                borderRadius:
+                                BorderRadius.circular(2.h),
+                                shape:
+                                BoxShape.rectangle,
+                                image: DecorationImage(
+                                    image: AssetImage("assets/images/imageplaceholder.png"),fit: BoxFit.cover
+                                )
+                            ),
+                          ),
                               ),
                       ),
                       Column(
@@ -733,5 +745,6 @@ class FeeddetailedpageState extends State<Feeddetailedpage> {
           jsonResponse["message"].toString(), context);
     }
   }
+
 
 }

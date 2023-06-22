@@ -602,7 +602,19 @@ class MassmessageScreenState extends State<MassmessageScreen> {
                                                                           ),
                                                                         ),
                                                                       ),
-                                                                      // errorWidget: (context, url, error) => errorWidget,
+                                                                          errorWidget: (context, url, error) => Container(
+                                                                            width: 15.w,
+                                                                            height: 4.5.h,
+                                                                            decoration: BoxDecoration(
+                                                                                borderRadius:
+                                                                                BorderRadius.circular(15),
+                                                                                shape:
+                                                                                BoxShape.rectangle,
+                                                                                image: DecorationImage(
+                                                                                    image: AssetImage("assets/images/imageplaceholder.png"),fit: BoxFit.cover
+                                                                                )
+                                                                            ),
+                                                                          ),
                                                                     ),
                                                                   ),
                                                                   SizedBox(

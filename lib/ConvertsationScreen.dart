@@ -52,7 +52,8 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
   bool responsestatus=false;
   Chatmessagespojo? chatmessagespojo;
   GlobalKey<State> key = GlobalKey();
-
+  Timer? _timer;
+  final ScrollController _controller=ScrollController();
   @override
   void initState() {
     // TODO: implement initState
@@ -92,6 +93,8 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
           leadingWidth: 7.w,
           title: GestureDetector(
             onTap: () {
+              print("Scroll down");
+              // _scrollDown();
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => UserprofileScreen(username: widget.username.toString(),userimage: widget.userimage.toString(),userid: widget.userid.toString(),)));
             },
@@ -104,10 +107,12 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+
                       Container(
                         height: 5.h,
                         width: 16.w,
-                        child: CachedNetworkImage(
+                        child:
+                        CachedNetworkImage(
                           imageUrl:
                               widget.userimage.toString(),
                           imageBuilder: (context, imageProvider) => Container(
@@ -130,7 +135,15 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
                               ),
                             ),
                           ),
-                          // errorWidget: (context, url, error) => errorWidget,
+                          errorWidget: (context, url, error) => Container(
+                            width: 16.w,
+                            height: 5.h,
+                            decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    image: AssetImage("assets/images/userprofile.png")
+                                )
+                            ),
+                          ),
                         ),
                       ),
                       Column(
@@ -181,6 +194,7 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
                       AnimationLimiter(
                         child: ListView.builder(
                           // reverse: true,
+                          controller: _controller,
                           scrollDirection: Axis.vertical,
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
@@ -529,6 +543,7 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
         children: [
           GestureDetector(
             onTap: () {
+              Navigator.pop(context);
               _getFromGallery();
             },
             child: Column(
@@ -557,6 +572,7 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
           ),
           GestureDetector(
             onTap: () {
+              Navigator.pop(context);
               clickphotofromcamera();
             },
             child: Column(
@@ -585,6 +601,7 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
           ),
           GestureDetector(
             onTap: () {
+              Navigator.pop(context);
               pickVideo();
             },
             child: Column(
@@ -661,6 +678,55 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
               ),
             ],
           ),
+        ):chatmessagespojo!.data!.elementAt(index).messageType=="mp4"?
+        Container(
+          margin: EdgeInsets.only(left: 2.w, right: 2.w),
+          width: double.infinity,
+          alignment: Alignment.centerRight,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Container(
+                height: 15.h,
+                width: 40.w,
+                decoration: BoxDecoration(
+                    borderRadius:
+                    BorderRadius
+                        .circular(20),
+                    image:
+                    const DecorationImage(
+                        image:
+                        AssetImage(
+                          "assets/images/videodefaultimg.png",
+                        ),
+                        fit: BoxFit
+                            .fill)),
+                child: Icon(
+                  Icons
+                      .play_circle_outline_rounded,
+                  color: Colors.white,
+                  size: 6.h,
+                ),
+              ),
+              SizedBox(
+                height: 0.5.h,
+              ),
+              Text("",
+                // "Send for ${chatmessagespojo!.data!.elementAt(index).type}"=="free"?+chatmessagespojo!.data!.elementAt(index).createdAt.toString().substring(0,10),
+                style: TextStyle(
+                    fontSize: 10.sp,
+                    // fontFamily: "PulpDisplay",
+                    fontWeight: FontWeight.w400,
+                    fontStyle: FontStyle.italic,
+                    color: Appcolors().loginhintcolor),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(
+                height: 2.h,
+              ),
+            ],
+          ),
         ):
         Container(
           margin: EdgeInsets.only(left: 2.w, right: 2.w),
@@ -696,7 +762,15 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
                       ),
                     ),
                   ),
-                  // errorWidget: (context, url, error) => errorWidget,
+                  errorWidget: (context, url, error) => Container(
+                    height: 15.h,
+                    width: 40.w,
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: AssetImage("assets/images/imageplaceholder.png")
+                        )
+                    ),
+                  ),
                 ),
               ),
               SizedBox(
@@ -752,7 +826,49 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
                       // fontStyle: FontStyle.italic,
                       color: Appcolors().whitecolor),
                 ),
-              ): Container(
+              ):chatmessagespojo!.data!.elementAt(index).messageType.toString()=="mp4"?
+              Container(
+                margin: EdgeInsets.only(left: 6.w),
+                padding: EdgeInsets.only(
+                    right: 4.w, left: 8.w, top: 2.h, bottom: 2.h),
+                decoration: BoxDecoration(
+                  color: Appcolors().profileboxcolor,
+                  borderRadius: BorderRadius.circular(20),
+                  shape: BoxShape.rectangle,
+                ),
+                height: 15.h,
+                width: 40.w,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Container(
+                      height: 10.h,
+                      width: 40.w,
+                      decoration: BoxDecoration(
+                          borderRadius:
+                          BorderRadius
+                              .circular(20),
+                          image:
+                          const DecorationImage(
+                              image:
+                              AssetImage(
+                                "assets/images/videodefaultimg.png",
+                              ),
+                              fit: BoxFit
+                                  .cover)),
+                      child: Icon(
+                        Icons
+                            .play_circle_outline_rounded,
+                        color: Colors.white,
+                        size: 3.h,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+              :
+              Container(
                 margin: EdgeInsets.only(left: 6.w),
                 padding: EdgeInsets.only(
                     right: 4.w, left: 8.w, top: 2.h, bottom: 2.h),
@@ -786,7 +902,17 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
                   ),
                 ),
               ),
-              // errorWidget: (context, url, error) => errorWidget,
+              errorWidget: (context, url, error) => Container(
+                height: 15.h,
+                width: 40.w,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    shape: BoxShape.rectangle,
+                    image: DecorationImage(
+                        image: AssetImage("assets/images/imageplaceholder.png"),fit: BoxFit.cover
+                    )
+                ),
+              ),
             ),
           ),
               Container(
@@ -818,7 +944,15 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
                       ),
                     ),
                   ),
-                  // errorWidget: (context, url, error) => errorWidget,
+                  errorWidget: (context, url, error) => Container(
+                    height: 15.h,
+                    width: 40.w,
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: AssetImage("assets/images/imageplaceholder.png")
+                        )
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -892,6 +1026,7 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
       setState(() {
         imageFile = File(pickedFile.path);
         print("Image path:-${pickedFile.path}");
+        sendmessage();
       });
     }
   }
@@ -906,6 +1041,7 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
       setState(() {
         imageFile = File(pickedFile.path);
         print("Image path:-${pickedFile.path}");
+        sendmessage();
       });
     }
   }
@@ -917,7 +1053,7 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
     if (pickedFile != null) {
       imageFile = File(pickedFile.path);
       print("Video path:-${pickedFile?.path}");
-
+      sendmessage();
       // print("Video path:-${pickedFile.path}");
     }
     return null;
@@ -1058,7 +1194,13 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
       username = sharedPreferences.getString("stagename");
     });
     print("Token value:-" + token.toString());
-    chatconversationlisting();
+    _timer = new Timer(const Duration(milliseconds: 100), () {
+      setState(() {
+        chatconversationlisting();
+        print("Chat conversin api call");
+      });
+    });
+
   }
 
   Future<void> chatconversationlisting() async {
@@ -1146,5 +1288,16 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
         Navigator.pop(context);
       }
     });
+  }
+  void _scrollDown() {
+    if (_controller.hasClients) {
+      final position = _controller.position.maxScrollExtent;
+      _controller.animateTo(
+        position,
+        duration: Duration(seconds: 3),
+        curve: Curves.easeOut,
+      );
+    }
+    // _controller!.jumpTo(_controller.position.maxScrollExtent);
   }
 }

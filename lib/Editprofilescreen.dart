@@ -109,7 +109,15 @@ class EditprofilescreenState extends State<Editprofilescreen> {
                                 ),
                               ),
                             ),
-                            // errorWidget: (context, url, error) => errorWidget,
+                            errorWidget: (context, url, error) => Container(
+                              width: 30.w,
+                              height: 15.h,
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      image: AssetImage("assets/images/userprofile.png")
+                                  )
+                              ),
+                            ),
                           )
                           :
                               CircleAvatar(

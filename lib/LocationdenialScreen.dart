@@ -188,10 +188,14 @@ class LocationdenialScreenState extends State<LocationdenialScreen> {
               },
             ),
             Expanded(
-              child: ListView.builder(
+              child:
+
+
+              ListView.builder(
                 itemCount: selectedItems.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return Column(
+                  return
+                    Column(
                     children: [
                       SizedBox(
                         height: 1.5.h,

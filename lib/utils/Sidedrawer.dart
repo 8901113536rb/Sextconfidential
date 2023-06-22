@@ -138,7 +138,15 @@ class SidedrawerState extends State<Sidedrawer> {
                               ),
                             ),
                           ),
-                          // errorWidget: (context, url, error) => errorWidget,
+                          errorWidget: (context, url, error) => Container(
+                            width: 20.w,
+                            height: 10.h,
+                            decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    image: AssetImage("assets/images/userprofile.png")
+                                )
+                            ),
+                          ),
                         )
                       ),
                       SizedBox(

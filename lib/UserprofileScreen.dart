@@ -125,7 +125,15 @@ class UserprofileScreenState extends State<UserprofileScreen>{
                                     CircularProgressIndicator(strokeWidth: 2,color: Appcolors().backgroundcolor,),
                                   ),
                                 ),
-                            // errorWidget: (context, url, error) => errorWidget,
+                            errorWidget: (context, url, error) => Container(
+                              width: 23.w,
+                              height: 10.h,
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      image: AssetImage("assets/images/userprofile.png")
+                                  )
+                              ),
+                            ),
                           ),
                         ),
                         Container(

@@ -1568,7 +1568,19 @@ class FeedScreenState extends State<FeedScreen> {
                                                     ),
                                                   ),
                                                 ),
-                                                // errorWidget: (context, url, error) => errorWidget,
+                                          errorWidget: (context, url, error) => Container(
+                                            width: 15.w,
+                                            height: 4.5.h,
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                BorderRadius.circular(20),
+                                                shape:
+                                                BoxShape.rectangle,
+                                                image: DecorationImage(
+                                                    image: AssetImage("assets/images/imageplaceholder.png"),fit: BoxFit.cover
+                                                )
+                                            ),
+                                          ),
                                               )
                                             : feedpostspojo!.message!.post!
                                                         .elementAt(index)
@@ -1956,7 +1968,19 @@ class FeedScreenState extends State<FeedScreen> {
                                                       ),
                                                     ),
                                                   ),
-                                                  // errorWidget: (context, url, error) => errorWidget,
+                                                  errorWidget: (context, url, error) => Container(
+                                                    width: 15.w,
+                                                    height: 4.5.h,
+                                                    decoration: BoxDecoration(
+                                                        borderRadius:
+                                                        BorderRadius.circular(15),
+                                                        shape:
+                                                        BoxShape.circle,
+                                                        image: DecorationImage(
+                                                            image: AssetImage("assets/images/userprofile.png"),fit: BoxFit.cover
+                                                        )
+                                                    ),
+                                                  ),
                                                 ),
                                               ),
                                         Column(

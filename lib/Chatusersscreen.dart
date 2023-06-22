@@ -148,6 +148,12 @@ class ChatusersscreenState extends State<Chatusersscreen> {
                 onChanged: (value) {
                   setState(() {
                     chatselectedtype = value!;
+                    // switch (chatselectedtype){
+                    //   case "Most Recent":
+                        chatuserlisting(2);
+                        // break;
+
+                    // }
                   });
                 },
               ),
@@ -219,11 +225,17 @@ class ChatusersscreenState extends State<Chatusersscreen> {
                                                   child: CircularProgressIndicator(
                                                     strokeWidth: 2,
                                                     color:
-                                                    Appcolors().backgroundcolor,
+                                                    Appcolors().bottomnavbgcolor,
                                                   ),
                                                 ),
                                               ),
-                                          // errorWidget: (context, url, error) => errorWidget,
+                                          errorWidget: (context, url, error) => Container(
+                                            decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                image: AssetImage("assets/images/userprofile.png")
+                                              )
+                                            ),
+                                          ),
                                         ),
                                       ),
                                       SizedBox(
@@ -287,8 +299,7 @@ class ChatusersscreenState extends State<Chatusersscreen> {
                                                 Container(
                                                   width: 60.w,
                                                   child: Text(
-                                                      chatuserpojo!.data!.elementAt(index).lastmessage.toString(),
-                                                    // chatuserpojo!.data!.elementAt(index).lastmessage.toString().substring(chatuserpojo!.data!.elementAt(index).lastmessage.toString().length-3,chatuserpojo!.data!.elementAt(index).lastmessage.toString().length)=="jpg"?"Image":chatuserpojo!.data!.elementAt(index).lastmessage.toString().substring(chatuserpojo!.data!.elementAt(index).lastmessage.toString().length-3,chatuserpojo!.data!.elementAt(index).lastmessage.toString().length)=="mp4"?"Video":chatuserpojo!.data!.elementAt(index).lastmessage.toString(),
+                                                    chatuserpojo!.data!.elementAt(index).messageType.toString()=="jpg"?"Image":chatuserpojo!.data!.elementAt(index).messageType.toString()=="mp4"?"Video":chatuserpojo!.data!.elementAt(index).lastmessage.toString(),
                                                     style: TextStyle(
                                                         fontSize: 12.sp,
                                                         // fontFamily: "PulpDisplay",
@@ -366,14 +377,14 @@ class ChatusersscreenState extends State<Chatusersscreen> {
       token = sharedPreferences.getString("token")!;
     });
     print("Token value:-" + token.toString());
-    chatuserlisting(0);
+    chatuserlisting(2);
   }
 
   Future<void> chatuserlisting(int sorttype) async {
     Helpingwidgets.showLoadingDialog(context, key);
     Map data = {
       "token": token,
-      // "sort": sorttype.toString(),
+      "sort": sorttype.toString(),
     };
     print("Data:-" + data.toString());
     var jsonResponse = null;
@@ -388,7 +399,6 @@ class ChatusersscreenState extends State<Chatusersscreen> {
         Navigator.pop(context);
         Helpingwidgets.failedsnackbar(
             jsonResponse["message"].toString(), context);
-        Navigator.pop(context);
       } else {
         setState(() {
           responsestatus = true;
