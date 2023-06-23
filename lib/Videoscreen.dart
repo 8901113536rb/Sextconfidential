@@ -4,16 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:sextconfidential/utils/Appcolors.dart';
 import 'package:sizer/sizer.dart';
 
-class Videoscreen extends StatefulWidget{
+class Videoscreen extends StatefulWidget {
   String videopath;
-  Videoscreen({super.key,required this.videopath});
+  Videoscreen({super.key, required this.videopath});
 
   @override
   VideoscreenState createState() => VideoscreenState();
-  
 }
 
-class VideoscreenState extends State<Videoscreen>{
+class VideoscreenState extends State<Videoscreen> {
   late VideoPlayerController _controller;
   late CustomVideoPlayerController _customVideoPlayerController;
   late final VideoPlayerController videoPlayerController;
@@ -31,25 +30,28 @@ class VideoscreenState extends State<Videoscreen>{
         elevation: 0,
         backgroundColor: Appcolors().bottomnavbgcolor,
         leading: GestureDetector(
-          onTap: (){
+          onTap: () {
             Navigator.pop(context);
             print("Click back");
           },
           child: Container(
-            // color: Colors.white,
+              // color: Colors.white,
               margin: EdgeInsets.only(left: 2.w),
               child: const Icon(Icons.arrow_back_ios_rounded)),
         ),
         title: GestureDetector(
-          onTap: (){
+          onTap: () {
             Navigator.pop(context);
             print("Click back");
           },
-          child: Text("Back",style: TextStyle(
-              fontSize: 8.sp,
-              fontFamily: "PulpDisplay",
-              fontWeight: FontWeight.w500,
-              color: Appcolors().whitecolor),),
+          child: Text(
+            "Back",
+            style: TextStyle(
+                fontSize: 8.sp,
+                fontFamily: "PulpDisplay",
+                fontWeight: FontWeight.w500,
+                color: Appcolors().whitecolor),
+          ),
         ),
       ),
       body: SafeArea(
@@ -57,18 +59,11 @@ class VideoscreenState extends State<Videoscreen>{
             color: Colors.black,
             width: double.infinity,
             height:
-            (MediaQuery.of(context)
-                .size
-                .height /
-                100) *
-                double.infinity,
+                (MediaQuery.of(context).size.height / 100) * double.infinity,
             child: AspectRatio(
-              aspectRatio: _controller
-                  .value.aspectRatio,
-              child:
-              CustomVideoPlayer(
+              aspectRatio: _controller.value.aspectRatio,
+              child: CustomVideoPlayer(
                 customVideoPlayerController: _customVideoPlayerController,
-
               ),
 
               // VideoPlayer(
@@ -77,29 +72,29 @@ class VideoscreenState extends State<Videoscreen>{
       ),
     );
   }
+
   void startvideo() {
-    videoPlayerController = VideoPlayerController.network(
-        widget.videopath)
+    videoPlayerController = VideoPlayerController.network(widget.videopath)
       ..initialize().then((value) => setState(() {
-        print("Video working");
-        var durationOfVideo =
-        videoPlayerController.value.position.inSeconds.round();
-        print("Duration of video:-" + durationOfVideo.toString());
-        debugPrint("========" + _controller.value.duration.toString());
-      }));
+            print("Video working");
+            var durationOfVideo =
+                videoPlayerController.value.position.inSeconds.round();
+            print("Duration of video:-" + durationOfVideo.toString());
+            debugPrint("========" + _controller.value.duration.toString());
+          }));
     _customVideoPlayerController = CustomVideoPlayerController(
       context: context,
       videoPlayerController: videoPlayerController,
     );
 
-    _controller = VideoPlayerController.network(
-        widget.videopath)
+    _controller = VideoPlayerController.network(widget.videopath)
       ..initialize().then(
-            (_) {
+        (_) {
+          videoPlayerController.play();
           debugPrint("========" + _controller.value.duration.toString());
           print("Video Started");
           var durationOfVideo =
-          videoPlayerController.value.position.inSeconds.round();
+              videoPlayerController.value.position.inSeconds.round();
           print("Duration of videos:-" + durationOfVideo.toString());
         },
       );

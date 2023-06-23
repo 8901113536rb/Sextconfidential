@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -128,4 +129,81 @@ class Helpingwidgets{
       ),
     );
   }
+  Future mediaimagedialog(BuildContext context,String imagepath){
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10.0))),
+              backgroundColor: Colors.transparent,
+              //title: Text("Image Picker"),
+              content: Container(
+                height: 30.h,
+                width: double.infinity,
+                child: Stack(
+                  alignment: Alignment.topRight,
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(top: 1.h,right: 2.w),
+                      height: 30.h,
+                      width: 80.w,
+                      child: CachedNetworkImage(
+                        imageUrl:imagepath.toString(),
+                        imageBuilder: (context,
+                            imageProvider) =>
+                            Container(
+                              width: 23.w,
+                              alignment: Alignment
+                                  .centerLeft,
+                              height: 10.h,
+                              decoration:
+                              BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                shape: BoxShape.rectangle,
+                                image:
+                                DecorationImage(
+                                  image:
+                                  imageProvider,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                        placeholder:
+                            (context, url) =>
+                            Container(
+                              child: Center(
+                                child:
+                                CircularProgressIndicator(strokeWidth: 2,color: Appcolors().backgroundcolor,),
+                              ),
+                            ),
+                        errorWidget: (context, url, error) => Container(
+                          width: 23.w,
+                          height: 10.h,
+                          decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  image: AssetImage("assets/images/imageplaceholder.png")
+                              )
+                          ),
+                        ),
+                      ),
+                    ),
+                    InkWell(
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      onTap: (){
+                        Navigator.pop(context);
+                      },
+                      child: CircleAvatar(
+                          radius: 1.5.h,
+                          backgroundColor: Appcolors().dialogbgcolor,
+                          child: Icon(Icons.close,color: Colors.white,)),
+                    ),
+
+                  ],
+                ),
+              ));
+        });
+  }
+
 }

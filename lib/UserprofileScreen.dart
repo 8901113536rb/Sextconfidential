@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:sextconfidential/Videoscreen.dart';
 import 'package:sextconfidential/pojo/Chatmediapojo.dart';
 import 'package:sextconfidential/utils/Appcolors.dart';
 import 'package:sextconfidential/utils/Helpingwidgets.dart';
@@ -97,7 +98,9 @@ class UserprofileScreenState extends State<UserprofileScreen>{
                                   end: Alignment.topRight
                               )
                           ),
-                          child: CachedNetworkImage(
+                          child:
+
+                          CachedNetworkImage(
                             imageUrl:widget.userimage.toString(),
                             imageBuilder: (context,
                                 imageProvider) =>
@@ -300,12 +303,15 @@ class UserprofileScreenState extends State<UserprofileScreen>{
                         child: SlideAnimation(
                           verticalOffset: 50.0,
                           child: FadeInAnimation(
-                            child: GestureDetector(
+                            child:
+                            chatmediapojo!.data!.elementAt(index).messageType.toString()=="jpg"?
+                            GestureDetector(
                               onTap: () {
-
+                                Helpingwidgets().mediaimagedialog(context,chatmediapojo!.data!.elementAt(index).message.toString());
                               },
                               child: Container(
-                                child: CachedNetworkImage(
+                                child:
+                                CachedNetworkImage(
                                   imageUrl:chatmediapojo!.data!.elementAt(index).message.toString(),
                                   imageBuilder: (context, imageProvider) => Container(
                                     width: 25.w,
@@ -325,7 +331,33 @@ class UserprofileScreenState extends State<UserprofileScreen>{
                                   // errorWidget: (context, url, error) => errorWidget,
                                 ),
                               ),
-                            ),
+                            )
+                            :
+                              InkWell(
+                                onTap: (){
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => Videoscreen(videopath: chatmediapojo!.data!.elementAt(index).message.toString())));
+                                },
+                                child: Container(
+                                decoration: BoxDecoration(
+                                borderRadius:
+                                BorderRadius
+                                    .circular(20),
+                            image:
+                            const DecorationImage(
+                                  image:
+                                  AssetImage(
+                                    "assets/images/videodefaultimg.png",
+                                  ),
+                                  fit: BoxFit
+                                      .fill)),
+                        child: Icon(
+                          Icons
+                                .play_circle_outline_rounded,
+                          color: Colors.white,
+                          size: 4.h,
+                        ),
+                      ),
+                              ),
                           ),
                         ),
                       );
@@ -593,7 +625,6 @@ class UserprofileScreenState extends State<UserprofileScreen>{
               ));
         });
   }
-
   Future<void> getsharedpreference() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     setState(() {

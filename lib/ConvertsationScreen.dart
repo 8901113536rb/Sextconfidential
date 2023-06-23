@@ -12,6 +12,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:record/record.dart';
 // import 'package:record_mp3/record_mp3.dart';
 import 'package:sextconfidential/UserprofileScreen.dart';
+import 'package:sextconfidential/Videoscreen.dart';
 import 'package:sextconfidential/pojo/Chatmessagespojo.dart';
 import 'package:sextconfidential/utils/Appcolors.dart';
 import 'package:sextconfidential/utils/Helpingwidgets.dart';
@@ -30,8 +31,12 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:http/http.dart' as http;
 
 class ConvertsationScreen extends StatefulWidget {
-  String userid,userimage,username;
-   ConvertsationScreen({super.key,required this.userid,required this.userimage,required this.username});
+  String userid, userimage, username;
+  ConvertsationScreen(
+      {super.key,
+      required this.userid,
+      required this.userimage,
+      required this.username});
 
   @override
   ConvertsationScreenState createState() => ConvertsationScreenState();
@@ -48,12 +53,13 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
   bool isComplete = false;
   String recordingTime = '0:0'; // to store value
   bool isRecording = false;
-  String? token,userprofilepic,username;
-  bool responsestatus=false;
+  String? token, userprofilepic, username;
+  bool responsestatus = false;
   Chatmessagespojo? chatmessagespojo;
   GlobalKey<State> key = GlobalKey();
   Timer? _timer;
-  final ScrollController _controller=ScrollController();
+  final ScrollController _controller = ScrollController();
+  String? chatcurrentdate;
   @override
   void initState() {
     // TODO: implement initState
@@ -95,8 +101,14 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
             onTap: () {
               print("Scroll down");
               // _scrollDown();
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => UserprofileScreen(username: widget.username.toString(),userimage: widget.userimage.toString(),userid: widget.userid.toString(),)));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => UserprofileScreen(
+                            username: widget.username.toString(),
+                            userimage: widget.userimage.toString(),
+                            userid: widget.userid.toString(),
+                          )));
             },
             child: Container(
               child: Column(
@@ -107,14 +119,11 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-
                       Container(
                         height: 5.h,
                         width: 16.w,
-                        child:
-                        CachedNetworkImage(
-                          imageUrl:
-                              widget.userimage.toString(),
+                        child: CachedNetworkImage(
+                          imageUrl: widget.userimage.toString(),
                           imageBuilder: (context, imageProvider) => Container(
                             width: 16.w,
                             alignment: Alignment.centerLeft,
@@ -140,9 +149,8 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
                             height: 5.h,
                             decoration: BoxDecoration(
                                 image: DecorationImage(
-                                    image: AssetImage("assets/images/userprofile.png")
-                                )
-                            ),
+                                    image: AssetImage(
+                                        "assets/images/userprofile.png"))),
                           ),
                         ),
                       ),
@@ -189,68 +197,88 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      responsestatus?
-                      chatmessagespojo!.data!.isNotEmpty?
-                      AnimationLimiter(
-                        child: ListView.builder(
-                          // reverse: true,
-                          controller: _controller,
-                          scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: chatmessagespojo!.data!.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return AnimationConfiguration.staggeredList(
-                              position: index,
-                              duration: const Duration(milliseconds: 300),
-                              child: SlideAnimation(
-                                verticalOffset: 50.0,
-                                child: FadeInAnimation(
-                                  child: InkWell(
-                                    onTap: () {
-                                      setState(() {
-                                        showuploaddialog = false;
-                                        emojiShowing = false;
-                                        FocusManager.instance.primaryFocus
-                                            ?.unfocus();
-                                      });
-                                    },
-                                    child: Column(
-                                      children: [
-                                        Container(
-                                          margin: EdgeInsets.only(
-                                              left: 2.w, right: 2.w),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: [
-                                              chatmessagespojo!.data!.elementAt(index)!.fromId.toString()==token?
-                                              sendermessage(index)
-                                                  :
-                                              receivermessage(index),
-                                              // daydivider(),
-                                              // voicemessage()
-                                            ],
+                      responsestatus
+                          ? chatmessagespojo!.data!.isNotEmpty
+                              ? AnimationLimiter(
+                                  child: ListView.builder(
+                                    // reverse: true,
+                                    controller: _controller,
+                                    scrollDirection: Axis.vertical,
+                                    shrinkWrap: true,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    itemCount: chatmessagespojo!.data!.length,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return AnimationConfiguration
+                                          .staggeredList(
+                                        position: index,
+                                        duration:
+                                            const Duration(milliseconds: 300),
+                                        child: SlideAnimation(
+                                          verticalOffset: 50.0,
+                                          child: FadeInAnimation(
+                                            child: 
+                                            InkWell(
+                                              onTap: () {
+                                                setState(() {
+                                                  showuploaddialog = false;
+                                                  emojiShowing = false;
+                                                  FocusManager
+                                                      .instance.primaryFocus
+                                                      ?.unfocus();
+                                                });
+                                              },
+                                              child: Column(
+                                                children: [
+                                                  Container(
+                                                    margin: EdgeInsets.only(
+                                                        left: 2.w, right: 2.w),
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        chatcurrentdate!=chatmessagespojo!.data!
+                                                            .elementAt(
+                                                            index)!
+                                                            .createdAt
+                                                            .toString().substring(0,13)?
+                                                        daydivider(chatmessagespojo!.data!
+                                                            .elementAt(
+                                                            index)!
+                                                            .createdAt
+                                                            .toString().substring(0,13)):SizedBox(),
+                                                        chatmessagespojo!.data!
+                                                                    .elementAt(
+                                                                        index)!
+                                                                    .fromId
+                                                                    .toString() ==
+                                                                token
+                                                            ? sendermessage(index)
+                                                            : receivermessage(index),
+                                                        // voicemessage()
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 1.5.h,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
                                           ),
                                         ),
-                                        SizedBox(
-                                          height: 1.5.h,
-                                        ),
-                                      ],
-                                    ),
+                                      );
+                                    },
                                   ),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      )
-                      :
-                          Center(child: Helpingwidgets.emptydatawithoutdivider("No Message!"))
-                      :
-                      SizedBox(),
+                                )
+                              : Center(
+                                  child: Helpingwidgets.emptydatawithoutdivider(
+                                      "No Message!"))
+                          : SizedBox(),
                       SizedBox(
                         height: 10.h,
                       )
@@ -409,7 +437,7 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
                                           GestureDetector(
                                               onTap: () {
                                                 setState(() {
-                                                  recordingTime="0:0";
+                                                  recordingTime = "0:0";
                                                   micstatus = false;
                                                   // stopRecord();
                                                 });
@@ -436,7 +464,7 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
                               //               details.down.toString());
                               //         },
                               //         child:
-                                  !micstatus && messagecontroller.text.isEmpty
+                              !micstatus && messagecontroller.text.isEmpty
                                   ? GestureDetector(
                                       onTap: () async {
                                         setState(() {
@@ -450,20 +478,20 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
                                       ),
                                     )
                                   : GestureDetector(
-                                    onTap: () async {
-                                      setState(() {
-                                        sendmessage();
-                                        recordingTime="0:0";
-                                        micstatus = false;
-                                        // stopRecord();
-                                        messagecontroller.text="";
-                                      });
-                                    },
-                                    child: SvgPicture.asset(
+                                      onTap: () async {
+                                        setState(() {
+                                          sendmessage();
+                                          recordingTime = "0:0";
+                                          micstatus = false;
+                                          // stopRecord();
+                                          messagecontroller.text = "";
+                                        });
+                                      },
+                                      child: SvgPicture.asset(
                                         "assets/images/sendicon.svg",
                                         height: 2.5.h,
                                       ),
-                                  ),
+                                    ),
                               SizedBox(
                                 width: 3.w,
                               ),
@@ -634,169 +662,209 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
   }
 
   Widget receivermessage(int index) {
+    // setState((){
+      chatcurrentdate=chatmessagespojo!.data!
+          .elementAt(
+          index)!
+          .createdAt
+          .toString().substring(0,13);
+    // });
     return Column(
       children: [
-        chatmessagespojo!.data!.elementAt(index).messageType.toString()=="text"?
-        Container(
-          margin: EdgeInsets.only(left: 2.w, right: 2.w),
-          alignment: Alignment.centerRight,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Container(
-                padding: EdgeInsets.all(1.5.h),
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: AssetImage(
-                          "assets/images/btnbackgroundgradient.png",
-                        ),
-                        fit: BoxFit.fill),
-                    borderRadius: BorderRadius.circular(15)),
-                child: Text(
-                  chatmessagespojo!.data!.elementAt(index).message.toString(),
-                  style: TextStyle(
-                      fontSize: 11.sp,
-                      // fontFamily: "PulpDisplay",
-                      fontWeight: FontWeight.w500,
-                      color: Appcolors().blackcolor),
-                ),
-              ),
-              SizedBox(
-                height: 0.5.h,
-              ),
-              Text(
-                "Sent "+chatmessagespojo!.data!.elementAt(index).createdAt!.substring(14,22),
-                style: TextStyle(
-                    fontSize: 11.sp,
-                    // fontFamily: "PulpDisplay",
-                    fontWeight: FontWeight.w400,
-                    fontStyle: FontStyle.italic,
-                    color: Appcolors().loginhintcolor),
-              ),
-              SizedBox(
-                height: 1.h,
-              ),
-            ],
-          ),
-        ):chatmessagespojo!.data!.elementAt(index).messageType=="mp4"?
-        Container(
-          margin: EdgeInsets.only(left: 2.w, right: 2.w),
-          width: double.infinity,
-          alignment: Alignment.centerRight,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Container(
-                height: 15.h,
-                width: 40.w,
-                decoration: BoxDecoration(
-                    borderRadius:
-                    BorderRadius
-                        .circular(20),
-                    image:
-                    const DecorationImage(
-                        image:
-                        AssetImage(
-                          "assets/images/videodefaultimg.png",
-                        ),
-                        fit: BoxFit
-                            .fill)),
-                child: Icon(
-                  Icons
-                      .play_circle_outline_rounded,
-                  color: Colors.white,
-                  size: 6.h,
-                ),
-              ),
-              SizedBox(
-                height: 0.5.h,
-              ),
-              Text("",
-                // "Send for ${chatmessagespojo!.data!.elementAt(index).type}"=="free"?+chatmessagespojo!.data!.elementAt(index).createdAt.toString().substring(0,10),
-                style: TextStyle(
-                    fontSize: 10.sp,
-                    // fontFamily: "PulpDisplay",
-                    fontWeight: FontWeight.w400,
-                    fontStyle: FontStyle.italic,
-                    color: Appcolors().loginhintcolor),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(
-                height: 2.h,
-              ),
-            ],
-          ),
-        ):
-        Container(
-          margin: EdgeInsets.only(left: 2.w, right: 2.w),
-          width: double.infinity,
-          alignment: Alignment.centerRight,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Container(
-                height: 15.h,
-                width: 40.w,
-                child: CachedNetworkImage(
-                  imageUrl:chatmessagespojo!.data!.elementAt(index).message.toString(),
-                  imageBuilder: (context, imageProvider) => Container(
-                    height: 15.h,
-                    width: 40.w,
-                    alignment: Alignment.centerLeft,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      shape: BoxShape.rectangle,
-                      image: DecorationImage(
-                        image: imageProvider,
-                        fit: BoxFit.cover,
+        chatmessagespojo!.data!.elementAt(index).messageType.toString() ==
+                "text"
+            ? Container(
+                margin: EdgeInsets.only(left: 2.w, right: 2.w),
+                alignment: Alignment.centerRight,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(1.5.h),
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                              image: AssetImage(
+                                "assets/images/btnbackgroundgradient.png",
+                              ),
+                              fit: BoxFit.fill),
+                          borderRadius: BorderRadius.circular(15)),
+                      child: Text(
+                        chatmessagespojo!.data!
+                            .elementAt(index)
+                            .message
+                            .toString(),
+                        style: TextStyle(
+                            fontSize: 11.sp,
+                            // fontFamily: "PulpDisplay",
+                            fontWeight: FontWeight.w500,
+                            color: Appcolors().blackcolor),
                       ),
                     ),
-                  ),
-                  placeholder: (context, url) => Container(
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: Appcolors().backgroundcolor,
-                      ),
+                    SizedBox(
+                      height: 0.5.h,
                     ),
-                  ),
-                  errorWidget: (context, url, error) => Container(
-                    height: 15.h,
-                    width: 40.w,
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image: AssetImage("assets/images/imageplaceholder.png")
-                        )
+                    Text(
+                      "Sent " +
+                          chatmessagespojo!.data!
+                              .elementAt(index)
+                              .createdAt!
+                              .substring(14, 22),
+                      style: TextStyle(
+                          fontSize: 11.sp,
+                          // fontFamily: "PulpDisplay",
+                          fontWeight: FontWeight.w400,
+                          fontStyle: FontStyle.italic,
+                          color: Appcolors().loginhintcolor),
                     ),
-                  ),
+                    SizedBox(
+                      height: 1.h,
+                    ),
+                  ],
                 ),
-              ),
-              SizedBox(
-                height: 0.5.h,
-              ),
-              Text("",
-                // "Send for ${chatmessagespojo!.data!.elementAt(index).type}"=="free"?+chatmessagespojo!.data!.elementAt(index).createdAt.toString().substring(0,10),
-                style: TextStyle(
-                    fontSize: 10.sp,
-                    // fontFamily: "PulpDisplay",
-                    fontWeight: FontWeight.w400,
-                    fontStyle: FontStyle.italic,
-                    color: Appcolors().loginhintcolor),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(
-                height: 2.h,
-              ),
-            ],
-          ),
-        ),
+              )
+            : chatmessagespojo!.data!.elementAt(index).messageType == "mp4"
+                ? Container(
+                    margin: EdgeInsets.only(left: 2.w, right: 2.w),
+                    width: double.infinity,
+                    alignment: Alignment.centerRight,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        InkWell(
+                          onTap:(){
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => Videoscreen(videopath: chatmessagespojo!.data!
+                              .elementAt(index)
+                              .message
+                              .toString())));
+    },
+                          child: Container(
+                            height: 15.h,
+                            width: 40.w,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                image: const DecorationImage(
+                                    image: AssetImage(
+                                      "assets/images/videodefaultimg.png",
+                                    ),
+                                    fit: BoxFit.fill)),
+                            child: Icon(
+                              Icons.play_circle_outline_rounded,
+                              color: Colors.white,
+                              size: 6.h,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 0.5.h,
+                        ),
+                        Text(
+                          "",
+                          // "Send for ${chatmessagespojo!.data!.elementAt(index).type}"=="free"?+chatmessagespojo!.data!.elementAt(index).createdAt.toString().substring(0,10),
+                          style: TextStyle(
+                              fontSize: 10.sp,
+                              // fontFamily: "PulpDisplay",
+                              fontWeight: FontWeight.w400,
+                              fontStyle: FontStyle.italic,
+                              color: Appcolors().loginhintcolor),
+                          textAlign: TextAlign.center,
+                        ),
+                        SizedBox(
+                          height: 2.h,
+                        ),
+                      ],
+                    ),
+                  )
+                : Container(
+                    margin: EdgeInsets.only(left: 2.w, right: 2.w),
+                    width: double.infinity,
+                    alignment: Alignment.centerRight,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            Helpingwidgets().mediaimagedialog(
+                                context,
+                                chatmessagespojo!.data!
+                                    .elementAt(index)
+                                    .message
+                                    .toString());
+                          },
+                          child: Container(
+                            height: 15.h,
+                            width: 40.w,
+                            child: CachedNetworkImage(
+                              imageUrl: chatmessagespojo!.data!
+                                  .elementAt(index)
+                                  .message
+                                  .toString(),
+                              imageBuilder: (context, imageProvider) =>
+                                  Container(
+                                height: 15.h,
+                                width: 40.w,
+                                alignment: Alignment.centerLeft,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  shape: BoxShape.rectangle,
+                                  image: DecorationImage(
+                                    image: imageProvider,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                              placeholder: (context, url) => Container(
+                                child: Center(
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Appcolors().backgroundcolor,
+                                  ),
+                                ),
+                              ),
+                              errorWidget: (context, url, error) => Container(
+                                height: 15.h,
+                                width: 40.w,
+                                decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                        image: AssetImage(
+                                            "assets/images/imageplaceholder.png"))),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 0.5.h,
+                        ),
+                        Text(
+                          "",
+                          // "Send for ${chatmessagespojo!.data!.elementAt(index).type}"=="free"?+chatmessagespojo!.data!.elementAt(index).createdAt.toString().substring(0,10),
+                          style: TextStyle(
+                              fontSize: 10.sp,
+                              // fontFamily: "PulpDisplay",
+                              fontWeight: FontWeight.w400,
+                              fontStyle: FontStyle.italic,
+                              color: Appcolors().loginhintcolor),
+                          textAlign: TextAlign.center,
+                        ),
+                        SizedBox(
+                          height: 2.h,
+                        ),
+                      ],
+                    ),
+                  ),
       ],
     );
   }
 
   Widget sendermessage(int index) {
+    // setState((){
+      chatcurrentdate=chatmessagespojo!.data!
+          .elementAt(
+          index)!
+          .createdAt
+          .toString().substring(0,13);
+    // });
     return Column(
       children: [
         Container(
@@ -804,117 +872,145 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
           child: Stack(
             alignment: Alignment.centerLeft,
             children: [
-              chatmessagespojo!.data!.elementAt(index).messageType.toString()=="text"?
-              Container(
-                // alignment: Alignment.centerLeft,
-                margin: EdgeInsets.only(left: 6.w),
-                padding: EdgeInsets.only(
-                    right: 4.w, left: 8.w, top: 2.h, bottom: 2.h),
-                decoration: BoxDecoration(
-                  color: Appcolors().profileboxcolor,
-                  borderRadius: BorderRadius.circular(20),
-                  shape: BoxShape.rectangle,
-                ),
-                // height: 7.h,
-                // width: 80.w,
-                child: Text(
-                  chatmessagespojo!.data!.elementAt(index).message.toString(),
-                  style: TextStyle(
-                      fontSize: 11.sp,
-                      // fontFamily: "PulpDisplay",
-                      fontWeight: FontWeight.w500,
-                      // fontStyle: FontStyle.italic,
-                      color: Appcolors().whitecolor),
-                ),
-              ):chatmessagespojo!.data!.elementAt(index).messageType.toString()=="mp4"?
-              Container(
-                margin: EdgeInsets.only(left: 6.w),
-                padding: EdgeInsets.only(
-                    right: 4.w, left: 8.w, top: 2.h, bottom: 2.h),
-                decoration: BoxDecoration(
-                  color: Appcolors().profileboxcolor,
-                  borderRadius: BorderRadius.circular(20),
-                  shape: BoxShape.rectangle,
-                ),
-                height: 15.h,
-                width: 40.w,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Container(
-                      height: 10.h,
-                      width: 40.w,
+              chatmessagespojo!.data!.elementAt(index).messageType.toString() ==
+                      "text"
+                  ? Container(
+                      // alignment: Alignment.centerLeft,
+                      margin: EdgeInsets.only(left: 6.w),
+                      padding: EdgeInsets.only(
+                          right: 4.w, left: 8.w, top: 2.h, bottom: 2.h),
                       decoration: BoxDecoration(
-                          borderRadius:
-                          BorderRadius
-                              .circular(20),
-                          image:
-                          const DecorationImage(
-                              image:
-                              AssetImage(
-                                "assets/images/videodefaultimg.png",
-                              ),
-                              fit: BoxFit
-                                  .cover)),
-                      child: Icon(
-                        Icons
-                            .play_circle_outline_rounded,
-                        color: Colors.white,
-                        size: 3.h,
+                        color: Appcolors().profileboxcolor,
+                        borderRadius: BorderRadius.circular(20),
+                        shape: BoxShape.rectangle,
                       ),
-                    ),
-                  ],
-                ),
-              )
-              :
-              Container(
-                margin: EdgeInsets.only(left: 6.w),
-                padding: EdgeInsets.only(
-                    right: 4.w, left: 8.w, top: 2.h, bottom: 2.h),
-                decoration: BoxDecoration(
-                  color: Appcolors().profileboxcolor,
-                  borderRadius: BorderRadius.circular(20),
-                  shape: BoxShape.rectangle,
-                ),
-            height: 15.h,
-            width: 40.w,
-            child: CachedNetworkImage(
-              imageUrl:chatmessagespojo!.data!.elementAt(index).message.toString(),
-              imageBuilder: (context, imageProvider) => Container(
-                height: 15.h,
-                width: 40.w,
-                alignment: Alignment.centerLeft,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  shape: BoxShape.rectangle,
-                  image: DecorationImage(
-                    image: imageProvider,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              placeholder: (context, url) => Container(
-                child: Center(
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: Appcolors().backgroundcolor,
-                  ),
-                ),
-              ),
-              errorWidget: (context, url, error) => Container(
-                height: 15.h,
-                width: 40.w,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    shape: BoxShape.rectangle,
-                    image: DecorationImage(
-                        image: AssetImage("assets/images/imageplaceholder.png"),fit: BoxFit.cover
+                      // height: 7.h,
+                      // width: 80.w,
+                      child: Text(
+                        chatmessagespojo!.data!
+                            .elementAt(index)
+                            .message
+                            .toString(),
+                        style: TextStyle(
+                            fontSize: 11.sp,
+                            // fontFamily: "PulpDisplay",
+                            fontWeight: FontWeight.w500,
+                            // fontStyle: FontStyle.italic,
+                            color: Appcolors().whitecolor),
+                      ),
                     )
-                ),
-              ),
-            ),
-          ),
+                  : chatmessagespojo!.data!
+                              .elementAt(index)
+                              .messageType
+                              .toString() ==
+                          "mp4"
+                      ? Container(
+                          margin: EdgeInsets.only(left: 6.w),
+                          padding: EdgeInsets.only(
+                              right: 4.w, left: 8.w, top: 2.h, bottom: 2.h),
+                          decoration: BoxDecoration(
+                            color: Appcolors().profileboxcolor,
+                            borderRadius: BorderRadius.circular(20),
+                            shape: BoxShape.rectangle,
+                          ),
+                          height: 15.h,
+                          width: 40.w,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => Videoscreen(
+                                              videopath: chatmessagespojo!.data!
+                                                  .elementAt(index)
+                                                  .message
+                                                  .toString())));
+                                },
+                                child: Container(
+                                  height: 10.h,
+                                  width: 40.w,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      image: const DecorationImage(
+                                          image: AssetImage(
+                                            "assets/images/videodefaultimg.png",
+                                          ),
+                                          fit: BoxFit.cover)),
+                                  child: Icon(
+                                    Icons.play_circle_outline_rounded,
+                                    color: Colors.white,
+                                    size: 3.h,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      : Container(
+                          margin: EdgeInsets.only(left: 6.w),
+                          padding: EdgeInsets.only(
+                              right: 4.w, left: 8.w, top: 2.h, bottom: 2.h),
+                          decoration: BoxDecoration(
+                            color: Appcolors().profileboxcolor,
+                            borderRadius: BorderRadius.circular(20),
+                            shape: BoxShape.rectangle,
+                          ),
+                          height: 15.h,
+                          width: 40.w,
+                          child: InkWell(
+                            onTap: () {
+                              Helpingwidgets().mediaimagedialog(
+                                  context,
+                                  chatmessagespojo!.data!
+                                      .elementAt(index)
+                                      .message
+                                      .toString());
+                            },
+                            child: CachedNetworkImage(
+                              imageUrl: chatmessagespojo!.data!
+                                  .elementAt(index)
+                                  .message
+                                  .toString(),
+                              imageBuilder: (context, imageProvider) =>
+                                  Container(
+                                height: 15.h,
+                                width: 40.w,
+                                alignment: Alignment.centerLeft,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  shape: BoxShape.rectangle,
+                                  image: DecorationImage(
+                                    image: imageProvider,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                              placeholder: (context, url) => Container(
+                                child: Center(
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Appcolors().backgroundcolor,
+                                  ),
+                                ),
+                              ),
+                              errorWidget: (context, url, error) => Container(
+                                height: 15.h,
+                                width: 40.w,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15),
+                                    shape: BoxShape.rectangle,
+                                    image: DecorationImage(
+                                        image: AssetImage(
+                                            "assets/images/imageplaceholder.png"),
+                                        fit: BoxFit.cover)),
+                              ),
+                            ),
+                          ),
+                        ),
               Container(
                 height: 6.h,
                 width: 11.w,
@@ -922,8 +1018,7 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
                 decoration: BoxDecoration(
                     shape: BoxShape.circle, color: Appcolors().backgroundcolor),
                 child: CachedNetworkImage(
-                  imageUrl:
-                      widget.userimage.toString(),
+                  imageUrl: widget.userimage.toString(),
                   imageBuilder: (context, imageProvider) => Container(
                     width: 10.w,
                     alignment: Alignment.centerLeft,
@@ -949,9 +1044,8 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
                     width: 40.w,
                     decoration: BoxDecoration(
                         image: DecorationImage(
-                            image: AssetImage("assets/images/imageplaceholder.png")
-                        )
-                    ),
+                            image: AssetImage(
+                                "assets/images/imageplaceholder.png"))),
                   ),
                 ),
               ),
@@ -963,7 +1057,12 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
           width: double.infinity,
           // alignment: Alignment.centerLeft,
           child: Text(
-            "Sent "+chatmessagespojo!.data!.elementAt(index).createdAt.toString().substring(14,22),
+            "Sent " +
+                chatmessagespojo!.data!
+                    .elementAt(index)
+                    .createdAt
+                    .toString()
+                    .substring(14, 22),
             style: TextStyle(
                 fontSize: 11.sp,
                 // fontFamily: "PulpDisplay",
@@ -979,7 +1078,7 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
     );
   }
 
-  Widget daydivider() {
+  Widget daydivider(String datedata) {
     return Column(
       children: [
         Row(
@@ -992,7 +1091,7 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
               height: 0.1.h,
             ),
             Text(
-              "Mon 8 Mar 2023",
+              datedata.toString(),
               style: TextStyle(
                   fontSize: 10.sp,
                   fontFamily: "PulpDisplay",
@@ -1200,7 +1299,6 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
         print("Chat conversin api call");
       });
     });
-
   }
 
   Future<void> chatconversationlisting() async {
@@ -1211,7 +1309,8 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
     };
     print("Data:-" + data.toString());
     var jsonResponse = null;
-    var response = await http.post(Uri.parse(Networks.baseurl + Networks.chatmessage), body: data);
+    var response = await http
+        .post(Uri.parse(Networks.baseurl + Networks.chatmessage), body: data);
     jsonResponse = json.decode(response.body);
     print("jsonResponse:-" + jsonResponse.toString());
     if (response.statusCode == 200) {
@@ -1240,6 +1339,7 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
           jsonResponse["message"].toString(), context);
     }
   }
+
   Future<void> sendmessage() async {
     Helpingwidgets.showLoadingDialog(context, key);
     var request = http.MultipartRequest(
@@ -1258,7 +1358,7 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
         await http.MultipartFile.fromPath("file", imageFile!.path,
             filename: imageFile!.path),
       );
-    }else{
+    } else {
       print("Simple message send");
       request.fields["file"] = messagecontroller.text!;
     }
