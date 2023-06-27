@@ -66,13 +66,20 @@ dependencies:
   firebase_core_dart: ^1.0.1
   chips_choice: ^3.0.0
   firebase_dynamic_links: ^5.3.3
+#  flutter_sound_lite: ^8.5.0
+
 #  flutter_sound: ^9.2.13
+#  assets_audio_player: ^3.0.6
+
+
 #  record_mp3: ^3.0.0
 #  flutter_audio_recorder2: ^0.0.2
 #  record: ^3.0.4
 #  getwidget: ^1.2.4
 #  searchfield: ^0.8.3
 #  chat_package: ^1.0.0
+
+
 
 dev_dependencies:
   flutter_test:

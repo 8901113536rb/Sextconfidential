@@ -15,8 +15,7 @@
 // class RecorddemoState extends State<Recorddemo> {
 //   String statusText = "";
 //   bool isComplete = false;
-//   String recordingTime = '0:0'; // to store value
-//   bool isRecording = false;
+//
 //   @override
 //   Widget build(BuildContext context) {
 //     return MaterialApp(
@@ -108,10 +107,6 @@
 //                   : Container(),
 //             ),
 //           ),
-//           Text(
-//             recordingTime,
-//             style: TextStyle(color: Colors.red, fontSize: 20),
-//           )
 //         ]),
 //       ),
 //     );
@@ -133,15 +128,10 @@
 //       statusText = "Recording...";
 //       recordFilePath = await getFilePath();
 //       isComplete = false;
-//       setState(() {
-//         print("Recording start");
-//         recordTime();
-//         isRecording=true;
-//       });
 //       RecordMp3.instance.start(recordFilePath!, (type) {
 //         statusText = "Record error--->$type";
+//         setState(() {});
 //       });
-//       print("Recording path:-"+recordFilePath.toString());
 //     } else {
 //       statusText = "No microphone permission";
 //     }
@@ -169,9 +159,7 @@
 //     if (s) {
 //       statusText = "Record complete";
 //       isComplete = true;
-//       setState(() {
-//         isRecording=false;
-//       });
+//       setState(() {});
 //     }
 //   }
 //
@@ -188,7 +176,7 @@
 //   void play() {
 //     if (recordFilePath != null && File(recordFilePath!).existsSync()) {
 //       AudioPlayer audioPlayer = AudioPlayer();
-//       // audioPlayer.play(recordFilePath!, isLocal: true);
+//       // audioPlayer.play(startRecord(), isLocal: true);
 //     }
 //   }
 //
@@ -202,22 +190,5 @@
 //       d.createSync(recursive: true);
 //     }
 //     return sdPath + "/test_${i++}.mp3";
-//   }
-//   void recordTime() {
-//     // setState(() {
-//       var startTime = DateTime.now();
-//       Timer.periodic(const Duration(seconds: 1), (Timer t) {
-//         var diff = DateTime.now().difference(startTime);
-//         setState((){
-//           recordingTime =
-//           '${diff.inHours < 60 ? diff.inHours : 0}:${diff.inMinutes < 60 ? diff.inMinutes : 0}:${diff.inSeconds < 60 ? diff.inSeconds : 0}';
-//         });
-//         print(recordingTime);
-//
-//         if (!isRecording) {
-//           t.cancel(); //cancel function calling
-//         }
-//       });
-//     // });
 //   }
 // }

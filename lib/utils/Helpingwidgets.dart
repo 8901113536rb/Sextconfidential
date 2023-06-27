@@ -178,13 +178,13 @@ class Helpingwidgets{
                               ),
                             ),
                         errorWidget: (context, url, error) => Container(
-                          width: 23.w,
-                          height: 10.h,
+                          height: 15.h,
+                          width: 40.w,
                           decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
                               image: DecorationImage(
-                                  image: AssetImage("assets/images/imageplaceholder.png")
-                              )
-                          ),
+                                  image: AssetImage(
+                                      "assets/images/imageplaceholder.png"),fit: BoxFit.cover)),
                         ),
                       ),
                     ),

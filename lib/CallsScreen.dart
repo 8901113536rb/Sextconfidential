@@ -2,6 +2,7 @@ import 'package:appinio_video_player/appinio_video_player.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:sextconfidential/utils/Appcolors.dart';
@@ -23,11 +24,18 @@ class CallsScreenState extends State<CallsScreen> {
   String dropdownvalue=StringConstants.allcalls;
   String secondfdropdownvalue="2023";
   final GlobalKey<ScaffoldState> _key = GlobalKey(); // Create a key
-
+  ScrollController scrollController=ScrollController();
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      scrollController.animateTo(
+        scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 100),
+        curve: Curves.easeOut,
+      );
+    });
   }
 
   @override
@@ -107,6 +115,7 @@ class CallsScreenState extends State<CallsScreen> {
                 child: AnimationLimiter(
               child: ListView.builder(
                 itemCount: 10,
+                controller: scrollController,
                 itemBuilder: (BuildContext context, int index) {
                   return AnimationConfiguration.staggeredList(
                     position: index,

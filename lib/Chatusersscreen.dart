@@ -37,6 +37,7 @@ class ChatusersscreenState extends State<Chatusersscreen> {
     StringConstants.unanswered,
   ];
   Chatuserpojo? chatuserpojo;
+  Chatuserpojo? searchchatuserpojo;
   String chatselectedtype = StringConstants.mostrecent;
   final GlobalKey<ScaffoldState> _key = GlobalKey(); // Create a key
   late String token;
@@ -79,7 +80,7 @@ class ChatusersscreenState extends State<Chatusersscreen> {
             ),
             Container(
               child: TextFormField(
-                cursorColor: Appcolors().loginhintcolor,
+                cursorColor: Appcolors().gradientcolorfirst,
                 style: TextStyle(
                   decoration: TextDecoration.none,
                   fontWeight: FontWeight.w300,
@@ -129,7 +130,10 @@ class ChatusersscreenState extends State<Chatusersscreen> {
                     color: Appcolors().loginhintcolor,
                   ),
                 ),
-                onChanged: (value) {},
+                onChanged: (value) {
+                  print("On change");
+                  // onSearchTextChanged(value);
+                },
               ),
             ),
             SizedBox(
@@ -165,7 +169,9 @@ class ChatusersscreenState extends State<Chatusersscreen> {
             chatuserpojo!.data!.isNotEmpty?
             Expanded(
                 child: AnimationLimiter(
-              child: ListView.builder(
+              child:
+              searchcontroller.text.isEmpty?
+              ListView.builder(
                 itemCount: chatuserpojo!.data!.length,
                 itemBuilder: (BuildContext context, int index) {
                   return AnimationConfiguration.staggeredList(
@@ -299,7 +305,7 @@ class ChatusersscreenState extends State<Chatusersscreen> {
                                                 Container(
                                                   width: 60.w,
                                                   child: Text(
-                                                    chatuserpojo!.data!.elementAt(index).messageType.toString()=="jpg"?"Image":chatuserpojo!.data!.elementAt(index).messageType.toString()=="mp4"?"Video":chatuserpojo!.data!.elementAt(index).lastmessage.toString(),
+                                                    chatuserpojo!.data!.elementAt(index).messageType.toString()=="jpg"?"Image":chatuserpojo!.data!.elementAt(index).messageType.toString()=="mp4"?"Video":chatuserpojo!.data!.elementAt(index).messageType.toString()=="mp3"?"Audio Message":chatuserpojo!.data!.elementAt(index).lastmessage.toString(),
                                                     style: TextStyle(
                                                         fontSize: 12.sp,
                                                         // fontFamily: "PulpDisplay",
@@ -360,6 +366,202 @@ class ChatusersscreenState extends State<Chatusersscreen> {
                     ),
                   );
                 },
+              ):
+              ListView.builder(
+                itemCount: searchchatuserpojo!.data!.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return AnimationConfiguration.staggeredList(
+                    position: index,
+                    duration: const Duration(milliseconds: 300),
+                    child: SlideAnimation(
+                      verticalOffset: 50.0,
+                      child: FadeInAnimation(
+                        child: Column(
+                          children: [
+                            Material(
+                              borderRadius: BorderRadius.circular(2.h),
+                              clipBehavior: Clip.hardEdge,
+                              color:Appcolors().backgroundcolor,
+                              child: InkWell(
+                                hoverColor: Appcolors().bottomnavbgcolor,
+                                splashColor: Appcolors().bottomnavbgcolor,
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              ConvertsationScreen(userid: searchchatuserpojo!.data!.elementAt(index).userid.toString(),userimage: searchchatuserpojo!.data!.elementAt(index).useriimage.toString(),username: searchchatuserpojo!.data!.elementAt(index).useriname.toString(),)));
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.all(1.h),
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: Appcolors().chatuserborder),
+                                      borderRadius: BorderRadius.circular(2.h)),
+                                  width: double.infinity,
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        width: 14.w,
+                                        height: 7.h,
+                                        child: CachedNetworkImage(
+                                          imageUrl: searchchatuserpojo!.data!.elementAt(index).useriimage.toString(),
+                                          imageBuilder:
+                                              (context, imageProvider) =>
+                                              Container(
+                                                width: 14.w,
+                                                alignment: Alignment.centerLeft,
+                                                height: 7.h,
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  image: DecorationImage(
+                                                    image: imageProvider,
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                ),
+                                              ),
+                                          placeholder: (context, url) =>
+                                              Container(
+                                                child: Center(
+                                                  child: CircularProgressIndicator(
+                                                    strokeWidth: 2,
+                                                    color:
+                                                    Appcolors().bottomnavbgcolor,
+                                                  ),
+                                                ),
+                                              ),
+                                          errorWidget: (context, url, error) => Container(
+                                            decoration: BoxDecoration(
+                                                image: DecorationImage(
+                                                    image: AssetImage("assets/images/userprofile.png")
+                                                )
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 5.w,
+                                      ),
+                                      Container(
+                                        width: 72.w,
+                                        child: Column(
+                                          mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                          children: [
+                                            SizedBox(
+                                              height: 1.h,
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Container(
+                                                  width: 30.w,
+                                                  child: Text(
+                                                    searchchatuserpojo!.data!.elementAt(index).useriname.toString(),
+                                                    style: TextStyle(
+                                                        fontSize: 12.sp,
+                                                        fontFamily: "PulpDisplay",
+                                                        fontWeight:
+                                                        FontWeight.w400,
+                                                        overflow:
+                                                        TextOverflow.ellipsis,
+                                                        color: Appcolors()
+                                                            .whitecolor),
+                                                  ),
+                                                ),
+                                                GradientText(
+                                                  searchchatuserpojo!.data!.elementAt(index).lastmessagetime.toString().substring(13,22),
+                                                  style: TextStyle(
+                                                      fontSize: 10.sp,
+                                                      fontFamily: "PulpDisplay",
+                                                      fontWeight:
+                                                      FontWeight.w400),
+                                                  gradientType:
+                                                  GradientType.linear,
+                                                  gradientDirection:
+                                                  GradientDirection.ttb,
+                                                  radius: 6,
+                                                  colors: [
+                                                    Appcolors()
+                                                        .gradientcolorfirst,
+                                                    Appcolors()
+                                                        .gradientcolorsecond,
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Container(
+                                                  width: 60.w,
+                                                  child: Text(
+                                                    searchchatuserpojo!.data!.elementAt(index).messageType.toString()=="jpg"?"Image":searchchatuserpojo!.data!.elementAt(index).messageType.toString()=="mp4"?"Video":searchchatuserpojo!.data!.elementAt(index).lastmessage.toString(),
+                                                    style: TextStyle(
+                                                        fontSize: 12.sp,
+                                                        // fontFamily: "PulpDisplay",
+                                                        fontWeight:
+                                                        FontWeight.w400,
+                                                        overflow:
+                                                        TextOverflow.ellipsis,
+                                                        color: Appcolors()
+                                                            .loginhintcolor),
+                                                  ),
+                                                ),
+                                                searchchatuserpojo!.data!.elementAt(index).messagecount.toString()!="0"?
+                                                Container(
+                                                  padding: EdgeInsets.all(1.h),
+                                                  decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    gradient: LinearGradient(
+                                                        colors: [
+                                                          Appcolors()
+                                                              .gradientcolorfirst,
+                                                          Appcolors()
+                                                              .gradientcolorsecond,
+                                                        ],
+                                                        begin:
+                                                        Alignment.topCenter,
+                                                        end: Alignment
+                                                            .bottomCenter,
+                                                        stops: [0.0, 1.0],
+                                                        tileMode: TileMode.clamp),
+                                                  ),
+                                                  child: Text(
+                                                    searchchatuserpojo!.data!.elementAt(index).messagecount.toString(),
+                                                    style: TextStyle(
+                                                        fontSize: 10.sp,
+                                                        fontFamily: "PulpDisplay",
+                                                        fontWeight:
+                                                        FontWeight.w400,
+                                                        color: Appcolors()
+                                                            .blackcolor),
+                                                  ),
+                                                ):SizedBox()
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 1.5.h,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
               ),
             ))
             :
@@ -377,6 +579,11 @@ class ChatusersscreenState extends State<Chatusersscreen> {
       token = sharedPreferences.getString("token")!;
     });
     print("Token value:-" + token.toString());
+    var dateUtc = DateTime.now().toUtc();
+    print("dateUtc: $dateUtc");
+    var dateLocal = dateUtc.toLocal();
+    print("local: $dateLocal");
+
     chatuserlisting(2);
   }
 
@@ -416,5 +623,18 @@ class ChatusersscreenState extends State<Chatusersscreen> {
           jsonResponse["message"].toString(), context);
     }
   }
+  // onSearchTextChanged(String text) async {
+  //   // searchcontroller.clear();
+  //   if (text.isEmpty) {
+  //     setState(() {});
+  //     return;
+  //   }
+  //   setState(() {
+  //     chatuserpojo!.data!.forEach((userDetail) {
+  //       if (chatuserpojo!.data!.contains(text))
+  //         searchchatuserpojo!.data!.add(userDetail);
+  //     });
+  //   });
+  // }
 
 }

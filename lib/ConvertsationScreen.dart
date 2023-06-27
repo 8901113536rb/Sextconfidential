@@ -6,6 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
@@ -58,7 +59,8 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
   Chatmessagespojo? chatmessagespojo;
   GlobalKey<State> key = GlobalKey();
   Timer? _timer;
-  final ScrollController _controller = ScrollController();
+  bool condition = false;
+  ScrollController _controller = ScrollController();
   String? chatcurrentdate;
   @override
   void initState() {
@@ -71,10 +73,12 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
+        _timer!.cancel();
         if (emojiShowing == true) {
           setState(() {
             emojiShowing = false;
             showuploaddialog = false;
+            micstatus = false;
           });
           return false;
         } else {
@@ -88,6 +92,7 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
           backgroundColor: Appcolors().bottomnavbgcolor,
           leading: GestureDetector(
             onTap: () {
+              _timer!.cancel();
               Navigator.pop(context);
               print("Click back");
             },
@@ -193,19 +198,20 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
             child: Stack(
               alignment: Alignment.center,
               children: [
-                SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      responsestatus
-                          ? chatmessagespojo!.data!.isNotEmpty
-                              ? AnimationLimiter(
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    responsestatus
+                        ? chatmessagespojo!.data!.isNotEmpty||chatmessagespojo!.data==null
+                            ? Expanded(
+                                child: AnimationLimiter(
                                   child: ListView.builder(
                                     // reverse: true,
                                     controller: _controller,
                                     scrollDirection: Axis.vertical,
                                     shrinkWrap: true,
-                                    physics: NeverScrollableScrollPhysics(),
+                                    // physics: NeverScrollableScrollPhysics(),
                                     itemCount: chatmessagespojo!.data!.length,
                                     itemBuilder:
                                         (BuildContext context, int index) {
@@ -217,12 +223,12 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
                                         child: SlideAnimation(
                                           verticalOffset: 50.0,
                                           child: FadeInAnimation(
-                                            child: 
-                                            InkWell(
+                                            child: InkWell(
                                               onTap: () {
                                                 setState(() {
                                                   showuploaddialog = false;
                                                   emojiShowing = false;
+                                                  micstatus = false;
                                                   FocusManager
                                                       .instance.primaryFocus
                                                       ?.unfocus();
@@ -241,24 +247,35 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
                                                           MainAxisAlignment
                                                               .start,
                                                       children: [
-                                                        chatcurrentdate!=chatmessagespojo!.data!
-                                                            .elementAt(
-                                                            index)!
-                                                            .createdAt
-                                                            .toString().substring(0,13)?
-                                                        daydivider(chatmessagespojo!.data!
-                                                            .elementAt(
-                                                            index)!
-                                                            .createdAt
-                                                            .toString().substring(0,13)):SizedBox(),
+                                                        chatcurrentdate !=
+                                                                chatmessagespojo!
+                                                                    .data!
+                                                                    .elementAt(
+                                                                        index)!
+                                                                    .createdAt
+                                                                    .toString()
+                                                                    .substring(
+                                                                        0, 13)
+                                                            ? daydivider(
+                                                                chatmessagespojo!
+                                                                    .data!
+                                                                    .elementAt(
+                                                                        index)!
+                                                                    .createdAt
+                                                                    .toString()
+                                                                    .substring(
+                                                                        0, 13))
+                                                            : SizedBox(),
                                                         chatmessagespojo!.data!
                                                                     .elementAt(
                                                                         index)!
                                                                     .fromId
-                                                                    .toString() ==
+                                                                    .toString() !=
                                                                 token
-                                                            ? sendermessage(index)
-                                                            : receivermessage(index),
+                                                            ? sendermessage(
+                                                                index)
+                                                            : receivermessage(
+                                                                index),
                                                         // voicemessage()
                                                       ],
                                                     ),
@@ -274,20 +291,24 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
                                       );
                                     },
                                   ),
-                                )
-                              : Center(
-                                  child: Helpingwidgets.emptydatawithoutdivider(
-                                      "No Message!"))
-                          : SizedBox(),
-                      SizedBox(
-                        height: 10.h,
-                      )
-                    ],
-                  ),
+                                ),
+                              )
+                            : Center(
+                                child: Helpingwidgets.emptydatawithoutdivider(
+                                    "No Message!"))
+                        : SizedBox(),
+                    SizedBox(
+                      height: 7.h,
+                    )
+                  ],
                 ),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
+                    Offstage(
+                      offstage: !micstatus,
+                      child: miccontainer(),
+                    ),
                     showuploaddialog ? uploadcontainer() : SizedBox(),
                     Container(
                         margin: EdgeInsets.only(left: 2.w, right: 2.w),
@@ -310,164 +331,141 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
-                              !micstatus
-                                  ? Container(
-                                      height: 4.h,
-                                      width: 80.w,
-                                      child: Row(
-                                        children: [
-                                          InkWell(
-                                            onTap: () {
-                                              setState(() {
-                                                FocusManager
-                                                    .instance.primaryFocus
-                                                    ?.unfocus();
-                                                emojiShowing = !emojiShowing;
-                                              });
-                                            },
-                                            child: SvgPicture.asset(
-                                              "assets/images/emojiimg.svg",
-                                              height: 3.h,
-                                            ),
-                                          ),
-                                          Expanded(
-                                            child: TextFormField(
-                                              maxLines: null,
-                                              keyboardType:
-                                                  TextInputType.multiline,
-                                              cursorColor:
-                                                  Appcolors().loginhintcolor,
-                                              style: TextStyle(
-                                                color:
-                                                    Appcolors().loginhintcolor,
-                                                fontSize: 12.sp,
-                                              ),
-                                              controller: messagecontroller,
-                                              focusNode: messsagefocus,
-                                              decoration: InputDecoration(
-                                                isDense: true,
-                                                border: InputBorder.none,
-                                                // focusedBorder: InputBorder.none,
-                                                filled: true,
-                                                fillColor: Appcolors()
-                                                    .bottomnavbgcolor,
-                                                hintText: StringConstants.type,
-                                                hintStyle: TextStyle(
-                                                  decoration:
-                                                      TextDecoration.none,
-                                                  fontWeight: FontWeight.w400,
-                                                  fontSize: 12.sp,
-                                                  // fontFamily: 'PulpDisplay',
-                                                  color: Appcolors()
-                                                      .loginhintcolor,
-                                                ),
-                                              ),
-                                              onTap: () {
-                                                setState(() {
-                                                  emojiShowing = false;
-                                                  showuploaddialog = false;
-                                                });
-                                              },
-                                              onChanged: (value) {
-                                                setState(() {});
-                                              },
-                                              // validator: (value) {
-                                              //   if (value!.isEmpty) {
-                                              //     return "Please enter Message";
-                                              //   } else {
-                                              //     return null;
-                                              //   }
-                                              // },
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: 5.w,
-                                          ),
-                                          GestureDetector(
-                                              onTap: () {
-                                                setState(() {
-                                                  if (showuploaddialog) {
-                                                    showuploaddialog = false;
-                                                  } else {
-                                                    showuploaddialog = true;
-                                                    emojiShowing = false;
-                                                  }
-                                                });
-                                              },
-                                              child: SvgPicture.asset(
-                                                "assets/images/cameraicon.svg",
-                                                height: 2.5.h,
-                                                color: showuploaddialog
-                                                    ? Appcolors()
-                                                        .gradientcolorsecond
-                                                    : Appcolors().whitecolor,
-                                              )),
-                                          SizedBox(
-                                            width: 5.w,
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                  : Container(
-                                      height: 4.h,
-                                      width: 80.w,
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            Icons.mic,
-                                            color: Colors.red,
-                                            size: 7.w,
-                                          ),
-                                          Container(
-                                            margin: EdgeInsets.only(left: 2.w),
-                                            child: Text(
-                                              recordingTime,
-                                              style: TextStyle(
-                                                  fontSize: 15.sp,
-                                                  // fontFamily: "PulpDisplay",
-                                                  fontWeight: FontWeight.w400,
-                                                  color: Appcolors()
-                                                      .loginhintcolor),
-                                              textAlign: TextAlign.center,
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: 10.w,
-                                          ),
-                                          GestureDetector(
-                                              onTap: () {
-                                                setState(() {
-                                                  recordingTime = "0:0";
-                                                  micstatus = false;
-                                                  // stopRecord();
-                                                });
-                                              },
-                                              child: SvgPicture.asset(
-                                                  "assets/images/deleteicon.svg"))
-                                        ],
+                              // !micstatus?
+                              Container(
+                                height: 4.h,
+                                width: 80.w,
+                                child: Row(
+                                  children: [
+                                    InkWell(
+                                      onTap: () {
+                                        setState(() {
+                                          FocusManager.instance.primaryFocus
+                                              ?.unfocus();
+                                          emojiShowing = !emojiShowing;
+                                        });
+                                      },
+                                      child: SvgPicture.asset(
+                                        "assets/images/emojiimg.svg",
+                                        height: 3.h,
                                       ),
                                     ),
-                              // messagecontroller.text.isEmpty
-                              //     ? Listener(
-                              //         onPointerDown: (details) {
-                              //           setState(() {
-                              //             micstatus=true;
-                              //           });
-                              //           print("pointer details down:-" +
-                              //               details.down.toString());
-                              //         },
-                              //         onPointerUp: (details) {
-                              //           setState(() {
-                              //             micstatus=false;
-                              //           });
-                              //           print("pointer details up:-" +
-                              //               details.down.toString());
-                              //         },
-                              //         child:
+                                    Expanded(
+                                      child: TextFormField(
+                                        maxLines: null,
+                                        keyboardType: TextInputType.multiline,
+                                        cursorColor: Appcolors().loginhintcolor,
+                                        style: TextStyle(
+                                          color: Appcolors().loginhintcolor,
+                                          fontSize: 12.sp,
+                                        ),
+                                        controller: messagecontroller,
+                                        focusNode: messsagefocus,
+                                        decoration: InputDecoration(
+                                          isDense: true,
+                                          border: InputBorder.none,
+                                          // focusedBorder: InputBorder.none,
+                                          filled: true,
+                                          fillColor:
+                                              Appcolors().bottomnavbgcolor,
+                                          hintText: StringConstants.type,
+                                          hintStyle: TextStyle(
+                                            decoration: TextDecoration.none,
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 12.sp,
+                                            // fontFamily: 'PulpDisplay',
+                                            color: Appcolors().loginhintcolor,
+                                          ),
+                                        ),
+                                        onTap: () {
+                                          setState(() {
+                                            emojiShowing = false;
+                                            showuploaddialog = false;
+                                          });
+                                        },
+                                        onChanged: (value) {
+                                          setState(() {});
+                                        },
+                                        // validator: (value) {
+                                        //   if (value!.isEmpty) {
+                                        //     return "Please enter Message";
+                                        //   } else {
+                                        //     return null;
+                                        //   }
+                                        // },
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 5.w,
+                                    ),
+                                    GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            if (showuploaddialog) {
+                                              showuploaddialog = false;
+                                            } else {
+                                              showuploaddialog = true;
+                                              emojiShowing = false;
+                                            }
+                                          });
+                                        },
+                                        child: SvgPicture.asset(
+                                          "assets/images/cameraicon.svg",
+                                          height: 2.5.h,
+                                          color: showuploaddialog
+                                              ? Appcolors().gradientcolorsecond
+                                              : Appcolors().whitecolor,
+                                        )),
+                                    SizedBox(
+                                      width: 5.w,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              // : Container(
+                              //     height: 4.h,
+                              //     width: 80.w,
+                              //     child: Row(
+                              //       children: [
+                              //         Icon(
+                              //           Icons.mic,
+                              //           color: Colors.red,
+                              //           size: 7.w,
+                              //         ),
+                              //         Container(
+                              //           margin: EdgeInsets.only(left: 2.w),
+                              //           child: Text(
+                              //             recordingTime,
+                              //             style: TextStyle(
+                              //                 fontSize: 15.sp,
+                              //                 // fontFamily: "PulpDisplay",
+                              //                 fontWeight: FontWeight.w400,
+                              //                 color: Appcolors()
+                              //                     .loginhintcolor),
+                              //             textAlign: TextAlign.center,
+                              //           ),
+                              //         ),
+                              //         SizedBox(
+                              //           width: 10.w,
+                              //         ),
+                              //         GestureDetector(
+                              //             onTap: () {
+                              //               setState(() {
+                              //                 recordingTime = "0:0";
+                              //                 micstatus = false;
+                              //                 // stopRecord();
+                              //               });
+                              //             },
+                              //             child: SvgPicture.asset(
+                              //                 "assets/images/deleteicon.svg"))
+                              //       ],
+                              //     ),
+                              //   ),
                               !micstatus && messagecontroller.text.isEmpty
                                   ? GestureDetector(
                                       onTap: () async {
                                         setState(() {
+                                          showuploaddialog = false;
                                           micstatus = true;
                                           // startRecord();
                                         });
@@ -480,7 +478,19 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
                                   : GestureDetector(
                                       onTap: () async {
                                         setState(() {
-                                          sendmessage();
+                                          WidgetsBinding.instance
+                                              .addPostFrameCallback((_) {
+                                            if (_controller.hasClients) {
+                                              _controller.jumpTo(_controller
+                                                  .position.maxScrollExtent);
+                                            }
+                                          });
+                                          if (messagecontroller.text
+                                              .toString()
+                                              .trim()
+                                              .isNotEmpty) {
+                                            sendmessage();
+                                          }
                                           recordingTime = "0:0";
                                           micstatus = false;
                                           // stopRecord();
@@ -525,7 +535,7 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
                                   Appcolors().backgroundcolor,
                               skinToneIndicatorColor: Colors.grey,
                               enableSkinTones: true,
-                              showRecentsTab: true,
+                              // showRecentsTab: true,
                               recentsLimit: 28,
                               replaceEmojiOnLimitExceed: false,
                               noRecents: const Text(
@@ -661,13 +671,87 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
     );
   }
 
+  Widget miccontainer() {
+    return Container(
+      margin: EdgeInsets.only(left: 2.w, right: 2.w, bottom: 1.h),
+      alignment: Alignment.center,
+      height: 10.h,
+      decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(
+              "assets/images/btnbackgroundgradient.png",
+            ),
+            fit: BoxFit.fill,
+          ),
+          borderRadius: BorderRadius.circular(15)),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: SvgPicture.asset(
+              "assets/images/deleteicon.svg",
+              height: 3.h,
+              width: 3.w,
+              color: Appcolors().bottomnavbgcolor,
+            ),
+          ),
+          GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: CircleAvatar(
+                radius: 4.5.h,
+                backgroundColor: Colors.black,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SvgPicture.asset(
+                      "assets/images/micicon.svg",
+                      height: 2.5.h,
+                      color: Appcolors().gradientcolorfirst,
+                    ),
+                    SizedBox(
+                      height: 0.5.h,
+                    ),
+                    Text(
+                      "00:00",
+                      style: TextStyle(
+                          fontSize: 12.sp,
+                          // fontFamily: "PulpDisplay",
+                          fontWeight: FontWeight.w400,
+                          color: Appcolors().gradientcolorfirst),
+                    ),
+                  ],
+                ),
+              )),
+          GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: SvgPicture.asset(
+              "assets/images/sendicon.svg",
+              height: 3.h,
+              width: 3.w,
+              color: Appcolors().bottomnavbgcolor,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget receivermessage(int index) {
     // setState((){
-      chatcurrentdate=chatmessagespojo!.data!
-          .elementAt(
-          index)!
-          .createdAt
-          .toString().substring(0,13);
+    chatcurrentdate = chatmessagespojo!.data!
+        .elementAt(index)!
+        .createdAt
+        .toString()
+        .substring(0, 13);
     // });
     return Column(
       children: [
@@ -732,12 +816,16 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         InkWell(
-                          onTap:(){
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => Videoscreen(videopath: chatmessagespojo!.data!
-                              .elementAt(index)
-                              .message
-                              .toString())));
-    },
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Videoscreen(
+                                        videopath: chatmessagespojo!.data!
+                                            .elementAt(index)
+                                            .message
+                                            .toString())));
+                          },
                           child: Container(
                             height: 15.h,
                             width: 40.w,
@@ -774,7 +862,9 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
                         ),
                       ],
                     ),
-                  )
+                  ):
+        chatmessagespojo!.data!.elementAt(index)!.messageType.toString()=="mp3"?
+        voicemessage(chatmessagespojo!.data!.elementAt(index)!.message.toString())
                 : Container(
                     margin: EdgeInsets.only(left: 2.w, right: 2.w),
                     width: double.infinity,
@@ -826,9 +916,11 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
                                 height: 15.h,
                                 width: 40.w,
                                 decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
                                     image: DecorationImage(
                                         image: AssetImage(
-                                            "assets/images/imageplaceholder.png"))),
+                                            "assets/images/imageplaceholder.png"),
+                                        fit: BoxFit.cover)),
                               ),
                             ),
                           ),
@@ -859,11 +951,11 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
 
   Widget sendermessage(int index) {
     // setState((){
-      chatcurrentdate=chatmessagespojo!.data!
-          .elementAt(
-          index)!
-          .createdAt
-          .toString().substring(0,13);
+    chatcurrentdate = chatmessagespojo!.data!
+        .elementAt(index)!
+        .createdAt
+        .toString()
+        .substring(0, 13);
     // });
     return Column(
       children: [
@@ -949,7 +1041,9 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
                               ),
                             ],
                           ),
-                        )
+                        ):
+                  chatmessagespojo!.data!.elementAt(index)!.messageType.toString()=="mp3"?
+                  voicemessage(chatmessagespojo!.data!.elementAt(index)!.message.toString())
                       : Container(
                           margin: EdgeInsets.only(left: 6.w),
                           padding: EdgeInsets.only(
@@ -1158,7 +1252,7 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
     return null;
   }
 
-  Widget voicemessage() {
+  Widget voicemessage(String audiosrc) {
     return Container(
       alignment: Alignment.centerRight,
       // width: double.infinity,
@@ -1167,8 +1261,7 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
         // meFgColor: Appcolors().bottomnavbgcolor,
         meBgColor: Appcolors().profileboxcolor,
         contactFgColor: Appcolors().profileboxcolor,
-        audioSrc:
-            "https://d6cp9b00-a.akamaihd.net/downloads/ringtones/files/mp3/attentionringtonefazmusicnetringtone-39381.mp3",
+        audioSrc:audiosrc,
         // audioSrc: "https://samplelib.com/lib/preview/mp3/sample-9s.mp3",
         played: true, // To show played badge or not.
         me: true, // Set message side.
@@ -1181,6 +1274,7 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
   void dispose() {
     messagecontroller.dispose();
     messsagefocus.dispose();
+    _timer!.cancel();
     super.dispose();
   }
 
@@ -1193,59 +1287,6 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
     }
     return true;
   }
-
-  // void startRecord() async {
-  //   bool hasPermission = await checkPermission();
-  //   if (hasPermission) {
-  //     statusText = "Recording...";
-  //     recordFilePath = await getFilePath();
-  //     isComplete = false;
-  //     setState(() {
-  //       print("Recording start");
-  //       recordTime();
-  //       isRecording = true;
-  //     });
-  //     RecordMp3.instance.start(recordFilePath!, (type) {
-  //       statusText = "Record error--->$type";
-  //     });
-  //     print("Recording path:-" + recordFilePath.toString());
-  //   } else {
-  //     statusText = "No microphone permission";
-  //   }
-  //   setState(() {});
-  // }
-  // void pauseRecord() {
-  //   if (RecordMp3.instance.status == RecordStatus.PAUSE) {
-  //     bool s = RecordMp3.instance.resume();
-  //     if (s) {
-  //       statusText = "Recording...";
-  //       setState(() {});
-  //     }
-  //   } else {
-  //     bool s = RecordMp3.instance.pause();
-  //     if (s) {
-  //       statusText = "Recording pause...";
-  //       setState(() {});
-  //     }
-  //   }
-  // }
-  // void stopRecord() {
-  //   bool s = RecordMp3.instance.stop();
-  //   if (s) {
-  //     statusText = "Record complete";
-  //     isComplete = true;
-  //     setState(() {
-  //       isRecording = false;
-  //     });
-  //   }
-  // }
-  // void resumeRecord() {
-  //   bool s = RecordMp3.instance.resume();
-  //   if (s) {
-  //     statusText = "Recording...";
-  //     setState(() {});
-  //   }
-  // }
 
   String? recordFilePath;
 
@@ -1293,7 +1334,9 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
       username = sharedPreferences.getString("stagename");
     });
     print("Token value:-" + token.toString());
-    _timer = new Timer(const Duration(milliseconds: 100), () {
+    chatconversationlisting();
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      print(DateTime.now());
       setState(() {
         chatconversationlisting();
         print("Chat conversin api call");
@@ -1302,7 +1345,8 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
   }
 
   Future<void> chatconversationlisting() async {
-    Helpingwidgets.showLoadingDialog(context, key);
+
+    // Helpingwidgets.showLoadingDialog(context, key);
     Map data = {
       "token": token,
       "toid": widget.userid.toString(),
@@ -1318,20 +1362,28 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
         setState(() {
           responsestatus = true;
         });
-        Navigator.pop(context);
+        // Navigator.pop(context);
         Helpingwidgets.failedsnackbar(
             jsonResponse["message"].toString(), context);
         Navigator.pop(context);
       } else {
         setState(() {
           responsestatus = true;
+          print("Message:-" + jsonResponse["message"].toString());
+          chatmessagespojo = Chatmessagespojo.fromJson(jsonResponse);
+          if (_controller.position.pixels ==
+              _controller.position.minScrollExtent ||
+              _controller.position.pixels ==
+                  _controller.position.maxScrollExtent) {
+            _controller.jumpTo(_controller.position.maxScrollExtent);
+            _controller!.animateTo(_controller.position.maxScrollExtent,
+                duration: Duration(milliseconds: 1), curve: Curves.easeOut);
+          }
         });
-        print("Message:-" + jsonResponse["message"].toString());
-        chatmessagespojo = Chatmessagespojo.fromJson(jsonResponse);
-        Navigator.pop(context);
+
       }
     } else {
-      Navigator.pop(context);
+      // Navigator.pop(context);
       setState(() {
         responsestatus = true;
       });
@@ -1341,7 +1393,7 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
   }
 
   Future<void> sendmessage() async {
-    Helpingwidgets.showLoadingDialog(context, key);
+    // Helpingwidgets.showLoadingDialog(context, key);
     var request = http.MultipartRequest(
       'post',
       Uri.parse(Networks.baseurl + Networks.chatmessagesend),
@@ -1377,27 +1429,24 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
             imageFile = null;
           });
           messagecontroller.clear();
-          Helpingwidgets.successsnackbar(
-              jsonData["message"].toString(), context);
+          // Helpingwidgets.successsnackbar(
+          //     jsonData["message"].toString(), context);
           print("Response:${jsonData["message"]}");
-          Navigator.pop(context);
+          // Navigator.pop(context);
         }
       } else {
         Helpingwidgets.failedsnackbar(jsonData["message"].toString(), context);
         print("Response:${jsonData["message"]}");
-        Navigator.pop(context);
+        // Navigator.pop(context);
       }
     });
   }
-  void _scrollDown() {
-    if (_controller.hasClients) {
-      final position = _controller.position.maxScrollExtent;
-      _controller.animateTo(
-        position,
-        duration: Duration(seconds: 3),
-        curve: Curves.easeOut,
-      );
+
+  Future scrollToBottom(ScrollController scrollController) async {
+    while (scrollController.position.pixels !=
+        scrollController.position.maxScrollExtent) {
+      scrollController.jumpTo(scrollController.position.maxScrollExtent);
+      await SchedulerBinding.instance!.endOfFrame;
     }
-    // _controller!.jumpTo(_controller.position.maxScrollExtent);
   }
 }
