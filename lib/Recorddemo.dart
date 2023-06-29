@@ -1,194 +1,101 @@
-// import 'dart:io';
-// import 'package:audioplayers/audioplayers.dart';
-// import 'package:flutter/material.dart';
-// import 'dart:async';
-// import 'package:path_provider/path_provider.dart';
-// import 'package:record_mp3/record_mp3.dart';
-// import 'package:permission_handler/permission_handler.dart';
-//
-//
-// class Recorddemo extends StatefulWidget {
-//   @override
-//   RecorddemoState createState() => RecorddemoState();
-// }
-//
-// class RecorddemoState extends State<Recorddemo> {
-//   String statusText = "";
-//   bool isComplete = false;
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       home: Scaffold(
-//         appBar: AppBar(
-//           title: const Text('Plugin example app'),
-//         ),
-//         body: Column(children: [
-//           Row(
-//             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//             children: <Widget>[
-//               Expanded(
-//                 child: GestureDetector(
-//                   child: Container(
-//                     height: 48.0,
-//                     decoration: BoxDecoration(color: Colors.red.shade300),
-//                     child: Center(
-//                       child: Text(
-//                         'start',
-//                         style: TextStyle(color: Colors.white),
-//                       ),
-//                     ),
-//                   ),
-//                   onTap: () async {
-//                     startRecord();
-//                   },
-//                 ),
-//               ),
-//               Expanded(
-//                 child: GestureDetector(
-//                   child: Container(
-//                     height: 48.0,
-//                     decoration: BoxDecoration(color: Colors.blue.shade300),
-//                     child: Center(
-//                       child: Text(
-//                         RecordMp3.instance.status == RecordStatus.PAUSE
-//                             ? 'resume'
-//                             : 'pause',
-//                         style: TextStyle(color: Colors.white),
-//                       ),
-//                     ),
-//                   ),
-//                   onTap: () {
-//                     pauseRecord();
-//                   },
-//                 ),
-//               ),
-//               Expanded(
-//                 child: GestureDetector(
-//                   child: Container(
-//                     height: 48.0,
-//                     decoration: BoxDecoration(color: Colors.green.shade300),
-//                     child: Center(
-//                       child: Text(
-//                         'stop',
-//                         style: TextStyle(color: Colors.white),
-//                       ),
-//                     ),
-//                   ),
-//                   onTap: () {
-//                     stopRecord();
-//                   },
-//                 ),
-//               ),
-//             ],
-//           ),
-//           Padding(
-//             padding: const EdgeInsets.only(top: 20.0),
-//             child: Text(
-//               statusText,
-//               style: TextStyle(color: Colors.red, fontSize: 20),
-//             ),
-//           ),
-//           GestureDetector(
-//             behavior: HitTestBehavior.opaque,
-//             onTap: () {
-//               play();
-//             },
-//             child: Container(
-//               margin: EdgeInsets.only(top: 30),
-//               alignment: AlignmentDirectional.center,
-//               width: 100,
-//               height: 50,
-//               child: isComplete && recordFilePath != null
-//                   ? Text(
-//                 "play",
-//                 style: TextStyle(color: Colors.red, fontSize: 20),
-//               )
-//                   : Container(),
-//             ),
-//           ),
-//         ]),
-//       ),
-//     );
-//   }
-//
-//   Future<bool> checkPermission() async {
-//     if (!await Permission.microphone.isGranted) {
-//       PermissionStatus status = await Permission.microphone.request();
-//       if (status != PermissionStatus.granted) {
-//         return false;
-//       }
-//     }
-//     return true;
-//   }
-//
-//   void startRecord() async {
-//     bool hasPermission = await checkPermission();
-//     if (hasPermission) {
-//       statusText = "Recording...";
-//       recordFilePath = await getFilePath();
-//       isComplete = false;
-//       RecordMp3.instance.start(recordFilePath!, (type) {
-//         statusText = "Record error--->$type";
-//         setState(() {});
-//       });
-//     } else {
-//       statusText = "No microphone permission";
-//     }
-//     setState(() {});
-//   }
-//
-//   void pauseRecord() {
-//     if (RecordMp3.instance.status == RecordStatus.PAUSE) {
-//       bool s = RecordMp3.instance.resume();
-//       if (s) {
-//         statusText = "Recording...";
-//         setState(() {});
-//       }
-//     } else {
-//       bool s = RecordMp3.instance.pause();
-//       if (s) {
-//         statusText = "Recording pause...";
-//         setState(() {});
-//       }
-//     }
-//   }
-//
-//   void stopRecord() {
-//     bool s = RecordMp3.instance.stop();
-//     if (s) {
-//       statusText = "Record complete";
-//       isComplete = true;
-//       setState(() {});
-//     }
-//   }
-//
-//   void resumeRecord() {
-//     bool s = RecordMp3.instance.resume();
-//     if (s) {
-//       statusText = "Recording...";
-//       setState(() {});
-//     }
-//   }
-//
-//   String? recordFilePath;
-//
-//   void play() {
-//     if (recordFilePath != null && File(recordFilePath!).existsSync()) {
-//       AudioPlayer audioPlayer = AudioPlayer();
-//       // audioPlayer.play(startRecord(), isLocal: true);
-//     }
-//   }
-//
-//   int i = 0;
-//
-//   Future<String> getFilePath() async {
-//     Directory storageDirectory = await getApplicationDocumentsDirectory();
-//     String sdPath = storageDirectory.path + "/record";
-//     var d = Directory(sdPath);
-//     if (!d.existsSync()) {
-//       d.createSync(recursive: true);
-//     }
-//     return sdPath + "/test_${i++}.mp3";
-//   }
-// }
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_sound/flutter_sound.dart';
+import 'package:permission_handler/permission_handler.dart';
+
+class Recorddemo extends StatefulWidget {
+  @override
+  RecordemoState createState() => RecordemoState();
+}
+
+class RecordemoState extends State<Recorddemo> {
+  FlutterSound flutterSound=FlutterSound();
+  final recorder = FlutterSoundRecorder();
+
+  @override
+  void initState() {
+    initRecorder();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    recorder.closeRecorder();
+    super.dispose();
+  }
+
+
+  Future initRecorder() async {
+    await Permission.microphone.request();
+    final status = await Permission.microphone.request();
+    if (status != PermissionStatus.granted) {
+      throw 'Permission not granted';
+    }
+    await recorder.openRecorder();
+    recorder.setSubscriptionDuration(const Duration(milliseconds: 500));
+  }
+
+  Future startRecord() async {
+    await recorder.startRecorder(toFile: "audio");
+  }
+
+  Future stopRecorder() async {
+    final filePath = await recorder.stopRecorder();
+    final file = File(filePath!);
+    print('Recorded file path: $filePath');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        backgroundColor: Colors.teal.shade700,
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              StreamBuilder<RecordingDisposition>(
+                builder: (context, snapshot) {
+                  final duration = snapshot.hasData
+                      ? snapshot.data!.duration
+                      : Duration.zero;
+
+                  String twoDigits(int n) => n.toString().padLeft(2, '0');
+
+                  final twoDigitMinutes =
+                  twoDigits(duration.inMinutes.remainder(60));
+                  final twoDigitSeconds =
+                  twoDigits(duration.inSeconds.remainder(60));
+
+                  return Text(
+                    '$twoDigitMinutes:$twoDigitSeconds',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 50,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  );
+                },
+                stream: recorder.onProgress,
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () async {
+                  if (recorder.isRecording) {
+                    await stopRecorder();
+                    setState(() {});
+                  } else {
+                    await startRecord();
+                    setState(() {});
+                  }
+                },
+                child: Icon(
+                  recorder.isRecording ? Icons.stop : Icons.mic,
+                  size: 100,
+                ),
+              ),
+            ],
+          ),
+        ));
+  }
+}

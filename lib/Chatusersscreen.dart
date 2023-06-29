@@ -231,7 +231,7 @@ class ChatusersscreenState extends State<Chatusersscreen> {
                                                   child: CircularProgressIndicator(
                                                     strokeWidth: 2,
                                                     color:
-                                                    Appcolors().bottomnavbgcolor,
+                                                    Appcolors().gradientcolorfirst,
                                                   ),
                                                 ),
                                               ),
@@ -427,7 +427,7 @@ class ChatusersscreenState extends State<Chatusersscreen> {
                                                   child: CircularProgressIndicator(
                                                     strokeWidth: 2,
                                                     color:
-                                                    Appcolors().bottomnavbgcolor,
+                                                    Appcolors().gradientcolorfirst,
                                                   ),
                                                 ),
                                               ),
@@ -583,7 +583,6 @@ class ChatusersscreenState extends State<Chatusersscreen> {
     print("dateUtc: $dateUtc");
     var dateLocal = dateUtc.toLocal();
     print("local: $dateLocal");
-
     chatuserlisting(2);
   }
 
@@ -623,18 +622,4 @@ class ChatusersscreenState extends State<Chatusersscreen> {
           jsonResponse["message"].toString(), context);
     }
   }
-  // onSearchTextChanged(String text) async {
-  //   // searchcontroller.clear();
-  //   if (text.isEmpty) {
-  //     setState(() {});
-  //     return;
-  //   }
-  //   setState(() {
-  //     chatuserpojo!.data!.forEach((userDetail) {
-  //       if (chatuserpojo!.data!.contains(text))
-  //         searchchatuserpojo!.data!.add(userDetail);
-  //     });
-  //   });
-  // }
-
 }

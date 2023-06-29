@@ -66,10 +66,12 @@ dependencies:
   firebase_core_dart: ^1.0.1
   chips_choice: ^3.0.0
   firebase_dynamic_links: ^5.3.3
+  permission_handler: ^10.3.0
+#  audio_wave_url_package: ^1.0.34
 #  flutter_sound_lite: ^8.5.0
 
-#  flutter_sound: ^9.2.13
-#  assets_audio_player: ^3.0.6
+  flutter_sound: ^9.2.13
+  assets_audio_player: ^3.0.6
 
 
 #  record_mp3: ^3.0.0

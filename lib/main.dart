@@ -47,19 +47,8 @@ class MyApp extends StatelessWidget {
             theme: ThemeData(
               primarySwatch: Colors.blue,
             ),
-            // home: CallsScreen(),
-            // home: FeedScreen(),
-            // home: UserprofileScreen(),
-            // home: ConvertsationScreen(),
-            // home: Deactivateaccscreen(),
-            // home: Feeddetailedpage(),
-            // home: PayoutInfoScreen(),
-            // home: Editprofilescreen(),
-            // home: Emojipicker(),
-            // home: ConvertsationScreen(),
             // home: Recorddemo(),
             home: MyHomePage(),
-            // Chatusersscreen(),
           );
         }
     );

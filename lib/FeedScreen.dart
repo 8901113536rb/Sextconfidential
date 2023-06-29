@@ -1312,7 +1312,7 @@ class FeedScreenState extends State<FeedScreen> {
                                                       child:
                                                           CircularProgressIndicator(
                                                         strokeWidth: 2,
-                                                        color: Appcolors().bottomnavbgcolor,
+                                                            color: Appcolors().gradientcolorfirst,
                                                       ),
                                                     ),
                                                   ),
@@ -1563,9 +1563,8 @@ class FeedScreenState extends State<FeedScreen> {
                                                     child:
                                                         CircularProgressIndicator(
                                                       strokeWidth: 2,
-                                                      color: Appcolors()
-                                                          .backgroundcolor,
-                                                    ),
+                                                          color: Appcolors().gradientcolorfirst,
+                                                        ),
                                                   ),
                                                 ),
                                           errorWidget: (context, url, error) => Container(
@@ -1963,9 +1962,8 @@ class FeedScreenState extends State<FeedScreen> {
                                                       child:
                                                           CircularProgressIndicator(
                                                         strokeWidth: 2,
-                                                        color: Appcolors()
-                                                            .backgroundcolor,
-                                                      ),
+                                                            color: Appcolors().gradientcolorfirst,
+                                                          ),
                                                     ),
                                                   ),
                                                   errorWidget: (context, url, error) => Container(
@@ -2279,9 +2277,8 @@ class FeedScreenState extends State<FeedScreen> {
                                                     child:
                                                         CircularProgressIndicator(
                                                       strokeWidth: 2,
-                                                      color: Appcolors()
-                                                          .bottomnavbgcolor,
-                                                    ),
+                                                          color: Appcolors().gradientcolorfirst,
+                                                        ),
                                                   ),
                                                 ),
                                                 // errorWidget: (context, url, error) => errorWidget,
@@ -2658,9 +2655,8 @@ class FeedScreenState extends State<FeedScreen> {
                                                       child:
                                                           CircularProgressIndicator(
                                                         strokeWidth: 2,
-                                                        color: Appcolors()
-                                                            .backgroundcolor,
-                                                      ),
+                                                            color: Appcolors().gradientcolorfirst,
+                                                          ),
                                                     ),
                                                   ),
                                                   // errorWidget: (context, url, error) => errorWidget,
@@ -2875,9 +2871,8 @@ class FeedScreenState extends State<FeedScreen> {
                                                     child:
                                                         CircularProgressIndicator(
                                                       strokeWidth: 2,
-                                                      color: Appcolors()
-                                                          .backgroundcolor,
-                                                    ),
+                                                          color: Appcolors().gradientcolorfirst,
+                                                        ),
                                                   ),
                                                 ),
                                                 // errorWidget: (context, url, error) => errorWidget,

@@ -597,9 +597,8 @@ class MassmessageScreenState extends State<MassmessageScreen> {
                                                                               CircularProgressIndicator(
                                                                             strokeWidth:
                                                                                 2,
-                                                                            color:
-                                                                                Appcolors().bottomnavbgcolor,
-                                                                          ),
+                                                                                color: Appcolors().gradientcolorfirst,
+                                                                              ),
                                                                         ),
                                                                       ),
                                                                           errorWidget: (context, url, error) => Container(
