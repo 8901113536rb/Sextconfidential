@@ -69,6 +69,7 @@ class StringConstants{
   static String mostsends="Most Sends";
   static String mostread="Most read";
   static String pinpost="Pin Post";
+  static String unpinpost="Unpin Post";
   static String copylink="Copy Link";
   static String mostearnings="Most Earnings";
   static String search="Search...";

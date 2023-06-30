@@ -11,7 +11,9 @@ import 'package:sextconfidential/utils/Appcolors.dart';
 import 'package:sextconfidential/utils/CustomMenu.dart';
 import 'package:sextconfidential/utils/Helpingwidgets.dart';
 import 'package:sextconfidential/utils/Networks.dart';
+import 'package:sextconfidential/utils/Scheduleddropdown.dart';
 import 'package:sextconfidential/utils/StringConstants.dart';
+import 'package:sextconfidential/utils/Unpindropdown.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:http/http.dart' as http;
@@ -52,6 +54,7 @@ class FeeddetailedpageState extends State<Feeddetailedpage> {
     // TODO: implement initState
     super.initState();
     getsharedpreference();
+    print("Type:-" + widget.posttype.toString());
     if (widget.type == "mp4") {
       startvideo();
     }
@@ -129,19 +132,17 @@ class FeeddetailedpageState extends State<Feeddetailedpage> {
                                     ),
                                   ),
                                 ),
-                          errorWidget: (context, url, error) => Container(
-                            width: 15.w,
-                            height: 4.5.h,
-                            decoration: BoxDecoration(
-                                borderRadius:
-                                BorderRadius.circular(2.h),
-                                shape:
-                                BoxShape.rectangle,
-                                image: DecorationImage(
-                                    image: AssetImage("assets/images/imageplaceholder.png"),fit: BoxFit.cover
-                                )
-                            ),
-                          ),
+                                errorWidget: (context, url, error) => Container(
+                                  width: 15.w,
+                                  height: 4.5.h,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(2.h),
+                                      shape: BoxShape.rectangle,
+                                      image: DecorationImage(
+                                          image: AssetImage(
+                                              "assets/images/imageplaceholder.png"),
+                                          fit: BoxFit.cover)),
+                                ),
                               ),
                       ),
                       Column(
@@ -173,66 +174,223 @@ class FeeddetailedpageState extends State<Feeddetailedpage> {
                   Row(
                     children: [
                       Offstage(
-                        offstage: widget.pinstatus!="true",
+                        offstage: widget.pinstatus != "true",
                         child: pinnedpost(),
                       ),
-                      DropdownButtonHideUnderline(
-                        child: DropdownButton2(
-                          customButton: Image.asset(
-                            "assets/images/menubtn.png",
-                            height: 4.h,
-                            fit: BoxFit.fill,
-                          ),
-                          items: [
-                            ...MenuItems.firstItems.map(
-                              (item) => DropdownMenuItem<CustomMenuItem>(
-                                value: item,
-                                child: MenuItems.buildItem(item),
-                              ),
-                            ),
-                            const DropdownMenuItem<Divider>(
-                                enabled: false, child: Divider()),
-                            ...MenuItems.secondItems.map(
-                              (item) => DropdownMenuItem<CustomMenuItem>(
-                                value: item,
-                                child: MenuItems.buildItem(item),
-                              ),
-                            ),
-                          ],
-                          onChanged: (value) {
-                            MenuItems.onChanged(context, value as CustomMenuItem);
-                            print("Value:-" + value.text);
-                            if (value.text == StringConstants.editpost) {
-                              setState(() {
-                                editpost = true;
-                              });
-                            } else if (value.text == StringConstants.deletepost) {
-                              showdeletealert(context);
-                            }else if (value.text == StringConstants.pinpost) {
-                              pinpost(widget.postid.toString(),true);
-                            }
-                          },
-                          dropdownStyleData: DropdownStyleData(
-                            width: 160,
-                            padding: const EdgeInsets.symmetric(vertical: 5),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Appcolors().bottomnavbgcolor,
-                            ),
-                            elevation: 8,
-                            offset: const Offset(0, 8),
-                          ),
-                          menuItemStyleData: MenuItemStyleData(
-                            customHeights: [
-                              ...List<double>.filled(MenuItems.firstItems.length, 35),
-                              8,
-                              ...List<double>.filled(
-                                  MenuItems.secondItems.length, 48),
-                            ],
-                            padding: const EdgeInsets.only(left: 16, right: 16),
-                          ),
+                      widget.posttype == 0
+                          ?
+                      widget.pinstatus == "true"?
+                      DropdownButton2(
+                        customButton: Image.asset(
+                          "assets/images/menubtn.png",
+                          height: 4.h,
+                          fit: BoxFit.fill,
                         ),
-                      ),
+                        items: [
+                          ...UnpinMenuItems.unpinfirstItems.map(
+                                (item) => DropdownMenuItem<UnpinCustomMenuItem>(
+                              value: item,
+                              child:
+                              UnpinMenuItems.buildItem(item),
+                            ),
+                          ),
+                          const DropdownMenuItem<Divider>(
+                              enabled: false,
+                              child: Divider(color: Colors.black,)),
+                          ...UnpinMenuItems.unpinsecondItems.map(
+                                (item) => DropdownMenuItem<
+                                UnpinCustomMenuItem>(
+                              value: item,
+                              child:
+                              UnpinMenuItems.buildItem(item),
+                            ),
+                          ),
+                        ],
+                        onChanged: (value) {
+                          UnpinMenuItems.onChanged(context,
+                              value as UnpinCustomMenuItem);
+                          print("Value:-" + value.text);
+                          if (value.text ==
+                              StringConstants.editpost) {
+                            setState(() {
+                              editpost = true;
+                            });
+                          } else if (value.text ==
+                              StringConstants.deletepost) {
+                            showdeletealert(
+                                context);
+                          } else if (value.text ==
+                              StringConstants.pinpost) {
+                            pinpost(
+                                widget.postid.toString(),true);
+                          }else if(value.text ==StringConstants.unpinpost){
+                            pinpost(
+                                widget.postid.toString(),
+                                false);
+                          }else{
+
+                          }
+                        },
+                        dropdownStyleData:
+                        DropdownStyleData(
+                          width: 160,
+                          padding:
+                          const EdgeInsets.symmetric(
+                              vertical: 5),
+                          decoration: BoxDecoration(
+                            borderRadius:
+                            BorderRadius.circular(10),
+                            color: Appcolors()
+                                .bottomnavbgcolor,
+                          ),
+                          elevation: 8,
+                          offset: const Offset(0, 8),
+                        ),
+                        menuItemStyleData:
+                        MenuItemStyleData(
+                          customHeights: [
+                            ...List<double>.filled(
+                                UnpinMenuItems.unpinfirstItems.length,
+                                35),
+                            8,
+                            ...List<double>.filled(
+                                UnpinMenuItems
+                                    .unpinsecondItems.length,
+                                48),
+                          ],
+                          padding: const EdgeInsets.only(
+                              left: 16, right: 16),
+                        ),
+                      ):
+                      DropdownButtonHideUnderline(
+                              child: DropdownButton2(
+                                customButton: Image.asset(
+                                  "assets/images/menubtn.png",
+                                  height: 4.h,
+                                  fit: BoxFit.fill,
+                                ),
+                                items: [
+                                  ...MenuItems.firstItems.map(
+                                    (item) => DropdownMenuItem<CustomMenuItem>(
+                                      value: item,
+                                      child: MenuItems.buildItem(item),
+                                    ),
+                                  ),
+                                  const DropdownMenuItem<Divider>(
+                                      enabled: false, child: Divider()),
+                                  ...MenuItems.secondItems.map(
+                                    (item) => DropdownMenuItem<CustomMenuItem>(
+                                      value: item,
+                                      child: MenuItems.buildItem(item),
+                                    ),
+                                  ),
+                                ],
+                                onChanged: (value) {
+                                  MenuItems.onChanged(
+                                      context, value as CustomMenuItem);
+                                  print("Value:-" + value.text);
+                                  if (value.text == StringConstants.editpost) {
+                                    setState(() {
+                                      editpost = true;
+                                    });
+                                  } else if (value.text ==
+                                      StringConstants.deletepost) {
+                                    showdeletealert(context);
+                                  } else if (value.text ==
+                                      StringConstants.pinpost) {
+                                    pinpost(widget.postid.toString(), true);
+                                  }
+                                },
+                                dropdownStyleData: DropdownStyleData(
+                                  width: 160,
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 5),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: Appcolors().bottomnavbgcolor,
+                                  ),
+                                  elevation: 8,
+                                  offset: const Offset(0, 8),
+                                ),
+                                menuItemStyleData: MenuItemStyleData(
+                                  customHeights: [
+                                    ...List<double>.filled(
+                                        MenuItems.firstItems.length, 35),
+                                    8,
+                                    ...List<double>.filled(
+                                        MenuItems.secondItems.length, 48),
+                                  ],
+                                  padding: const EdgeInsets.only(
+                                      left: 16, right: 16),
+                                ),
+                              ),
+                            )
+                          : DropdownButtonHideUnderline(
+                              child: DropdownButton2(
+                                customButton: Image.asset(
+                                  "assets/images/menubtn.png",
+                                  height: 4.h,
+                                  fit: BoxFit.fill,
+                                ),
+                                items: [
+                                  ...ScheduledMenuItems.schedulefirstItems.map(
+                                    (item) => DropdownMenuItem<
+                                        ScheduledCustomMenuItem>(
+                                      value: item,
+                                      child: ScheduledMenuItems.buildItem(item),
+                                    ),
+                                  ),
+                                  const DropdownMenuItem<Divider>(
+                                      enabled: false, child: Divider()),
+                                  ...ScheduledMenuItems.schedulesecondItems.map(
+                                    (item) => DropdownMenuItem<
+                                        ScheduledCustomMenuItem>(
+                                      value: item,
+                                      child: ScheduledMenuItems.buildItem(item),
+                                    ),
+                                  ),
+                                ],
+                                onChanged: (value) {
+                                  ScheduledMenuItems.onChanged(context,
+                                      value as ScheduledCustomMenuItem);
+                                  print("Value:-" + value.text);
+                                  if (value.text == StringConstants.editpost) {
+                                    setState(() {
+                                      editpost = true;
+                                    });
+                                  } else if (value.text ==
+                                      StringConstants.deletepost) {
+                                    showdeletealert(context);
+                                  }
+                                },
+                                dropdownStyleData: DropdownStyleData(
+                                  width: 160,
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 5),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: Appcolors().bottomnavbgcolor,
+                                  ),
+                                  elevation: 8,
+                                  offset: const Offset(0, 8),
+                                ),
+                                menuItemStyleData: MenuItemStyleData(
+                                  customHeights: [
+                                    ...List<double>.filled(
+                                        ScheduledMenuItems
+                                            .schedulefirstItems.length,
+                                        35),
+                                    8,
+                                    ...List<double>.filled(
+                                        ScheduledMenuItems
+                                            .schedulesecondItems.length,
+                                        48),
+                                  ],
+                                  padding: const EdgeInsets.only(
+                                      left: 16, right: 16),
+                                ),
+                              ),
+                            ),
                     ],
                   ),
                 ],
@@ -253,7 +411,8 @@ class FeeddetailedpageState extends State<Feeddetailedpage> {
                               color: Colors.black,
                               borderRadius: BorderRadius.circular(20)),
                           width: 80.h,
-                          height: (MediaQuery.of(context).size.height / 100) * 50,
+                          height:
+                              (MediaQuery.of(context).size.height / 100) * 50,
                           child: AspectRatio(
                             aspectRatio: _controller.value.aspectRatio,
                             child: CustomVideoPlayer(
@@ -332,12 +491,14 @@ class FeeddetailedpageState extends State<Feeddetailedpage> {
                                     focusedBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(15.0),
                                       borderSide: BorderSide(
-                                          color: Appcolors().logintextformborder),
+                                          color:
+                                              Appcolors().logintextformborder),
                                     ),
                                     enabledBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(15.0),
                                       borderSide: BorderSide(
-                                          color: Appcolors().logintextformborder),
+                                          color:
+                                              Appcolors().logintextformborder),
                                     ),
                                     filled: true,
                                     fillColor: Appcolors().messageboxbgcolor,
@@ -368,7 +529,10 @@ class FeeddetailedpageState extends State<Feeddetailedpage> {
                                   children: [
                                     InkWell(
                                       onTap: () {
-                                        editpostapi(widget.postid.toString(),postcontentcontoller.text.toString());
+                                        editpostapi(
+                                            widget.postid.toString(),
+                                            postcontentcontoller.text
+                                                .toString());
                                       },
                                       child: Container(
                                         alignment: Alignment.center,
@@ -387,7 +551,8 @@ class FeeddetailedpageState extends State<Feeddetailedpage> {
                                               fontSize: 12.sp,
                                               fontFamily: "PulpDisplay",
                                               fontWeight: FontWeight.w400,
-                                              color: Appcolors().backgroundcolor),
+                                              color:
+                                                  Appcolors().backgroundcolor),
                                           textAlign: TextAlign.center,
                                         ),
                                       ),
@@ -473,7 +638,8 @@ class FeeddetailedpageState extends State<Feeddetailedpage> {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                SvgPicture.asset("assets/images/unlockicon.svg"),
+                                SvgPicture.asset(
+                                    "assets/images/unlockicon.svg"),
                                 Text(
                                   widget.unlocks.toString(),
                                   style: TextStyle(
@@ -672,8 +838,8 @@ class FeeddetailedpageState extends State<Feeddetailedpage> {
         print("Message:-${jsonResponse["message"]}");
         // feedpostspojo!.message!.post!.elementAt(index).="true";
         setState(() {
-          widget.text=postcontent.toString();
-          editpost=false;
+          widget.text = postcontent.toString();
+          editpost = false;
           editedpostid = null;
         });
         Navigator.pop(context);
@@ -684,6 +850,7 @@ class FeeddetailedpageState extends State<Feeddetailedpage> {
           jsonResponse["message"].toString(), context);
     }
   }
+
   Future<void> deletepost(String postid) async {
     Helpingwidgets.showLoadingDialog(context, key);
     Map data = {
@@ -705,8 +872,9 @@ class FeeddetailedpageState extends State<Feeddetailedpage> {
         Helpingwidgets.successsnackbar(
             jsonResponse["message"].toString(), context);
         print("Message:-" + jsonResponse["message"].toString());
-        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
-            Bottomnavigation()), (Route<dynamic> route) => false);
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => Bottomnavigation()),
+            (Route<dynamic> route) => false);
       }
     } else {
       Navigator.pop(context);
@@ -714,7 +882,8 @@ class FeeddetailedpageState extends State<Feeddetailedpage> {
           jsonResponse["message"].toString(), context);
     }
   }
-  Future<void> pinpost(String postid,bool status) async {
+
+  Future<void> pinpost(String postid, bool status) async {
     Helpingwidgets.showLoadingDialog(context, key);
     Map data = {
       "postid": postid.toString(),
@@ -736,7 +905,11 @@ class FeeddetailedpageState extends State<Feeddetailedpage> {
         print("Message:-${jsonResponse["message"]}");
         Navigator.pop(context);
         setState(() {
-          widget.pinstatus="true";
+          if(status){
+            widget.pinstatus = "true";
+          }else{
+            widget.pinstatus = "false";
+          }
         });
       }
     } else {
@@ -745,6 +918,4 @@ class FeeddetailedpageState extends State<Feeddetailedpage> {
           jsonResponse["message"].toString(), context);
     }
   }
-
-
 }

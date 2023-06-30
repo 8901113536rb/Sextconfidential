@@ -134,7 +134,7 @@ class SidedrawerState extends State<Sidedrawer> {
                             child: Center(
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
-                                color: Appcolors().gradientcolorfirst,
+                                color: Appcolors().bottomnavbgcolor,
                               ),
                             ),
                           ),

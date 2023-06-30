@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
@@ -18,11 +17,15 @@ import 'package:sextconfidential/pojo/Feedpostspojo.dart';
 import 'package:sextconfidential/utils/Appcolors.dart';
 import 'package:sextconfidential/utils/CustomDropdownButton2.dart';
 import 'package:sextconfidential/utils/CustomMenu.dart';
+import 'package:sextconfidential/utils/Scheduleddropdown.dart';
+import 'package:sextconfidential/utils/Unpindropdown.dart';
+// import 'package:sextconfidential/utils/CustomMenu.dart';
 import 'package:sextconfidential/utils/Helpingwidgets.dart';
 import 'package:sextconfidential/utils/Networks.dart';
 import 'package:sextconfidential/utils/Scheduleddropdown.dart';
 import 'package:sextconfidential/utils/Sidedrawer.dart';
 import 'package:sextconfidential/utils/StringConstants.dart';
+import 'package:sextconfidential/utils/Unpindropdown.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 import 'package:sizer/sizer.dart';
@@ -329,7 +332,6 @@ class FeedScreenState extends State<FeedScreen> {
                                       ),
                                     ],
                                   )
-                                  // color: Colors.amber,
                                   ),
                             )
                           : Column(
@@ -344,9 +346,7 @@ class FeedScreenState extends State<FeedScreen> {
                                         // child: Image.file(imageFile!,height:15.h,width:25.w,fit: BoxFit.fill,)),
                                         child: imageFile!.path.substring(
                                                     imageFile!.path.length - 3,
-                                                    imageFile!.path.length) ==
-                                                "mp4"
-                                            ? 
+                                                    imageFile!.path.length) =="mp4"?
                                             Image.asset("assets/images/thumbnaildefault.png",height: 15.h,width: 30.w,fit: BoxFit.fill,)
                                         // Image.memory(
                                         //         thumbnail!,
@@ -1363,8 +1363,120 @@ class FeedScreenState extends State<FeedScreen> {
                                           child: pinnedpost(),
                                         ),
                                         DropdownButtonHideUnderline(
-                                          child: DropdownButton2(
+                                          child:
+                                          feedpostspojo!
+                                              .message!.post!
+                                              .elementAt(index)
+                                              .pinned
+                                              .toString() ==
+                                              "true"?
+                                          DropdownButton2(
+                                            customButton: Image.asset(
+                                              "assets/images/menubtn.png",
+                                              height: 4.h,
+                                              fit: BoxFit.fill,
+                                            ),
+                                            items: [
+                                              ...UnpinMenuItems.unpinfirstItems.map(
+                                                    (item) => DropdownMenuItem<UnpinCustomMenuItem>(
+                                                  value: item,
+                                                  child:
+                                                  UnpinMenuItems.buildItem(item),
+                                                ),
+                                              ),
+                                              const DropdownMenuItem<Divider>(
+                                                  enabled: false,
+                                                  child: Divider()),
+                                              ...UnpinMenuItems.unpinsecondItems.map(
+                                                (item) => DropdownMenuItem<
+                                                    UnpinCustomMenuItem>(
+                                                  value: item,
+                                                  child:
+                                                  UnpinMenuItems.buildItem(item),
+                                                ),
+                                              ),
+                                            ],
+                                            onChanged: (value) {
+                                              UnpinMenuItems.onChanged(context,
+                                                  value as UnpinCustomMenuItem);
+                                              print("Value:-" + value.text);
+                                              if (value.text ==
+                                                  StringConstants.editpost) {
+                                                setState(() {
+                                                  editedpostid = index;
+                                                  postcontentcontoller.text =
+                                                      feedpostspojo!
+                                                          .message!.post!
+                                                          .elementAt(index)
+                                                          .text
+                                                          .toString();
+                                                });
+                                              } else if (value.text ==
+                                                  StringConstants.deletepost) {
+                                                showdeletealert(
+                                                    context,
+                                                    feedpostspojo!
+                                                        .message!.post!
+                                                        .elementAt(index)
+                                                        .id
+                                                        .toString(),
+                                                    index);
+                                              } else if (value.text ==
+                                                  StringConstants.pinpost) {
+                                                pinpost(
+                                                    feedpostspojo!
+                                                        .message!.post!
+                                                        .elementAt(index)
+                                                        .id
+                                                        .toString(),
+                                                    index,
+                                                    true);
+                                              }else if(value.text ==StringConstants.unpinpost){
+                                                pinpost(
+                                                    feedpostspojo!
+                                                        .message!.post!
+                                                        .elementAt(index)
+                                                        .id
+                                                        .toString(),
+                                                    index,
+                                                    false);
+                                              }else{
 
+                                              }
+                                            },
+                                            dropdownStyleData:
+                                                DropdownStyleData(
+                                              width: 160,
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 5),
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                color: Appcolors()
+                                                    .bottomnavbgcolor,
+                                              ),
+                                              elevation: 8,
+                                              offset: const Offset(0, 8),
+                                            ),
+                                            menuItemStyleData:
+                                                MenuItemStyleData(
+                                              customHeights: [
+                                                ...List<double>.filled(
+                                                    UnpinMenuItems.unpinfirstItems.length,
+                                                    35),
+                                                8,
+                                                ...List<double>.filled(
+                                                    UnpinMenuItems
+                                                        .unpinsecondItems.length,
+                                                    48),
+                                              ],
+                                              padding: const EdgeInsets.only(
+                                                  left: 16, right: 16),
+                                            ),
+                                          )
+                                          :
+                                          DropdownButton2(
                                             customButton: Image.asset(
                                               "assets/images/menubtn.png",
                                               height: 4.h,
@@ -1372,11 +1484,11 @@ class FeedScreenState extends State<FeedScreen> {
                                             ),
                                             items: [
                                               ...MenuItems.firstItems.map(
-                                                (item) => DropdownMenuItem<
+                                                    (item) => DropdownMenuItem<
                                                     CustomMenuItem>(
                                                   value: item,
                                                   child:
-                                                      MenuItems.buildItem(item),
+                                                  MenuItems.buildItem(item),
                                                 ),
                                               ),
                                               const DropdownMenuItem<Divider>(
@@ -1426,17 +1538,28 @@ class FeedScreenState extends State<FeedScreen> {
                                                         .toString(),
                                                     index,
                                                     true);
+                                              }else if(value.text ==StringConstants.unpinpost){
+                                                pinpost(
+                                                    feedpostspojo!
+                                                        .message!.post!
+                                                        .elementAt(index)
+                                                        .id
+                                                        .toString(),
+                                                    index,
+                                                    false);
+                                              }else{
+
                                               }
                                             },
                                             dropdownStyleData:
-                                                DropdownStyleData(
+                                            DropdownStyleData(
                                               width: 160,
                                               padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 5),
+                                              const EdgeInsets.symmetric(
+                                                  vertical: 5),
                                               decoration: BoxDecoration(
                                                 borderRadius:
-                                                    BorderRadius.circular(10),
+                                                BorderRadius.circular(10),
                                                 color: Appcolors()
                                                     .bottomnavbgcolor,
                                               ),
@@ -1444,7 +1567,7 @@ class FeedScreenState extends State<FeedScreen> {
                                               offset: const Offset(0, 8),
                                             ),
                                             menuItemStyleData:
-                                                MenuItemStyleData(
+                                            MenuItemStyleData(
                                               customHeights: [
                                                 ...List<double>.filled(
                                                     MenuItems.firstItems.length,
@@ -2013,79 +2136,6 @@ class FeedScreenState extends State<FeedScreen> {
                                         ),
                                       ],
                                     ),
-                                    // DropdownButtonHideUnderline(
-                                    //   child: DropdownButton2(
-                                    //     customButton: Image.asset(
-                                    //       "assets/images/menubtn.png",
-                                    //       height: 4.h,
-                                    //       fit: BoxFit.fill,
-                                    //     ),
-                                    //     items: [
-                                    //       ...ScheduledMenuItems.schedulefirstItems.map(
-                                    //         (item) => DropdownMenuItem<
-                                    //             ScheduledCustomMenuItem>(
-                                    //           value: item,
-                                    //           child: ScheduledMenuItems.buildItem(item),
-                                    //         ),
-                                    //       ),
-                                    //       const DropdownMenuItem<Divider>(
-                                    //           enabled: false, child: Divider()),
-                                    //       // ...MenuItems.secondItems.map(
-                                    //       //   (item) => DropdownMenuItem<
-                                    //       //       CustomMenuItem>(
-                                    //       //     value: item,
-                                    //       //     child: MenuItems.buildItem(item),
-                                    //       //   ),
-                                    //       // ),
-                                    //     ],
-                                    //     onChanged: (value) {
-                                    //       MenuItems.onChanged(
-                                    //           context, value as CustomMenuItem);
-                                    //       print("Value:-" + value.text);
-                                    //       if (value.text ==
-                                    //           StringConstants.editpost) {
-                                    //         setState(() {
-                                    //           editedpostid = index;
-                                    //         });
-                                    //       } else if (value.text ==
-                                    //           StringConstants.deletepost) {
-                                    //         showdeletealert(
-                                    //             context,
-                                    //             feedpostspojo!
-                                    //                 .message!.schedule!
-                                    //                 .elementAt(index)
-                                    //                 .id
-                                    //                 .toString(),
-                                    //             index);
-                                    //       }
-                                    //     },
-                                    //     dropdownStyleData: DropdownStyleData(
-                                    //       width: 160,
-                                    //       padding: const EdgeInsets.symmetric(
-                                    //           vertical: 5),
-                                    //       decoration: BoxDecoration(
-                                    //         borderRadius:
-                                    //             BorderRadius.circular(10),
-                                    //         color: Appcolors().bottomnavbgcolor,
-                                    //       ),
-                                    //       elevation: 8,
-                                    //       offset: const Offset(0, 8),
-                                    //     ),
-                                    //     menuItemStyleData: MenuItemStyleData(
-                                    //       customHeights: [
-                                    //         ...List<double>.filled(
-                                    //             MenuItems.firstItems.length,
-                                    //             35),
-                                    //         8,
-                                    //         ...List<double>.filled(
-                                    //             MenuItems.secondItems.length,
-                                    //             48),
-                                    //       ],
-                                    //       padding: const EdgeInsets.only(
-                                    //           left: 16, right: 16),
-                                    //     ),
-                                    //   ),
-                                    // ),
                                     DropdownButtonHideUnderline(
                                       child: DropdownButton2(
                                         customButton: Image.asset(
@@ -2094,29 +2144,26 @@ class FeedScreenState extends State<FeedScreen> {
                                           fit: BoxFit.fill,
                                         ),
                                         items: [
-                                          ...MenuItems.firstItems.map(
+                                          ...ScheduledMenuItems.schedulefirstItems.map(
                                                 (item) => DropdownMenuItem<
-                                                CustomMenuItem>(
+                                                ScheduledCustomMenuItem>(
                                               value: item,
-                                              child:
-                                              MenuItems.buildItem(item),
+                                              child: ScheduledMenuItems.buildItem(item),
                                             ),
                                           ),
                                           const DropdownMenuItem<Divider>(
-                                              enabled: false,
-                                              child: Divider()),
-                                          // ...MenuItems.secondItems.map(
-                                          //   (item) => DropdownMenuItem<
-                                          //       CustomMenuItem>(
-                                          //     value: item,
-                                          //     child:
-                                          //         MenuItems.buildItem(item),
-                                          //   ),
-                                          // ),
+                                              enabled: false, child: Divider()),
+                                          ...ScheduledMenuItems.schedulesecondItems.map(
+                                                (item) => DropdownMenuItem<
+                                                ScheduledCustomMenuItem>(
+                                              value: item,
+                                              child: ScheduledMenuItems.buildItem(item),
+                                            ),
+                                          ),
                                         ],
                                         onChanged: (value) {
-                                          MenuItems.onChanged(context,
-                                              value as CustomMenuItem);
+                                          ScheduledMenuItems.onChanged(context,
+                                              value as ScheduledCustomMenuItem);
                                           print("Value:-" + value.text);
                                           if (value.text ==
                                               StringConstants.editpost) {
@@ -2129,8 +2176,7 @@ class FeedScreenState extends State<FeedScreen> {
                                                       .text
                                                       .toString();
                                             });
-                                          } else if (value.text ==
-                                              StringConstants.deletepost) {
+                                          } else{
                                             showdeletealert(
                                                 context,
                                                 feedpostspojo!
@@ -2139,16 +2185,6 @@ class FeedScreenState extends State<FeedScreen> {
                                                     .id
                                                     .toString(),
                                                 index);
-                                          } else if (value.text ==
-                                              StringConstants.pinpost) {
-                                            pinpost(
-                                                feedpostspojo!
-                                                    .message!.post!
-                                                    .elementAt(index)
-                                                    .id
-                                                    .toString(),
-                                                index,
-                                                true);
                                           }
                                         },
                                         dropdownStyleData:
@@ -2170,12 +2206,12 @@ class FeedScreenState extends State<FeedScreen> {
                                         MenuItemStyleData(
                                           customHeights: [
                                             ...List<double>.filled(
-                                                MenuItems.firstItems.length,
+                                                ScheduledMenuItems.schedulefirstItems.length,
                                                 35),
                                             8,
                                             ...List<double>.filled(
-                                                MenuItems
-                                                    .secondItems.length,
+                                                ScheduledMenuItems
+                                                    .schedulesecondItems.length,
                                                 48),
                                           ],
                                           padding: const EdgeInsets.only(
@@ -2702,26 +2738,26 @@ class FeedScreenState extends State<FeedScreen> {
                                           fit: BoxFit.fill,
                                         ),
                                         items: [
-                                          ...MenuItems.firstItems.map(
+                                          ...ScheduledMenuItems.schedulefirstItems.map(
                                             (item) => DropdownMenuItem<
-                                                CustomMenuItem>(
+                                                ScheduledCustomMenuItem>(
                                               value: item,
-                                              child: MenuItems.buildItem(item),
+                                              child: ScheduledMenuItems.buildItem(item),
                                             ),
                                           ),
                                           const DropdownMenuItem<Divider>(
                                               enabled: false, child: Divider()),
-                                          ...MenuItems.secondItems.map(
+                                          ...ScheduledMenuItems.schedulesecondItems.map(
                                             (item) => DropdownMenuItem<
-                                                CustomMenuItem>(
+                                                ScheduledCustomMenuItem>(
                                               value: item,
-                                              child: MenuItems.buildItem(item),
+                                              child: ScheduledMenuItems.buildItem(item),
                                             ),
                                           ),
                                         ],
                                         onChanged: (value) {
-                                          MenuItems.onChanged(
-                                              context, value as CustomMenuItem);
+                                          ScheduledMenuItems.onChanged(
+                                              context, value as ScheduledCustomMenuItem);
                                           print("Value:-" + value.text);
                                           if (value.text ==
                                               StringConstants.editpost) {
@@ -2755,11 +2791,11 @@ class FeedScreenState extends State<FeedScreen> {
                                         menuItemStyleData: MenuItemStyleData(
                                           customHeights: [
                                             ...List<double>.filled(
-                                                MenuItems.firstItems.length,
+                                                ScheduledMenuItems.schedulefirstItems.length,
                                                 35),
                                             8,
                                             ...List<double>.filled(
-                                                MenuItems.secondItems.length,
+                                                ScheduledMenuItems.schedulesecondItems.length,
                                                 48),
                                           ],
                                           padding: const EdgeInsets.only(
@@ -2871,8 +2907,9 @@ class FeedScreenState extends State<FeedScreen> {
                                                     child:
                                                         CircularProgressIndicator(
                                                       strokeWidth: 2,
-                                                          color: Appcolors().gradientcolorfirst,
-                                                        ),
+                                                      color: Appcolors()
+                                                          .gradientcolorfirst,
+                                                    ),
                                                   ),
                                                 ),
                                                 // errorWidget: (context, url, error) => errorWidget,

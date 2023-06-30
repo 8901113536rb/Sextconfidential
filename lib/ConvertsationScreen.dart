@@ -342,7 +342,7 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
                             children: [
                               // !micstatus?
                               Container(
-                                height: 4.h,
+                                height: 5.h,
                                 width: 80.w,
                                 child: Row(
                                   children: [
