@@ -73,7 +73,7 @@ class BottomnavigationState extends State<Bottomnavigation> {
                       ? StringConstants.feed
                       : StringConstants.calls,
           style: TextStyle(
-              fontSize: 14.sp,
+              fontSize: 2.2.h,
               fontFamily: "PulpDisplay",
               fontWeight: FontWeight.w500,
               color: Appcolors().whitecolor),

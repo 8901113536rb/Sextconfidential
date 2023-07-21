@@ -161,7 +161,7 @@ class SidedrawerState extends State<Sidedrawer> {
                             Text(
                               username.toString(),
                               style: TextStyle(
-                                  fontSize: 14.sp,
+                                  fontSize: 2.2.h,
                                   fontFamily: "PulpDisplay",
                                   fontWeight: FontWeight.w500,
                                   color: Appcolors().blackcolor),
@@ -199,7 +199,7 @@ class SidedrawerState extends State<Sidedrawer> {
                                           : StringConstants.onlinestatus +
                                               ": Away",
                                   style: TextStyle(
-                                      fontSize: 9.sp,
+                                      fontSize: 1.5.h,
                                       fontFamily: "PulpDisplay",
                                       fontWeight: FontWeight.w500,
                                       color: onlinestatus==2?Appcolors().whitecolor:Appcolors().bottomnavbgcolor),
@@ -316,7 +316,7 @@ class SidedrawerState extends State<Sidedrawer> {
                                       child: Text(
                                         drawertitles.elementAt(index),
                                         style: TextStyle(
-                                            fontSize: 12.sp,
+                                            fontSize: 2.h,
                                             fontFamily: "PulpDisplay",
                                             fontWeight: FontWeight.w500,
                                             color: Appcolors().whitecolor),

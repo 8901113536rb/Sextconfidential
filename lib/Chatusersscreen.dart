@@ -278,7 +278,8 @@ class ChatusersscreenState extends State<Chatusersscreen> {
                                                   ),
                                                 ),
                                                 GradientText(
-                                                  chatuserpojo!.data!.elementAt(index).lastmessagetime.toString().substring(13,22),
+                                                  // chatuserpojo!.data!.elementAt(index).lastmessagetime.toString().substring(13,22),
+                                                  chatuserpojo!.data!.elementAt(index).lastmessagetime.toString(),
                                                   style: TextStyle(
                                                       fontSize: 10.sp,
                                                       fontFamily: "PulpDisplay",

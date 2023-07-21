@@ -29,13 +29,13 @@ class CallsScreenState extends State<CallsScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      scrollController.animateTo(
-        scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 100),
-        curve: Curves.easeOut,
-      );
-    });
+    // SchedulerBinding.instance.addPostFrameCallback((_) {
+    //   scrollController.animateTo(
+    //     scrollController.position.maxScrollExtent,
+    //     duration: const Duration(milliseconds: 100),
+    //     curve: Curves.easeOut,
+    //   );
+    // });
   }
 
   @override
@@ -115,6 +115,7 @@ class CallsScreenState extends State<CallsScreen> {
                 child: AnimationLimiter(
               child: ListView.builder(
                 itemCount: 10,
+                reverse: false,
                 controller: scrollController,
                 itemBuilder: (BuildContext context, int index) {
                   return AnimationConfiguration.staggeredList(

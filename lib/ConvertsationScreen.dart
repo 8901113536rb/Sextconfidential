@@ -1301,7 +1301,7 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
     });
     print("Token value:-" + token.toString());
     chatconversationlisting();
-    _timer = Timer.periodic(Duration(seconds: 2), (timer) {
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       print(DateTime.now());
       setState(() {
         chatconversationlisting();
@@ -1343,10 +1343,11 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
           //   }else {
           //     chatmessagespojo ??= chatmessagespojo2;
           //   }
-          if(messageslength<chatmessagespojo!.data!.length){
+          if(messageslength<chatmessagespojo!.data!.length && messageslength!=0){
             _controller.jumpTo(_controller.position.maxScrollExtent);
             _controller!.animateTo(_controller.position.maxScrollExtent,
                 duration: Duration(milliseconds: 1), curve: Curves.easeOut);
+            print("New message received!");
           }
           messageslength=chatmessagespojo!.data!.length;
         });

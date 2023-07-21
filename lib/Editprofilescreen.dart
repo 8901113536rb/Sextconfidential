@@ -85,37 +85,40 @@ class EditprofilescreenState extends State<Editprofilescreen> {
                           imageFile==null?
                           profilepic==null||profilepic==""?
                           Image.asset("assets/images/userprofile.png",height: 10.h,width: 20.w,):
-                          CachedNetworkImage(
-                            alignment: Alignment.topCenter,
-                            imageUrl:
-                                profilepic.toString(),
-                            imageBuilder: (context, imageProvider) => Container(
-                              width: 30.w,
-                              alignment: Alignment.centerLeft,
-                              height: 15.h,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                image: DecorationImage(
-                                  image: imageProvider,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
-                            placeholder: (context, url) => Container(
-                              child: Center(
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: Appcolors().backgroundcolor,
-                                ),
-                              ),
-                            ),
-                            errorWidget: (context, url, error) => Container(
-                              width: 30.w,
-                              height: 15.h,
-                              decoration: BoxDecoration(
+                          Container(
+                            width: 30.w,
+                            child: CachedNetworkImage(
+                              alignment: Alignment.topCenter,
+                              imageUrl:
+                                  profilepic.toString(),
+                              imageBuilder: (context, imageProvider) => Container(
+                                width: 30.w,
+                                alignment: Alignment.centerLeft,
+                                height: 15.h,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
                                   image: DecorationImage(
-                                      image: AssetImage("assets/images/userprofile.png")
-                                  )
+                                    image: imageProvider,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                              placeholder: (context, url) => Container(
+                                child: Center(
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Appcolors().backgroundcolor,
+                                  ),
+                                ),
+                              ),
+                              errorWidget: (context, url, error) => Container(
+                                width: 30.w,
+                                height: 15.h,
+                                decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                        image: AssetImage("assets/images/userprofile.png")
+                                    )
+                                ),
                               ),
                             ),
                           )
@@ -158,7 +161,7 @@ class EditprofilescreenState extends State<Editprofilescreen> {
                       Text(
                         StringConstants.name,
                         style: TextStyle(
-                            fontSize: 11.sp,
+                            fontSize: 1.7.h,
                             // fontFamily: "PulpDisplay",
                             fontWeight: FontWeight.w400,
                             color: Appcolors().loginhintcolor),
