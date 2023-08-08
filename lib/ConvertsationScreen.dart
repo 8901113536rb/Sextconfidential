@@ -1074,7 +1074,6 @@ class ConvertsationScreenState extends State<ConvertsationScreen> {
                             ),
                           ),
                         ),
-
               Container(
                 height: 6.h,
                 width: 11.w,
